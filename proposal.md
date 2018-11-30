@@ -1,18 +1,18 @@
 
-Project Proposal
+**Project Proposal**
 
-* Project title: Smart Display
-* Team members: Evander Myles Deocariza, Julia Gong, Min Hyung (Dan) Kang
-* Description Our team plans to create an interactive smart display (“mirror”) that utilizes a variety of environmental sensors to display information to the user. A two-way mirror will be attached onto a computer monitor that, when idle, will function as a simple mirror. Once a person approaches, a motion proximity sensor will detect their presence and start displaying information. We hope to utilize multiple sensors from the sensor kit, starting from the motion sensor and temperature sensor. If time permits, we may add on a color sensor and ESP32 module for background color picking and pulling news or other information from webpages, respectively. We will also implement a battery-run clock, which will display the current time. Ideally, we hope to have time to build an interface with a digital rotary encoder that would allow users to interact with our display and switch between sensor information displays.
+* **Project title:** Smart Display
+* **Team members:** Evander Deocariza, Julia Gong, Min Hyung (Dan) Kang
+* **Description:** Our team plans to create an interactive smart display (“mirror”) that utilizes a variety of environmental sensors to display information to the user. A two-way mirror will be attached onto a computer monitor that, when idle, will function as a simple mirror. Once a person approaches, a motion proximity sensor will detect their presence and start displaying information. We hope to utilize multiple sensors from the sensor kit, starting from the motion sensor and temperature sensor. If time permits, we may add on a color sensor and ESP-32 module for background color picking and pulling news or other information from webpages, respectively. We will also implement a battery-run clock, which will display the current time. Ideally, we hope to have time to build an interface with a digital rotary encoder that would allow users to interact with our display and switch between sensor information displays.
 
-Hardware required:
+**Hardware required:**
 * Monitor: we will utilize one from the lab
 * Sensor kit: a collection of sensors that we could integrate into the display
 * Two-way mirror / screen: we will attach it onto our monitor using clamps
 * Clamp to attach the mirror / screen
 * Color (RGB) detection sensor and ESP32 module (possibly, if time permits)
 
-Funds requested:
+**Funds requested:**
 
 | Category       | Full Name                            | Vendor | Price ($) |
 |----------------|--------------------------------------|--------|-----------|
@@ -20,7 +20,7 @@ Funds requested:
 | Two-way Mirror | 12" x 24" Acrylic See-Through Mirror | Amazon | 29.99     |
 | Total          |                                      |        | 59.85     |
 
-References (initial list):
+**References (initial list):**
 * Smart mirror project from hackaday: https://hackaday.io/project/13466-raspberry-pi-smart-mirror
 * Manual for sensor kit: https://www.elegoo.com/download/
 * References and tutorials for different sensors:
@@ -28,7 +28,7 @@ References (initial list):
   * Real-time clock: http://www.intellamech.com/RaspberryPi-projects/rpi_RTCds3231
   * Temperature and humidity sensor: http://www.circuitbasics.com/how-to-set-up-the-dht11-humidity-sensor-on-the-raspberry-pi/
 
-Task Breakdown (including goals for next week):
+**Task Breakdown** (including goals for next week):
 
 | Task                                   | Description                                                                                                                         | Point Person                                                                       | Timeline |
 |----------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------|----------|
