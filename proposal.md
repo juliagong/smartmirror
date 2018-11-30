@@ -13,6 +13,7 @@ Hardware required:
 * Color (RGB) detection sensor and ESP32 module (possibly, if time permits)
 
 Funds requested:
+
 | Category       | Full Name                            | Vendor | Price ($) |
 |----------------|--------------------------------------|--------|-----------|
 | Sensor Kit     | ELEGOO 37 in 1 Sensor Modules Kit    | Amazon | 29.86     |
@@ -28,6 +29,7 @@ References (initial list):
   * Temperature and humidity sensor: http://www.circuitbasics.com/how-to-set-up-the-dht11-humidity-sensor-on-the-raspberry-pi/
 
 Task Breakdown (including goals for next week):
+
 | Task                                   | Description                                                                                                                         | Point Person                                                                       | Timeline |
 |----------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------|----------|
 | Core Functionality                     |                                                                                                                                     |                                                                                    |          |
