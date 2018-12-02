@@ -9,11 +9,11 @@
 unsigned int default_module_ids[] = { SD_MODULE_TEMPERATURE, SD_MODULE_TIME };
 coordinate_t default_coordinates[] = {
        {.x = 0, .y = 0},
-       {.x = 300, .y = 0}
+       {.x = 0, .y = 100}
 };
 
 coordinate_t default_coordinates_reversed[] = {
-       {.x = 300, .y = 0},
+       {.x = 0, .y = 100},
        {.x = 0, .y = 0}
 };
 

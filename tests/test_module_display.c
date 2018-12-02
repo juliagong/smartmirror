@@ -4,6 +4,9 @@
 #include "printf.h"
 #include "strings.h"
 #include "timer.h"
+#include "uart.h"
+#include "gpio.h"
+#include "sensors.h"
 
 void test_blank_screen(){
     printf("Screen should be blank now.\n");
@@ -39,7 +42,14 @@ void main(void){
     unsigned int width = 640;
     unsigned int height = 480;
 
+    module_init();
+    profile_init();
+    sensors_init();
     md_init(width, height);
+
+    uart_init();
+    gpio_init();
+    timer_init();
 
     test_draw_page();
 

@@ -105,12 +105,15 @@ static void proximity_module_init(){
  */
 static bool check_update_temperature(){
     // TODO
-    return false;
+    return true;
 }
 
 static bool update_info_temperature(){
-    // TODO
-    return false;
+    module_content_t* content = &module_contents[SD_MODULE_TEMPERATURE];
+    
+    bool result = read_temp_data(content->components[0], COMPONENT_LEN);
+    
+    return result;
 }
 
 static void temperature_module_init(){

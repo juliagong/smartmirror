@@ -1,6 +1,7 @@
 #ifndef SENSORS_H
 #define SENSORS_H
 
+#include <stdbool.h>
 /*
  * TODO - description
  *
@@ -12,5 +13,7 @@
 static const int temp_remove = 1;
 
 void sensors_init(void);
+
+bool read_temp_data(char* resultBuf, unsigned int bufLen);
 
 #endif 
