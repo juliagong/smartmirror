@@ -40,6 +40,7 @@ bool read_temp_data(char* resultBuf, unsigned int bufLen) {
     unsigned int counter = 0;
     unsigned int n_bits = 0; 
     int temp_data[5] = { 0 };
+    float fahrenheit = 0.0;
 
     // Request data from sensor
     gpio_set_output(TEMP_PIN);

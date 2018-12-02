@@ -16,7 +16,7 @@ static void display(){
             blank_screen();
         }
 
-        timer_delay(2);
+        timer_delay(1);
     }
 }
 

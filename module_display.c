@@ -3,6 +3,7 @@
 #include "gl.h"
 #include "module_display.h"
 #include "sensors.h"
+#include "printf.h"
 
 static profile_t* current_profile;
 static unsigned int current_profile_id;
@@ -13,12 +14,14 @@ void blank_screen(){
     gl_swap_buffer();
 }
 
+/*
 // TODO - change the hard coded values
 static void draw_page_number(){
     char* buf[4];
     vsnprintf(buf, 4, "-%d-", current_page);
     gl_draw_string(300, 500, buf);
 }
+*/
 
 void draw_page(){
     gl_clear(GL_BLACK);
@@ -33,7 +36,7 @@ void draw_page(){
         draw_module(moduleIds[moduleInd], coordinates[moduleInd]);
     } 
 
-    draw_page_number();
+    //draw_page_number();
     
     gl_swap_buffer();
 }

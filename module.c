@@ -82,8 +82,8 @@ module_content_t* get_module_content(unsigned int moduleId){
  * Proximity
  */
 static bool check_update_proximity(){
-    // TODO
-    return false;
+    bool isMotionDetected = read_motion_data();
+    return isMotionDetected;
 }
 
 static bool update_info_proximity(){
