@@ -5,22 +5,28 @@
 #include <stdbool.h>
 #include "timer.h"
 
+// Motion Sensor
+#define MOTION_PIN GPIO_PIN26
 
-//////////////// Temperature & Humidity  Sensor ////////////////
+// Temperature & Humidity Sensor
 #define MAX_PIN_FLIPS 85       // Max number of times the pin switches between 0 or 1
 #define TIMEOUT_COUNT 255      // Used to exit loop if timeout occurs while waiting for data 
 #define TEMP_PIN  GPIO_PIN26
 
-static void init_temp_sensor(){
+static void init_temp_sensor() {
     // TODO
 }
 
-static void init_prox_sensor(){
+static void init_motion_sensor() {
+    gpio_set_input(MOTION_PIN);
+}
+
+static void init_rtc_sensor() {
     // TODO
 }
 
-static void init_rtc_sensor(){
-    // TODO
+bool read_motion_data() {
+    return gpio_read(MOTION_PIN) > 0;
 }
 
 /*
@@ -83,6 +89,6 @@ void sensors_init(void){
 
 
     init_temp_sensor();
-    init_prox_sensor();
+    init_motion_sensor();
     init_rtc_sensor();
 }
