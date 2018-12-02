@@ -68,7 +68,10 @@ bool read_temp_data(char* resultBuf, unsigned int bufLen) {
     unsigned int checksum = (temp_data[0] + temp_data[1] + temp_data[2] + temp_data[3]) & 0xFF; 
     
     if ( (n_bits >= 40) && (temp_data[4] == checksum ) ) {
-        snprintf(resultBuf, bufLen, "Temperature = %d.%d C Humidity = %d.%d%% \n", temp_data[2], temp_data[3], temp_data[0], temp_data[1] );
+        fahrenheit = temp_data[2] * 9. / 5. + 32;
+        int f_int = fahrenheit;                 // Holds the integer portion of the float.
+        int f_frac = (fahrenheit - f_int) * 10; // Stores one decimal place
+        snprintf(resultBuf, bufLen, "Temperature = %d.%d C / %d.%d F  Humidity = %d.%d%% \n", temp_data[2], temp_data[3], f_int, f_frac, temp_data[0], temp_data[1] );
         return true;
     }
 

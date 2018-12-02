@@ -9,7 +9,13 @@
 
 static void display(){
     while(1){
-        draw_page();
+        // show screen only if there is movement 
+        if (check_module_update(SD_MODULE_PROXIMITY)){
+            draw_page();
+        } else{
+            blank_screen();
+        }
+
         timer_delay(2);
     }
 }

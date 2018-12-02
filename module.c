@@ -104,8 +104,8 @@ static void proximity_module_init(){
  * Temperature
  */
 static bool check_update_temperature(){
-    // TODO
-    return true;
+    // TODO - DK - this should be true if we want to be using temperature sensor
+    return false;
 }
 
 static bool update_info_temperature(){
