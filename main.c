@@ -17,11 +17,11 @@ void check_for_motion(void)
     printf("Warmed up! Checking for motion...\n");
     int count = 0;
     while (1) {
-    if (gpio_read(MOTION_PIN)) {
-        printf("Motion detected %d!\n", count + 1);
-        timer_delay(1);
-        count++;
-    }
+    	if (gpio_read(MOTION_PIN)) {
+            printf("Motion detected %d!\n", count + 1);
+            timer_delay(1);
+            count++;
+    	}
     }
 }
  
