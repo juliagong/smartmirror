@@ -41,6 +41,7 @@ void read_temp_data() {
     unsigned int counter = 0;
     unsigned int n_bits = 0; 
     int temp_data[5] = { 0 };
+    float fahrenheit = 0.0; 
 
     // Request data from sensor
     gpio_set_output(TEMP_PIN);
@@ -75,7 +76,10 @@ void read_temp_data() {
     unsigned int checksum = (temp_data[0] + temp_data[1] + temp_data[2] + temp_data[3]) & 0xFF; 
     
     if ( (n_bits >= 40) && (temp_data[4] == checksum ) ) {
-        printf( "Temperature = %d.%d C Humidity = %d.%d%% \n", temp_data[2], temp_data[3], temp_data[0], temp_data[1] );
+        fahrenheit = temp_data[2] * 9. / 5. + 32;
+        int f_int = fahrenheit;                 // Holds the integer portion of the float.
+        int f_frac = (fahrenheit - f_int) * 10; // Stores one decimal place
+        printf( "Temperature = %d.%d C / %d.%d F  Humidity = %d.%d%% \n", temp_data[2], temp_data[3], f_int, f_frac, temp_data[0], temp_data[1] );
     } else {
         printf( "Data not good, skip\n" );
     }
