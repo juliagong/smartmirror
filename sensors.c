@@ -30,14 +30,24 @@ bool read_motion_data() {
 }
 
 /*
- This function uses TEMP_PIN set to output to request data from the DHT11 temperature and 
- humidity sensor. The function then sets TEMP_PIN to input and monitors it for flips between
- 0 and 1. Flips 0 - 3 are part of ACK sequence after requesting data from the sensor.
- Flip 4 is the first data bit. Even-numbered flips are data bits while odd-numbered flips 
- are the pauses (low) that precede each data bit. 
+* This function requests temperature and humidity data from the DHT11 sensor. 
+* There is no other init function for this sensor.
+* The function requests the data by setting TEMP_PIN to output and writing 0 then 1 to
+* the pin. TEMP_PIN is then set to input so the DHT11 can acknowledge the request by 
+* setting TEMP_PIN to 0, then 1. DHT11 then alternates between setting TEMP_PIN to 0
+* preceding each data bit (for a total of 40 bits), and then 1 for each data bit. 
+*
+* If TEMP_PIN is set to 1 for count > 16, the data bit is a 1. 
+* If TEMP_PIN is set to 1 for a count <= 16, the data bit is a 0.
+* 
+* The function trakcs when  the TEMP_PIN flips between 0 and 1, and for how long.
+* Flips 0 - 3 are part of ACK sequence after requesting data from the sensor.
+* Flip 4 is the first data bit. 
+* Subsequent odd-numbered flips are when TEMP_PIN is set to 0 preceding each data bit. 
+* Even-numbered flips are when TEMP_PIN is set to 1 for each data bit. 
 */
 bool read_temp_data(char* resultBuf, unsigned int bufLen) {
-    unsigned int counter = 0;
+    unsigned int count = 0;
     unsigned int n_bits = 0; 
     int temp_data[5] = { 0 };
 
@@ -52,20 +62,21 @@ bool read_temp_data(char* resultBuf, unsigned int bufLen) {
     int last_state = 1;        // rpi sets pin 1 then waits for DHT to set it 0
  
     for (int flips = 0; flips < MAX_PIN_FLIPS; flips++ ) {
-        counter = 0;
-        while (gpio_read(TEMP_PIN) == last_state ) { // Spine while waiting for pin to flip 
-            counter++;
+        count = 0;
+        while (gpio_read(TEMP_PIN) == last_state ) { // Spin while waiting for pin to flip 
+            count++;
             timer_delay_us(1);
-            if (counter == TIMEOUT_COUNT) break; 
+            if (count == TIMEOUT_COUNT) break; 
         }
         last_state = gpio_read( TEMP_PIN );
         
-        if (counter == TIMEOUT_COUNT) break;
+        if (count == TIMEOUT_COUNT) break;
  
-        // Flips 0-3 are part of ACK. Odd-numbered bits are the pause before data bits. 
+        // Flips 0-3 are part of ACK. Odd-numbered flips are the pause before data bits.
+        // Only even-numbered flips are data bits. 
         if ( (flips >= 4) && (flips % 2 == 0) ) {
             temp_data[n_bits / 8] <<= 1;
-            if ( counter > 16 )
+            if ( count > 16 )
                 temp_data[n_bits / 8] |= 1;
             n_bits++;
         }
