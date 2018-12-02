@@ -1,13 +1,14 @@
 NAME = main
-OBJECTS =
+OBJECTS = module.o profile.o module_display.o 
+HEADER_DIR = ./headers/ 
 
-CFLAGS  = -I$(CS107E)/include -g -Wall -Wpointer-arith
+CFLAGS  = -I$(CS107E)/include -I$(HEADER_DIR) -g -Wall -Wpointer-arith
 CFLAGS += -Og -std=c99 -ffreestanding
 CFLAGS += -mapcs-frame -fno-omit-frame-pointer -mpoke-function-name
 LDFLAGS = -nostdlib -T memmap -L. -L$(CS107E)/lib
 LDLIBS  = -lmypi -lpi -lgcc
 
-all : $(NAME).bin
+all : $(NAME).bin $(OBJECTS)
 
 %.bin: %.elf
 	arm-none-eabi-objcopy $< -O binary $@
@@ -29,6 +30,15 @@ install: $(NAME).bin
 
 clean:
 	rm -f *.o *.bin *.elf *.list *~
+
+testmodule: tests/test_module.bin
+	rpi-install.py -p $<
+
+testprofile: tests/test_profile.bin
+	rpi-install.py -p $<
+
+testdisplay: tests/test_module_display.bin
+	rpi-install.py -p $<
 
 .PHONY: all clean install
 
