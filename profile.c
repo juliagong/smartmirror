@@ -20,13 +20,13 @@ coordinate_t default_coordinates_reversed[] = {
 profile_t* profiles;
 
 profile_t* get_profile(unsigned int profileId){
-    if (profileId >= NUM_PROFILES){
+    if (profileId >= NUM_PROFILES) {
         return (profile_t*)0;
     }
     return &profiles[profileId];
 }
 
-module_config_t* get_module_config(unsigned int profileId, unsigned int moduleId){
+module_config_t* get_module_config(unsigned int profileId, unsigned int moduleId) {
     unsigned int numModules = 2;
     module_config_t* cur = profiles[profileId].moduleConfig;
 
@@ -40,7 +40,7 @@ module_config_t* get_module_config(unsigned int profileId, unsigned int moduleId
     return (module_config_t*)0;
 }
 
-static void create_default_profile(){
+static void create_default_profile() {
     unsigned int numModules = 2;
     
     module_config_t* defaultModuleConfig = malloc(sizeof(module_config_t) * numModules);
@@ -60,7 +60,7 @@ static void create_default_profile(){
     profiles[DEFAULT_PROFILE_ID] = *defaultProfile; 
 }
 
-void profile_init(){
+void profile_init() {
     profiles = malloc(sizeof(profile_t) * NUM_PROFILES);
     create_default_profile();
 }

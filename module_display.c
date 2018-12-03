@@ -5,11 +5,16 @@
 #include "sensors.h"
 #include "printf.h"
 
-static profile_t* current_profile;
+static profile_t* current_profile; // keeps track of profile of current page
 static unsigned int current_profile_id;
 static unsigned int current_page;
 
-void blank_screen(){
+/**
+ * Function: blank_screen
+ *
+ * Draws a blank black screen for the "off" mode of the mirror.
+**/
+void blank_screen() {
     gl_clear(GL_BLACK);
     gl_swap_buffer();
 }
@@ -23,7 +28,12 @@ static void draw_page_number(){
 }
 */
 
-void draw_page(){
+/**
+ * Function: draw_page
+ *
+ * Displays the current page on the monitor using draw_module.
+**/
+void draw_page() {
     gl_clear(GL_BLACK);
 
     page_config_t currentPageConfig = current_profile->pageConfig[current_page];
@@ -41,7 +51,12 @@ void draw_page(){
     gl_swap_buffer();
 }
 
-void draw_module(unsigned int moduleId, coordinate_t coordinate){
+/**
+ * Function: draw_module
+ *
+ * Gets module content and setting and draws module on screen.
+**/
+void draw_module(unsigned int moduleId, coordinate_t coordinate) {
     // get latest module information if needed
     // TODO - we might not need this
     if(check_module_update(moduleId)){
@@ -66,26 +81,36 @@ void draw_module(unsigned int moduleId, coordinate_t coordinate){
     }
 }
 
-void get_next_page(){
+/**
+ * Function: get_next_page
+ *
+ * Gets and displays the next page.
+**/
+void get_next_page() {
     if (current_page < current_profile->numScreens - 1){
         current_page += 1; 
         draw_page(); 
     } 
 }
 
-void get_prev_page(){
+/**
+ * Function: get_prev_page
+ *
+ * Gets and displays the previous page.
+**/
+void get_prev_page() {
     if (current_page > 0){
         current_page -= 1;
         draw_page();
     }
 }
 
-void switch_profile(unsigned int profileId){
+void switch_profile(unsigned int profileId) {
     current_profile = get_profile(profileId);
     draw_page();
 }
 
-void md_init(unsigned int width, unsigned int height){
+void md_init(unsigned int width, unsigned int height) {
     gl_init(width, height, GL_DOUBLEBUFFER);
     module_init();
     profile_init();

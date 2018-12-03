@@ -7,12 +7,12 @@
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
 
-static void display(){
-    while(1){
+static void display() {
+    while(1) {
         // show screen only if there is movement 
-        if (check_module_update(SD_MODULE_PROXIMITY)){
+        if (check_module_update(SD_MODULE_PROXIMITY)) {
             draw_page();
-        } else{
+        } else {
             blank_screen();
         }
 
@@ -20,7 +20,7 @@ static void display(){
     }
 }
 
-void main(){
+void main() {
     module_init();
     profile_init();
     sensors_init();

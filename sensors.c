@@ -9,9 +9,9 @@
 #define MOTION_PIN GPIO_PIN26
 
 // Temperature & Humidity Sensor
-#define MAX_PIN_FLIPS 85       // Max number of times the pin switches between 0 or 1
-#define TIMEOUT_COUNT 255      // Used to exit loop if timeout occurs while waiting for data 
-#define TEMP_PIN  GPIO_PIN26
+#define MAX_PIN_FLIPS 85 // max number of times the pin switches between 0 or 1
+#define TIMEOUT_COUNT 255 // used to exit loop if timeout occurs while waiting for data 
+#define TEMP_PIN GPIO_PIN26
 
 static void init_temp_sensor() {
     // TODO
@@ -56,7 +56,7 @@ bool read_temp_data(char* resultBuf, unsigned int bufLen) {
     int temp_data[5] = { 0 };
     float fahrenheit = 0.0;
 
-    // Request data from sensor
+    // request data from sensor
     gpio_set_output(TEMP_PIN);
     gpio_write(TEMP_PIN, 0);
     timer_delay_ms(18);
@@ -64,14 +64,14 @@ bool read_temp_data(char* resultBuf, unsigned int bufLen) {
     timer_delay_us(40);
     gpio_set_input( TEMP_PIN);
 
-    int last_state = 1;        // rpi sets pin 1 then waits for DHT to set it 0
+    int last_state = 1; // rpi sets pin 1 then waits for DHT to set it 0
  
     for (int flips = 0; flips < MAX_PIN_FLIPS; flips++ ) {
         count = 0;
-        while (gpio_read(TEMP_PIN) == last_state ) { // Spin while waiting for pin to flip 
+        while (gpio_read(TEMP_PIN) == last_state ) { // spin while waiting for pin to flip 
             count++;
             timer_delay_us(1);
-            if (count == TIMEOUT_COUNT) break; 
+            if (count == TIMEOUT_COUNT) break;
         }
         last_state = gpio_read( TEMP_PIN );
         
@@ -101,11 +101,12 @@ bool read_temp_data(char* resultBuf, unsigned int bufLen) {
 }
 
 // initialize everything necessary for sensors
-void sensors_init(void){
+void sensors_init(void) {
     // TODO - setup gpio pins
     
     // TODO - setup interrupts
 
+    gpio_init();
 
     init_temp_sensor();
     init_motion_sensor();
