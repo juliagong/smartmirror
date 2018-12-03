@@ -29,23 +29,27 @@ bool read_motion_data() {
     return gpio_read(MOTION_PIN) > 0;
 }
 
-/*
-* This function requests temperature and humidity data from the DHT11 sensor. 
-* There is no other init function for this sensor.
-* The function requests the data by setting TEMP_PIN to output and writing 0 then 1 to
-* the pin. TEMP_PIN is then set to input so the DHT11 can acknowledge the request by 
-* setting TEMP_PIN to 0, then 1. DHT11 then alternates between setting TEMP_PIN to 0
-* preceding each data bit (for a total of 40 bits), and then 1 for each data bit. 
-*
-* If TEMP_PIN is set to 1 for count > 16, the data bit is a 1. 
-* If TEMP_PIN is set to 1 for a count <= 16, the data bit is a 0.
-* 
-* The function trakcs when  the TEMP_PIN flips between 0 and 1, and for how long.
-* Flips 0 - 3 are part of ACK sequence after requesting data from the sensor.
-* Flip 4 is the first data bit. 
-* Subsequent odd-numbered flips are when TEMP_PIN is set to 0 preceding each data bit. 
-* Even-numbered flips are when TEMP_PIN is set to 1 for each data bit. 
-*/
+/**
+ * Function: read_temp_data
+ *
+ * Requests temperature and humidity data from the DHT11 sensor. 
+ * There is no other init function for this sensor.
+ *
+ * The function requests the data by setting TEMP_PIN to output and writing 0 then 1 to
+ * the pin. TEMP_PIN is then set to input so the DHT11 can acknowledge the request by 
+ * setting TEMP_PIN to 0, then 1. DHT11 then alternates between setting TEMP_PIN to 0
+ * preceding each data bit (for a total of 40 bits), and then 1 for each data bit. 
+ *
+ * If TEMP_PIN is set to 1 for count > 16, the data bit is a 1. 
+ * If TEMP_PIN is set to 1 for a count <= 16, the data bit is a 0.
+ * 
+ * The function trakcs when  the TEMP_PIN flips between 0 and 1, and for how long.
+ * Flips 0 - 3 are part of ACK sequence after requesting data from the sensor.
+ * Flip 4 is the first data bit. 
+ *
+ * Subsequent odd-numbered flips are when TEMP_PIN is set to 0 preceding each data bit. 
+ * Even-numbered flips are when TEMP_PIN is set to 1 for each data bit. 
+**/
 bool read_temp_data(char* resultBuf, unsigned int bufLen) {
     unsigned int count = 0;
     unsigned int n_bits = 0; 
@@ -96,7 +100,7 @@ bool read_temp_data(char* resultBuf, unsigned int bufLen) {
     return false;
 }
 
-// Initialize everything necessary for sensors
+// initialize everything necessary for sensors
 void sensors_init(void){
     // TODO - setup gpio pins
     
