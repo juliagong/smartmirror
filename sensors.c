@@ -6,6 +6,11 @@
 #include "timer.h"
 #include "gpioextra.h"
 #include "assert.h"
+#include "malloc.h"
+#include "strings.h"
+#include "uart.h"
+
+#include "gl.h"
 
 // Motion Sensor
 #define MOTION_PIN GPIO_PIN19
@@ -195,4 +200,98 @@ void sensors_init(void) {
     init_rotary_encoder();
 
     init_interrupts();
+}
+
+
+
+/*
+ Returns the number of chars written to buf
+*/
+static int uart_getline(char *buf, int bufsize) {
+    char c = uart_getchar(); 
+    int index = 0; 
+    
+    while (c != '\0' && index < bufsize-1) {
+        buf[index] = c; 
+        index++;
+        c = uart_getchar(); 
+    }
+    buf[index] = '\0';
+ 
+    return index; 
+}
+
+
+/** From Lab 4
+ * Allocate space on the heap for n chars plus null-terminator.
+ * Copy n bytes fro
+ */
+static char *strndup(const char *src, int n) {
+    char *str = malloc(n+1);
+    for (int i = 0; i < n; i++) {
+        str[i] = src[i];
+    }
+    str[n] = '\0';
+    return str; 
+}
+
+/** From Lab 4
+* Returns 1 if 'ch' is whitespace and 0 otherwise. 
+*/
+static int isspace(char ch)
+{
+    return ch == ' ' || ch == '\t' || ch == '\n';
+}
+
+/** From Lab 4
+* Parses 'line' into tokens separated by spaces and stores them into array of char*
+* pointing to strings on the heap. 
+*/
+static int tokenize(const char *line, char *arr[], int max) {
+    int ntokens = 0; 
+
+    while (*line != '\0' && ntokens < max) {
+        while (isspace(*line)) line++;  // skip past spaces
+        if (*line == '\0') break; // no more non-white chars
+        const char *start = line;
+        while (*line != '\0' && !isspace(*line)) line++; // advance to next space/null
+        if (*start == '*') {
+            int nchars = line - start;      
+            arr[ntokens] = strndup(start+1, nchars);   // make heap-copy, add to array 
+            ntokens++; 
+        }
+    }
+    return ntokens;
+}
+
+
+/*
+date_time[] array holds
+Day of the Week
+Month Name
+Day Number
+Year Number
+HH:MM:SS
+*/
+int read_date_time() {
+    char *line = (char *)malloc (71);
+    int len = uart_getline(line, 71);
+    if (len == 0) return 0;
+    
+    // Tokenize
+    char *date_time[5]; 
+    int ntokens = tokenize(line, date_time, len); 
+
+    // Print to display for testing purposes
+    int height = gl_get_char_height();  
+    for (int i = 0; i < ntokens; i++) {
+        gl_draw_string(5, 5 + height * i, date_time[i], GL_GREEN);
+    }
+
+    // Free array
+    for(int i = 0; i < ntokens; i++) {
+        free((char *)date_time[i]);
+    }
+
+    return ntokens; 
 }
