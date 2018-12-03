@@ -6,13 +6,11 @@ from datetime import datetime
 cgitb.enable()
 
 print "Content-type: text/html"
+# Have to print <html> tags or else page shows server error
 print """
-<html>
-        <head><title>Time & Date</title></head>
-        <body>
+<html><header><title>Date&Time</title></header></body>
 """
 print('\t'+'\t' + datetime.now().strftime('%A %B %d %Y \n\t\t%H:%M:%S'))
 print """
-        </body>
-</html>
+</body></html>
 """
