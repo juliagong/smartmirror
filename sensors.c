@@ -202,7 +202,7 @@ void sensors_init(void) {
     init_interrupts();
 }
 
-
+d
 
 /*
  Returns the number of chars written to buf
@@ -266,12 +266,14 @@ static int tokenize(const char *line, char *arr[], int max) {
 
 
 /*
-date_time[] array holds
-Day of the Week
-Month Name
-Day Number
-Year Number
-HH:MM:SS
+date_time[] array holds 7 pieces of information:
+    Day of the Week
+    Month Name
+    Day Number
+    Year Number
+    HH
+    MM
+    SS
 */
 int read_date_time() {
     char *line = (char *)malloc (71);
@@ -279,7 +281,7 @@ int read_date_time() {
     if (len == 0) return 0;
     
     // Tokenize
-    char *date_time[5]; 
+    char *date_time[7]; 
     int ntokens = tokenize(line, date_time, len); 
 
     // Print to display for testing purposes
