@@ -4,8 +4,8 @@
 #include "profile.h"
 #include "timer.h"
 
-#define SCREEN_WIDTH 1280
-#define SCREEN_HEIGHT 720
+#define SCREEN_WIDTH 1680
+#define SCREEN_HEIGHT 1050
 
 static void display() {
     while(1) {
