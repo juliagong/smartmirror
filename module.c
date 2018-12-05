@@ -83,13 +83,10 @@ module_content_t* get_module_content(unsigned int moduleId){
  * Proximity
  */
 static bool check_update_proximity(){
-    return true;
 
     // TODO - use this for acutal code
-    /*
     bool isMotionDetected = read_motion_data();
     return isMotionDetected;
-    */
 }
 
 static bool update_info_proximity(){
@@ -111,7 +108,7 @@ static void proximity_module_init(){
  */
 static bool check_update_temperature(){
     // TODO - DK - this should be true if we want to be using temperature sensor
-    return false;
+    return true;
 }
 
 static bool update_info_temperature(){

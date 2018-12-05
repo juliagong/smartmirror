@@ -8,7 +8,7 @@
 #include "assert.h"
 
 // Motion Sensor
-#define MOTION_PIN GPIO_PIN26
+#define MOTION_PIN GPIO_PIN19
 
 // Temperature & Humidity Sensor
 #define MAX_PIN_FLIPS 85 // max number of times the pin switches between 0 or 1
@@ -16,9 +16,9 @@
 #define TEMP_PIN GPIO_PIN26
 
 // Rotary Encoder
-#define ROTARY_CLK GPIO_PIN17
-#define ROTARY_DT GPIO_PIN18
-#define ROTARY_SW GPIO_PIN19
+#define ROTARY_CLK GPIO_PIN16
+#define ROTARY_DT GPIO_PIN20
+#define ROTARY_SW GPIO_PIN21
 
 static volatile unsigned int prev_clk_val;
 static volatile int rotation;
