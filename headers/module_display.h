@@ -16,9 +16,7 @@ void draw_page();
 
 void draw_module(unsigned int moduleId, coordinate_t coordinate);
 
-void get_next_page();
-
-void get_prev_page();
+void move_page(int change);
 
 void switch_profile(unsigned int profileId);
 

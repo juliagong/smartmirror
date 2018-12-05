@@ -21,19 +21,19 @@ void test_draw_page(){
 
 void test_pages(){
     printf("Getting next page, should change\n");
-    get_next_page();
+    move_page(1);
     timer_delay(3);
 
     printf("Trying to go to next page again, should not changei\n");
-    get_next_page();
+    move_page(1);
     timer_delay(3);
 
     printf("Going back to first page, should changei\n");
-    get_prev_page();
+    move_page(-1);
     timer_delay(3);
 
     printf("Trying to go to previous page again, should not change\n");
-    get_prev_page();
+    move_page(-1);
     timer_delay(3);
 }
 

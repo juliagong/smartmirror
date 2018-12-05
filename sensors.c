@@ -4,6 +4,8 @@
 #include "printf.h"
 #include <stdbool.h>
 #include "timer.h"
+#include "gpioextra.h"
+#include "assert.h"
 
 // Motion Sensor
 #define MOTION_PIN GPIO_PIN26
@@ -13,10 +15,16 @@
 #define TIMEOUT_COUNT 255 // used to exit loop if timeout occurs while waiting for data 
 #define TEMP_PIN GPIO_PIN26
 
-static void init_temp_sensor() {
-    // TODO
-}
+// Rotary Encoder
+#define ROTARY_CLK GPIO_PIN17
+#define ROTARY_DT GPIO_PIN18
+#define ROTARY_SW GPIO_PIN19
 
+static volatile unsigned int prev_clk_val;
+static volatile int rotation;
+static volatile bool rotary_clicked;
+
+// Sensor Initialization
 static void init_motion_sensor() {
     gpio_set_input(MOTION_PIN);
 }
@@ -24,6 +32,22 @@ static void init_motion_sensor() {
 static void init_rtc_sensor() {
     // TODO
 }
+        
+static void init_rotary_encoder() {
+    gpio_set_input(ROTARY_CLK);
+    gpio_set_pullup(ROTARY_CLK);
+    
+    gpio_set_input(ROTARY_DT);
+    gpio_set_pullup(ROTARY_DT);
+
+    gpio_set_input(ROTARY_SW);
+    gpio_set_pullup(ROTARY_SW);
+
+    prev_clk_val = gpio_read(ROTARY_CLK);
+    rotation = 0;
+    rotary_clicked = false;
+}
+
 
 bool read_motion_data() {
     return gpio_read(MOTION_PIN) > 0;
@@ -62,7 +86,7 @@ bool read_temp_data(char* resultBuf, unsigned int bufLen) {
     timer_delay_ms(18);
     gpio_write(TEMP_PIN, 1);
     timer_delay_us(40);
-    gpio_set_input( TEMP_PIN);
+    gpio_set_input(TEMP_PIN);
 
     int last_state = 1; // rpi sets pin 1 then waits for DHT to set it 0
  
@@ -100,15 +124,75 @@ bool read_temp_data(char* resultBuf, unsigned int bufLen) {
     return false;
 }
 
+// read the amount of rotation and return
+int read_rotary_data() {
+    int current_rotation = (int)rotation / 2; // divide by 2 as every rotation seems to increment count by twice
+    rotation = 0;
+
+    return current_rotation;
+}
+
+// check if rotary has been clicked or not
+bool is_rotary_clicked(){
+   bool rotary_clicked_val = rotary_clicked;
+   rotary_clicked = false;
+
+   return rotary_clicked_val;
+}
+
+/*
+ * Interrupt handler for rotary
+ *
+ * We detect that there has been rotation by observing if value of ROTARY_CLK has changed or not
+ * We detect the direction of the motion as following:
+ *  - If ROTARY_CLK switched before ROTARY_DT, then we are turning counter-clockwise
+ *  - Otherwise, we are turning clockwise 
+ */
+static void rotary_interrupt(unsigned int pc) {
+    bool ok = gpio_check_event(ROTARY_CLK);
+    bool ok_sw = gpio_check_event(ROTARY_SW);
+    
+    if (ok) { 
+        unsigned int clk_val = gpio_read(ROTARY_CLK);
+      
+        if (clk_val != prev_clk_val) {
+            unsigned int dt_val = gpio_read(ROTARY_DT);
+            rotation += (clk_val == dt_val ? 1 : -1); 
+        
+            prev_clk_val = clk_val;
+        } 
+       
+        gpio_clear_event(ROTARY_CLK);
+    }
+
+    if (ok_sw) {
+        rotary_clicked = true;
+        gpio_clear_event(ROTARY_SW);
+    }
+}
+
+/*
+ * Initialize all the interrupts
+ */
+static void init_interrupts() {
+    gpio_enable_event_detection(ROTARY_CLK, GPIO_DETECT_FALLING_EDGE);
+    gpio_enable_event_detection(ROTARY_CLK, GPIO_DETECT_RISING_EDGE);
+    gpio_enable_event_detection(ROTARY_SW, GPIO_DETECT_FALLING_EDGE);
+
+    bool ok = interrupts_attach_handler(rotary_interrupt);
+    assert(ok);
+
+    interrupts_enable_source(INTERRUPTS_GPIO3);
+    interrupts_global_enable();
+}
+
 // initialize everything necessary for sensors
 void sensors_init(void) {
-    // TODO - setup gpio pins
-    
-    // TODO - setup interrupts
-
     gpio_init();
 
-    init_temp_sensor();
     init_motion_sensor();
     init_rtc_sensor();
+    init_rotary_encoder();
+
+    init_interrupts();
 }

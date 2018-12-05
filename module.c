@@ -1,6 +1,7 @@
 #include "module.h"
 #include "malloc.h"
 #include "printf.h"
+#include "sensors.h"
 
 #define NUM_SUPPORTED_MODULES 3
 #define COMPONENT_LEN 1024
@@ -82,8 +83,13 @@ module_content_t* get_module_content(unsigned int moduleId){
  * Proximity
  */
 static bool check_update_proximity(){
+    return true;
+
+    // TODO - use this for acutal code
+    /*
     bool isMotionDetected = read_motion_data();
     return isMotionDetected;
+    */
 }
 
 static bool update_info_proximity(){
@@ -146,6 +152,7 @@ static void time_module_init(){
     content->coordinates[0].y = 0;
     content->numComponents = 1;
 }
+
 
 /*
  * Helper functions

@@ -11,6 +11,7 @@ static void display() {
     while(1) {
         // show screen only if there is movement 
         if (check_module_update(SD_MODULE_PROXIMITY)) {
+            move_page(read_rotary_data());
             draw_page();
         } else {
             blank_screen();

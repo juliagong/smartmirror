@@ -9,6 +9,8 @@ static profile_t* current_profile; // keeps track of profile of current page
 static unsigned int current_profile_id;
 static unsigned int current_page;
 
+static unsigned int screen_width;
+static unsigned int screen_height;
 /**
  * Function: blank_screen
  *
@@ -19,14 +21,13 @@ void blank_screen() {
     gl_swap_buffer();
 }
 
-/*
-// TODO - change the hard coded values
 static void draw_page_number(){
-    char* buf[4];
-    vsnprintf(buf, 4, "-%d-", current_page);
-    gl_draw_string(300, 500, buf);
+    char buf[4];
+    snprintf(buf, 4, "-%d-", current_page);
+
+    // TODO - add base color in profile, use here 
+    gl_draw_string(screen_width / 2 - 50, screen_height - 30, buf, GL_WHITE);
 }
-*/
 
 /**
  * Function: draw_page
@@ -46,7 +47,8 @@ void draw_page() {
         draw_module(moduleIds[moduleInd], coordinates[moduleInd]);
     } 
 
-    //draw_page_number();
+
+    draw_page_number();
     
     gl_swap_buffer();
 }
@@ -86,22 +88,17 @@ void draw_module(unsigned int moduleId, coordinate_t coordinate) {
  *
  * Gets and displays the next page.
 **/
-void get_next_page() {
-    if (current_page < current_profile->numScreens - 1){
-        current_page += 1; 
-        draw_page(); 
-    } 
-}
+void move_page(int change) {
+    if (change == 0){
+        return;
+    }
 
-/**
- * Function: get_prev_page
- *
- * Gets and displays the previous page.
-**/
-void get_prev_page() {
-    if (current_page > 0){
-        current_page -= 1;
-        draw_page();
+    int newVal = current_page + change;
+    if (change > 0) {
+        int maxVal = current_profile->numScreens - 1; 
+        current_page = newVal >= maxVal ? maxVal : newVal;
+    } else {
+        current_page = newVal < 0 ? 0 : newVal;
     }
 }
 
@@ -111,6 +108,9 @@ void switch_profile(unsigned int profileId) {
 }
 
 void md_init(unsigned int width, unsigned int height) {
+    screen_width = width;
+    screen_height = height;
+    
     gl_init(width, height, GL_DOUBLEBUFFER);
     module_init();
     profile_init();

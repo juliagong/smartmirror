@@ -17,4 +17,8 @@ void sensors_init(void);
 bool read_temp_data(char* resultBuf, unsigned int bufLen);
 
 bool read_motion_data();
+
+int read_rotary_data();
+
+bool is_rotary_clicked();
 #endif 

@@ -1,6 +1,6 @@
 NAME = main
 SMART_DISPLAY = smart_display
-OBJECTS = module.o profile.o module_display.o sensors.o 
+OBJECTS = module.o profile.o module_display.o sensors.o
 HEADER_DIR = ./headers/ 
 
 CFLAGS  = -I$(CS107E)/include -I$(HEADER_DIR) -g -Wall -Wpointer-arith
@@ -39,6 +39,9 @@ testprofile: tests/test_profile.bin
 	rpi-install.py -p $<
 
 testdisplay: tests/test_module_display.bin
+	rpi-install.py -p $<
+
+testsensors: tests/test_sensors.bin
 	rpi-install.py -p $<
 
 smartdisplay: $(SMART_DISPLAY).bin
