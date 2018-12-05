@@ -4,7 +4,7 @@ OBJECTS = module.o profile.o module_display.o sensors.o custom_font_draw.o
 HEADER_DIR = ./headers/ 
 
 CFLAGS  = -I$(CS107E)/include -I$(HEADER_DIR) -g -Wall -Wpointer-arith
-CFLAGS += -Og -std=c99 -ffreestanding
+CFLAGS += -O1 -std=c99 -ffreestanding
 CFLAGS += -mapcs-frame -fno-omit-frame-pointer -mpoke-function-name
 LDFLAGS = -nostdlib -T memmap -L. -L$(CS107E)/lib
 LDLIBS  = -lmypi -lpi -lgcc

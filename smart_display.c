@@ -4,8 +4,8 @@
 #include "profile.h"
 #include "timer.h"
 
-#define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 480
+#define SCREEN_WIDTH 1280
+#define SCREEN_HEIGHT 720
 
 static void display() {
     while(1) {
@@ -17,7 +17,7 @@ static void display() {
             blank_screen();
         }
 
-        timer_delay(1);
+        // timer_delay(1);
     }
 }
 
