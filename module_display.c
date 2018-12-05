@@ -4,6 +4,7 @@
 #include "module_display.h"
 #include "sensors.h"
 #include "printf.h"
+#include "custom_font_draw.h"
 
 static profile_t* current_profile; // keeps track of profile of current page
 static unsigned int current_profile_id;
@@ -79,7 +80,7 @@ void draw_module(unsigned int moduleId, coordinate_t coordinate) {
         unsigned int compX = componentCoords[componentId].x + coordinate.x;
         unsigned int compY = componentCoords[componentId].y + coordinate.y;
 
-        gl_draw_string(compX, compY, components[componentId], moduleColor);
+        gl_draw_string_with_size(compX, compY, components[componentId], moduleColor, 2);
     }
 }
 

@@ -14,7 +14,7 @@ void gl_draw_char_with_size(int x, int y, int ch, color_t c, int scale)
     unsigned char buf[font_size];
     if (font_get_char(ch, buf, font_size)) {
         for (int i = 0; i < char_height; i++) {
-            for (int j = 0; j < char_width); j++) {
+            for (int j = 0; j < char_width; j++) {
                 if (buf[i * gl_get_char_width() + j] == (unsigned char) FOREGROUND_PIXEL) {
 		    for (int k = 0; k < scale; k++) {
 			for (int l = 0; l < scale; l++) {

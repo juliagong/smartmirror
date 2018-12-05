@@ -1,5 +1,5 @@
-#ifndef GL_H
-#define GL_H
+#ifndef FONTDRAW_H
+#define FONTDRAW_H
 
 /* Draw single character at location x,y in color c with specified font size,
  * where `scale` is the number of times larger than the default size.
