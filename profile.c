@@ -27,7 +27,7 @@ profile_t* get_profile(unsigned int profileId){
 }
 
 module_config_t* get_module_config(unsigned int profileId, unsigned int moduleId) {
-    unsigned int numModules = 2;
+    unsigned int numModules = 4;
     module_config_t* cur = profiles[profileId].moduleConfig;
 
     for (int i = 0; i < numModules; i++){
@@ -41,11 +41,20 @@ module_config_t* get_module_config(unsigned int profileId, unsigned int moduleId
 }
 
 static void create_default_profile() {
+    unsigned int numAllModules = 5;
     unsigned int numModules = 2;
     
-    module_config_t* defaultModuleConfig = malloc(sizeof(module_config_t) * numModules);
-    defaultModuleConfig[0] = (module_config_t){.moduleId = SD_MODULE_TEMPERATURE, .moduleColor = GL_WHITE};
-    defaultModuleConfig[1] = (module_config_t){.moduleId = SD_MODULE_TIME, .moduleColor = GL_WHITE};
+    module_config_t* defaultModuleConfig = malloc(sizeof(module_config_t) * numAllModules);
+    defaultModuleConfig[0] = (module_config_t){.moduleId = SD_MODULE_PROXIMITY, .moduleSettingId = 0, 
+        .moduleSubsettingId = 0, .moduleColor = GL_WHITE};
+    defaultModuleConfig[1] = (module_config_t){.moduleId = SD_MODULE_TEMPERATURE, .moduleSettingId = 0, 
+        .moduleSubsettingId = 0, .moduleColor = GL_WHITE};
+    defaultModuleConfig[2] = (module_config_t){.moduleId = SD_MODULE_TIME, .moduleSettingId = 0, 
+        .moduleSubsettingId = 0, .moduleColor = GL_WHITE};
+    defaultModuleConfig[3] = (module_config_t){.moduleId = SD_MODULE_WEATHER, .moduleSettingId = 0, 
+        .moduleSubsettingId = 0, .moduleColor = GL_WHITE};
+    defaultModuleConfig[4] = (module_config_t){.moduleId = SD_MODULE_HEADLINE, .moduleSettingId = 0, 
+        .moduleSubsettingId = 0, .moduleColor = GL_WHITE};
 
     page_config_t* defaultPageConfig = malloc(sizeof(page_config_t) * 2);
     defaultPageConfig[0] = (page_config_t){.pageId = 0, .moduleIds = default_module_ids, 

@@ -27,7 +27,7 @@ typedef struct{
     unsigned int moduleId;
     char* name;
     bool (*check_update)();
-    bool (*update_info)();
+    bool (*update_info)(unsigned int settingId, unsigned int subSettingId);
 } module_t;
 
 typedef struct{
@@ -51,7 +51,7 @@ bool check_module_update(unsigned int moduleId);
  * Returns true if successfully updated and false otherwise
  * If given module id is invalid return false
  */
-bool update_module_info(unsigned int moduleId);
+bool update_module_info(unsigned int moduleId, unsigned int settingId, unsigned int subSettingId);
 
 /*
  * Get content of module
@@ -62,7 +62,9 @@ module_content_t* get_module_content(unsigned int moduleId);
 enum modules{
     SD_MODULE_PROXIMITY,
     SD_MODULE_TEMPERATURE,
-    SD_MODULE_TIME
+    SD_MODULE_TIME,
+    SD_MODULE_WEATHER,
+    SD_MODULE_HEADLINE
 };
 
 

@@ -18,6 +18,8 @@ static const int DEFAULT_PROFILE_ID = 0;
 
 typedef struct{
     unsigned int moduleId;
+    unsigned int moduleSettingId;
+    unsigned int moduleSubsettingId;
     color_t moduleColor;
 } module_config_t;
 

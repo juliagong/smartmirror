@@ -18,6 +18,8 @@ void draw_module(unsigned int moduleId, coordinate_t coordinate);
 
 void move_page(int change);
 
+void open_settings();
+
 void switch_profile(unsigned int profileId);
 
 #endif

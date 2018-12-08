@@ -59,12 +59,12 @@ bool check_module_update(unsigned int moduleId){
     return modules[moduleId].check_update();
 }
 
-bool update_module_info(unsigned int moduleId){
+bool update_module_info(unsigned int moduleId, unsigned int settingId, unsigned int subSettingId){
     if (!is_valid_module(moduleId)){
         return false;
     }
 
-    return modules[moduleId].update_info();
+    return modules[moduleId].update_info(settingId, subSettingId);
 }
 
 module_content_t* get_module_content(unsigned int moduleId){
@@ -89,7 +89,7 @@ static bool check_update_proximity(){
     return isMotionDetected;
 }
 
-static bool update_info_proximity(){
+static bool update_info_proximity(unsigned int settingId, unsigned int subSettingId){
     // TODO
     return false;
 }
@@ -111,7 +111,7 @@ static bool check_update_temperature(){
     return true;
 }
 
-static bool update_info_temperature(){
+static bool update_info_temperature(unsigned int settingId, unsigned int subSettingId){
     module_content_t* content = &module_contents[SD_MODULE_TEMPERATURE];
     
     bool result = read_temp_data(content->components[0], COMPONENT_LEN);
@@ -136,7 +136,7 @@ static bool check_update_time(){
     // TODO
     return false;
 }
-static bool update_info_time(){
+static bool update_info_time(unsigned int settingId, unsigned int subSettingId){
     // TODO
     return false;
 }

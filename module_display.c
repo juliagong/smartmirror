@@ -5,6 +5,7 @@
 #include "sensors.h"
 #include "printf.h"
 #include "custom_font_draw.h"
+#include "settings.h"
 
 static profile_t* current_profile; // keeps track of profile of current page
 static unsigned int current_profile_id;
@@ -60,10 +61,14 @@ void draw_page() {
  * Gets module content and setting and draws module on screen.
 **/
 void draw_module(unsigned int moduleId, coordinate_t coordinate) {
+    // get module setting
+    module_config_t* moduleConfig = get_module_config(current_profile_id, moduleId);
+    color_t moduleColor = moduleConfig->moduleColor;
+    
     // get latest module information if needed
     // TODO - we might not need this
     if(check_module_update(moduleId)){
-        update_module_info(moduleId);
+        update_module_info(moduleId, moduleConfig->moduleSettingId, moduleConfig->moduleSubsettingId);
     } 
   
     // get module content
@@ -72,9 +77,7 @@ void draw_module(unsigned int moduleId, coordinate_t coordinate) {
     char** components = content->components;
     coordinate_t* componentCoords = content->coordinates;
 
-    // get module setting
-    module_config_t* moduleConfig = get_module_config(current_profile_id, moduleId);
-    color_t moduleColor = moduleConfig->moduleColor;
+
 
     for (unsigned int componentId = 0; componentId < numComponents; componentId ++){
         unsigned int compX = componentCoords[componentId].x + coordinate.x;
@@ -101,6 +104,10 @@ void move_page(int change) {
     } else {
         current_page = newVal < 0 ? 0 : newVal;
     }
+}
+
+void open_settings(){
+    get_settings_page(current_profile->moduleConfig);    
 }
 
 void switch_profile(unsigned int profileId) {

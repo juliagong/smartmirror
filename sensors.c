@@ -50,7 +50,9 @@ static void init_rotary_encoder() {
 
 
 bool read_motion_data() {
-    return gpio_read(MOTION_PIN) > 0;
+    return true;
+    // TODO - uncomment this to do it actually
+    //return gpio_read(MOTION_PIN) > 0;
 }
 
 /**
