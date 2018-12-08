@@ -1,6 +1,6 @@
 NAME = main
 SMART_DISPLAY = smart_display
-OBJECTS = module.o profile.o module_display.o sensors.o custom_font_draw.o settings.o output_formatter.o
+OBJECTS = custom_font_draw.o font.o module.o module_display.o output_formatter.o profile.o sensors.o settings.o
 HEADER_DIR = ./headers/ 
 
 CFLAGS  = -I$(CS107E)/include -I$(HEADER_DIR) -g -Wall -Wpointer-arith
