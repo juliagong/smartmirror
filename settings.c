@@ -23,7 +23,8 @@ static const setting_options_t setting_options[] = {
     {SETTING_LEVEL_TIME, TIME_SETTINGS_STRING, TIME_SETTINGS_COUNT},
     {SETTING_LEVEL_TEMPERATURE, TEMPERATURE_SETTINGS_STRING, TEMPERATURE_SETTINGS_COUNT},
     {SETTING_LEVEL_WEATHER, WEATHER_SETTINGS_STRING, WEATHER_SETTINGS_COUNT},
-    {SETTING_LEVEL_HEADLINE, HEADLINE_SETTINGS_STRING, HEADLINE_SETTINGS_COUNT}
+    {SETTING_LEVEL_HEADLINE, HEADLINE_SETTINGS_STRING, HEADLINE_SETTINGS_COUNT},
+    {SETTING_LEVEL_THEME, THEME_SETTINGS_BLOCKS, THEME_SETTINGS_COUNT}
 };
 
 /*
@@ -97,7 +98,7 @@ void display_settings(cursor_t* cursor) {
 
             gl_draw_string_with_size(200 + TEXT_MARGIN, y + TEXT_MARGIN, str, c, 2);
 
-        } else{ // return
+        } else { // return
             gl_draw_string_with_size(200 + TEXT_MARGIN, y + TEXT_MARGIN, (char*)RETURN_STRING, GL_RED, 2);
         }
     }
@@ -110,7 +111,7 @@ void display_settings(cursor_t* cursor) {
  * Moves current cursor to the specified direction
  * Returns true if cursor has changed position, and false otherwise
  */
-bool move_cursor(cursor_t* cursor, int direction){
+bool move_cursor(cursor_t* cursor, int direction) {
     if (direction == 0){
         return false;
     }
@@ -119,11 +120,11 @@ bool move_cursor(cursor_t* cursor, int direction){
     unsigned int numOptions = settingOption.numOptions;
     unsigned int curPos = cursor->curPos;
 
-    if (direction > 0 && curPos == numOptions){
+    if (direction > 0 && curPos == numOptions) {
         cursor->curPos = 0;
-    } else if (direction < 0 && curPos == 0){
+    } else if (direction < 0 && curPos == 0) {
         cursor->curPos = numOptions;
-    } else{
+    } else {
         cursor->curPos = (direction > 0 ? curPos + 1 : curPos - 1);
     }
 
@@ -133,7 +134,7 @@ bool move_cursor(cursor_t* cursor, int direction){
 /*
  * Return the configuration for the module that corresponds to the setting page of cursor
  */
-static module_config_t* get_module_config_at_cursor(cursor_t* cursor){
+static module_config_t* get_module_config_at_cursor(cursor_t* cursor) {
     module_config_t* moduleConfig = (module_config_t*)0;
 
     switch(cursor->settingLevel){
@@ -150,6 +151,9 @@ static module_config_t* get_module_config_at_cursor(cursor_t* cursor){
         case SETTING_LEVEL_HEADLINE:
             moduleConfig = &settings[SD_MODULE_HEADLINE];
             break;
+	case SETTING_LEVEL_THEME:
+	    moduleConfig = &settings[SD_MODULE_THEME];
+	    break;
         default:
             break;
     }
@@ -260,3 +264,10 @@ const char *HEADLINE_SETTINGS_STRING[] = {
     "TODO-Headline Option 2"
 };
 
+const char *THEME_SETTINGS_BLOCKS[] = {
+    "TODO-Theme Option 1",
+    "TODO-Theme Option 2",
+    "TODO-Theme Option 3",
+    "TODO-Theme Option 4",
+    "TODO-Theme option 5"
+};

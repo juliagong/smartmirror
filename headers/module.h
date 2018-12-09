@@ -11,7 +11,7 @@
  *
  */
 
-static const int MAX_COMPONENTS = 5;
+static const int MAX_COMPONENTS = 6;
 
 typedef struct{
     unsigned int x;
@@ -59,12 +59,13 @@ bool update_module_info(unsigned int moduleId, unsigned int settingId, unsigned 
  */
 module_content_t* get_module_content(unsigned int moduleId);
 
-enum modules{
+enum modules {
     SD_MODULE_PROXIMITY,
     SD_MODULE_TEMPERATURE,
     SD_MODULE_DATETIME,
     SD_MODULE_WEATHER,
-    SD_MODULE_HEADLINE
+    SD_MODULE_HEADLINE,
+    SD_MODULE_THEME
 };
 
 

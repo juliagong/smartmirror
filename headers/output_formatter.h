@@ -1,7 +1,7 @@
 #ifndef FORMATTER_H
 #define FORMATTER_H
 
-enum datetime_data{
+enum datetime_data {
     DATETIME_DOW = 0,
     DATETIME_MONTH_NAME = 1,
     DATETIME_MONTH = 2,

@@ -29,12 +29,12 @@ static const module_t modules[] = {
     {SD_MODULE_DATETIME, "DateTime", check_update_datetime, update_info_datetime}
 };
 
-void module_init(){
+void module_init() {
     module_contents = malloc(sizeof(module_content_t*) * NUM_SUPPORTED_MODULES); 
     // initialize the module content array
-    for (int moduleInd = 0; moduleInd < NUM_SUPPORTED_MODULES; moduleInd++){
+    for (int moduleInd = 0; moduleInd < NUM_SUPPORTED_MODULES; moduleInd++) {
         char** components = malloc(sizeof(char*) * MAX_COMPONENTS);
-        for (int componentInd = 0; componentInd < MAX_COMPONENTS; componentInd++){
+        for (int componentInd = 0; componentInd < MAX_COMPONENTS; componentInd++) {
             components[componentInd] = malloc(sizeof(char) * COMPONENT_LEN);
         }
         coordinate_t* coordinates = malloc(sizeof(coordinate_t) * MAX_COMPONENTS);
