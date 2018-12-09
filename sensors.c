@@ -146,7 +146,7 @@ int read_rotary_data() {
 }
 
 // check if rotary has been clicked or not
-bool is_rotary_clicked(){
+bool is_rotary_clicked() {
    bool rotary_clicked_val = rotary_clicked;
    rotary_clicked = false;
 
@@ -154,7 +154,7 @@ bool is_rotary_clicked(){
 }
 
 // reset rotary click action
-void reset_rotary_click(){
+void reset_rotary_click() {
     rotary_clicked = false;
 }
 

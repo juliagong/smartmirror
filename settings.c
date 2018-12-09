@@ -29,7 +29,7 @@ static const setting_options_t setting_options[] = {
 /*
  * Display settings page
  */
-void get_settings_page(module_config_t* profileSettings){
+void get_settings_page(module_config_t* profileSettings) {
     settings = profileSettings;
 
     cursor_t* cursor = &(cursor_t){.settingLevel = SETTING_LEVEL_MAIN, .selectedOption = 0, .curPos = 0}; 
@@ -37,14 +37,14 @@ void get_settings_page(module_config_t* profileSettings){
     display_settings(cursor);
     unsigned int offset;
 
-    while(1){
+    while(1) {
         offset = read_rotary_data();
         drawScreen = move_cursor(cursor, offset);
 
         // We check for click only if shift is 0 to process action one at a time
-        if (!drawScreen && is_rotary_clicked()){
+        if (!drawScreen && is_rotary_clicked()) {
             bool shouldExit = select_option(cursor);
-            if (shouldExit){
+            if (shouldExit) {
                 break;
             }
             drawScreen = true;
@@ -63,7 +63,7 @@ void get_settings_page(module_config_t* profileSettings){
  * Show current options of setting level
  * Determine which is the current option
  */
-void display_settings(cursor_t* cursor){ 
+void display_settings(cursor_t* cursor) {
     gl_clear(GL_BLACK);
 
     int settingLevel = cursor->settingLevel;
@@ -82,16 +82,16 @@ void display_settings(cursor_t* cursor){
     color_t c = GL_WHITE;
 
     // draw options
-    for (int i = 0; i <= numOptions; i++){
+    for (int i = 0; i <= numOptions; i++) {
         unsigned int y = 200 + i * (RECT_HEIGHT + MARGIN);
         char* str = (char*) (i < numOptions ? options[i] : RETURN_STRING);
 
-        if (i == curPos){
+        if (i == curPos) {
             unsigned int rectWidth = (strlen(str) + 2) * CHAR_WIDTH;
             gl_draw_empty_rect(200, y, rectWidth, RECT_HEIGHT, GL_WHITE, 3 /* linewidth */); 
         }
 
-        if (i < numOptions){
+        if (i < numOptions) {
             // unless we are in main menu, show the current selected option in green
             c = (settingLevel != SETTING_LEVEL_MAIN && i == selectedOption) ? GL_GREEN : GL_WHITE;
 
