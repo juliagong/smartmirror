@@ -48,6 +48,7 @@ void get_settings_page(module_config_t* profileSettings){
                 break;
             }
             drawScreen = true;
+            reset_rotary_click();
         }
 
         if (drawScreen) {
@@ -73,7 +74,7 @@ void display_settings(cursor_t* cursor){
     
     const char** options = settingOption.options; 
     unsigned int numOptions = settingOption.numOptions;
-    const char* title = (settingLevel == SETTING_LEVEL_MAIN) ? "Settings" : MAIN_SETTINGS_STRING[settingLevel];
+    const char* title = (settingLevel == SETTING_LEVEL_MAIN) ? "Settings" : MAIN_SETTINGS_STRING[settingLevel - 1];
 
     // draw title
     gl_draw_string_with_size(200, 50, (char*)title, GL_WHITE, 3);
@@ -118,12 +119,14 @@ bool move_cursor(cursor_t* cursor, int direction){
     unsigned int numOptions = settingOption.numOptions;
     unsigned int curPos = cursor->curPos;
 
-
-    if ((direction > 0 && curPos == numOptions) || (direction < 0 && curPos == 0)) {
-        return false;
+    if (direction > 0 && curPos == numOptions){
+        cursor->curPos = 0;
+    } else if (direction < 0 && curPos == 0){
+        cursor->curPos = numOptions;
+    } else{
+        cursor->curPos = (direction > 0 ? curPos + 1 : curPos - 1);
     }
 
-    cursor->curPos = (direction > 0 ? curPos + 1 : curPos - 1);
     return true;
 }
 
@@ -136,7 +139,7 @@ static module_config_t* get_module_config_at_cursor(cursor_t* cursor){
     switch(cursor->settingLevel){
         case SETTING_LEVEL_DATE:
         case SETTING_LEVEL_TIME:
-            moduleConfig = &settings[SD_MODULE_TIME];
+            moduleConfig = &settings[SD_MODULE_DATETIME];
             break;
         case SETTING_LEVEL_TEMPERATURE:
             moduleConfig = &settings[SD_MODULE_TEMPERATURE];
@@ -161,6 +164,7 @@ static module_config_t* get_module_config_at_cursor(cursor_t* cursor){
 static int get_current_option(cursor_t* cursor){
     module_config_t* moduleConfig = get_module_config_at_cursor(cursor);
 
+    printf("[in get current option]Current setting Level : %d\n", cursor->settingLevel);
     if (cursor->settingLevel == SETTING_LEVEL_TIME){
         return moduleConfig->moduleSubsettingId;
     }
@@ -200,6 +204,7 @@ bool select_option(cursor_t* cursor){
 
     // If we are on main level, we have to descend into lower level
     if (cursor->settingLevel == SETTING_LEVEL_MAIN) {
+        printf("settingLevel: %d, curPos: %d\n", cursor->settingLevel, cursor->curPos);
         cursor->settingLevel = cursor->curPos + 1; // +1 for the offset from index to setting level
         cursor->selectedOption = get_current_option(cursor);
         cursor->curPos = 0;

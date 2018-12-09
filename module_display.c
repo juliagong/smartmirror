@@ -77,8 +77,6 @@ void draw_module(unsigned int moduleId, coordinate_t coordinate) {
     char** components = content->components;
     coordinate_t* componentCoords = content->coordinates;
 
-
-
     for (unsigned int componentId = 0; componentId < numComponents; componentId ++){
         unsigned int compX = componentCoords[componentId].x + coordinate.x;
         unsigned int compY = componentCoords[componentId].y + coordinate.y;

@@ -46,7 +46,7 @@ extern const char *TIME_SETTINGS_STRING[];
 
 enum date_settings{
     SETTING_DATE_1, /* 1/31/2019 */
-    SETTING_DATE_2 /* Jan 31, 2019*/
+    SETTING_DATE_2  /* Jan 31, 2019 */
 };
 
 #define DATE_SETTINGS_COUNT 2

@@ -9,8 +9,11 @@
 #include "malloc.h"
 #include "strings.h"
 #include "uart.h"
+#include "output_formatter.h"
 
+// TODO - remove this
 #include "gl.h"
+
 
 // Motion Sensor
 #define MOTION_PIN GPIO_PIN19
@@ -24,6 +27,9 @@
 #define ROTARY_CLK GPIO_PIN16
 #define ROTARY_DT GPIO_PIN20
 #define ROTARY_SW GPIO_PIN21
+
+// Time 
+#define TIME_BUF_LEN 71
 
 static volatile unsigned int prev_clk_val;
 static volatile int rotation;
@@ -147,6 +153,11 @@ bool is_rotary_clicked(){
    return rotary_clicked_val;
 }
 
+// reset rotary click action
+void reset_rotary_click(){
+    rotary_clicked = false;
+}
+
 /*
  * Interrupt handler for rotary
  *
@@ -204,12 +215,15 @@ void sensors_init(void) {
     init_interrupts();
 }
 
-d
 
 /*
  Returns the number of chars written to buf
 */
 static int uart_getline(char *buf, int bufsize) {
+    if (!uart_haschar()){
+        return 0;
+    }
+
     char c = uart_getchar(); 
     int index = 0; 
     
@@ -258,7 +272,7 @@ static int tokenize(const char *line, char *arr[], int max) {
         const char *start = line;
         while (*line != '\0' && !isspace(*line)) line++; // advance to next space/null
         if (*start == '*') {
-            int nchars = line - start;      
+            int nchars = line - start - 1;      
             arr[ntokens] = strndup(start+1, nchars);   // make heap-copy, add to array 
             ntokens++; 
         }
@@ -271,25 +285,31 @@ static int tokenize(const char *line, char *arr[], int max) {
 date_time[] array holds 7 pieces of information:
     Day of the Week
     Month Name
+    Month
     Day Number
     Year Number
     HH
     MM
     SS
 */
-int read_date_time() {
-    char *line = (char *)malloc (71);
-    int len = uart_getline(line, 71);
+
+int read_date_time(char** resultBuf, unsigned int bufLen, unsigned int settingId, unsigned int subsettingId) {
+    char *line = (char *)malloc (TIME_BUF_LEN);
+  
+    int len = uart_getline(line, TIME_BUF_LEN);
     if (len == 0) return 0;
-    
+
     // Tokenize
     char *date_time[7]; 
     int ntokens = tokenize(line, date_time, len); 
 
-    // Print to display for testing purposes
-    int height = gl_get_char_height();  
-    for (int i = 0; i < ntokens; i++) {
-        gl_draw_string(5, 5 + height * i, date_time[i], GL_GREEN);
+    if (ntokens > 0){
+        // Format date and time data according to our defined settings
+        format_date_data(resultBuf[0], bufLen, date_time, settingId);
+        format_time_data(resultBuf[1], bufLen, date_time, subsettingId);
+    } else {
+        snprintf(resultBuf[0], bufLen, "Connection failed");
+        snprintf(resultBuf[1], bufLen, "Connection failed");
     }
 
     // Free array
