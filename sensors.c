@@ -204,7 +204,6 @@ void sensors_init(void) {
     init_interrupts();
 }
 
-d
 
 /*
  Returns the number of chars written to buf
