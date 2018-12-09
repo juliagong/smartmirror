@@ -2,6 +2,7 @@
 #include "malloc.h"
 #include "printf.h"
 #include "sensors.h"
+#include "output_formatter.h"
 
 #define NUM_SUPPORTED_MODULES 3
 #define COMPONENT_LEN 1024
@@ -13,8 +14,8 @@ static void proximity_module_init();
 static bool check_update_temperature();
 static bool update_info_temperature();
 static void temperature_module_init();
-static bool check_update_time();
-static bool update_info_time();
+static bool check_update_datetime();
+static bool update_info_datetime();
 static void time_module_init();
 
 static module_content_t* module_contents;
@@ -25,7 +26,7 @@ static module_content_t* module_contents;
 static const module_t modules[] = {
     {SD_MODULE_PROXIMITY, "Proximity", check_update_proximity, update_info_proximity},
     {SD_MODULE_TEMPERATURE, "Temperature", check_update_temperature, update_info_temperature},
-    {SD_MODULE_TIME, "Time", check_update_time, update_info_time}
+    {SD_MODULE_DATETIME, "DateTime", check_update_datetime, update_info_datetime}
 };
 
 void module_init(){
@@ -132,22 +133,29 @@ static void temperature_module_init(){
  * Time
  */
 
-static bool check_update_time(){
-    // TODO
-    return false;
+static bool check_update_datetime(){
+    return true;
 }
-static bool update_info_time(unsigned int settingId, unsigned int subSettingId){
-    // TODO
-    return false;
+
+static bool update_info_datetime(unsigned int settingId, unsigned int subSettingId){
+    module_content_t* content = &module_contents[SD_MODULE_DATETIME];
+    
+    int isRead = read_date_time(content->components, COMPONENT_LEN, settingId, subSettingId);
+    
+    return isRead > 0;
 }
 
 static void time_module_init(){
-    module_content_t* content = &module_contents[SD_MODULE_TIME];
+    module_content_t* content = &module_contents[SD_MODULE_DATETIME];
     
-    snprintf(content->components[0], COMPONENT_LEN, "Time Module");
+    snprintf(content->components[0], COMPONENT_LEN, "Time Module(DATE)");
     content->coordinates[0].x = 0;
     content->coordinates[0].y = 0;
-    content->numComponents = 1;
+    
+    snprintf(content->components[1], COMPONENT_LEN, "Time Module(TIME)");
+    content->coordinates[1].x = 0;
+    content->coordinates[1].y = 40;
+    content->numComponents = 2;
 }
 
 

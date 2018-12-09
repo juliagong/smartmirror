@@ -62,7 +62,7 @@ module_content_t* get_module_content(unsigned int moduleId);
 enum modules{
     SD_MODULE_PROXIMITY,
     SD_MODULE_TEMPERATURE,
-    SD_MODULE_TIME,
+    SD_MODULE_DATETIME,
     SD_MODULE_WEATHER,
     SD_MODULE_HEADLINE
 };

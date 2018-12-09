@@ -6,7 +6,7 @@
 
 #define NUM_PROFILES 1
 
-unsigned int default_module_ids[] = { SD_MODULE_TEMPERATURE, SD_MODULE_TIME };
+unsigned int default_module_ids[] = { SD_MODULE_TEMPERATURE, SD_MODULE_DATETIME };
 coordinate_t default_coordinates[] = {
        {.x = 0, .y = 0},
        {.x = 0, .y = 100}
@@ -49,7 +49,7 @@ static void create_default_profile() {
         .moduleSubsettingId = 0, .moduleColor = GL_WHITE};
     defaultModuleConfig[1] = (module_config_t){.moduleId = SD_MODULE_TEMPERATURE, .moduleSettingId = 0, 
         .moduleSubsettingId = 0, .moduleColor = GL_WHITE};
-    defaultModuleConfig[2] = (module_config_t){.moduleId = SD_MODULE_TIME, .moduleSettingId = 0, 
+    defaultModuleConfig[2] = (module_config_t){.moduleId = SD_MODULE_DATETIME, .moduleSettingId = 0, 
         .moduleSubsettingId = 0, .moduleColor = GL_WHITE};
     defaultModuleConfig[3] = (module_config_t){.moduleId = SD_MODULE_WEATHER, .moduleSettingId = 0, 
         .moduleSubsettingId = 0, .moduleColor = GL_WHITE};

@@ -14,6 +14,7 @@ static void display() {
         if (check_module_update(SD_MODULE_PROXIMITY)) {
             if (is_rotary_clicked()){
                 open_settings(); // blocking action
+                reset_rotary_click();
             }
             
             move_page(read_rotary_data());
