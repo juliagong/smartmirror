@@ -80,7 +80,7 @@ enum headline_settings {
 extern const char *HEADLINE_SETTINGS_STRING[];
 
 #define THEME_SETTINGS_COUNT 5
-extern const char *THEME_SETTINGS_BLOCKS[];
+extern const char *THEME_SETTINGS_STRING[];
 
 enum theme_settings {
     SETTING_THEME_1,
