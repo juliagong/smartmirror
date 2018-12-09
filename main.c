@@ -54,7 +54,7 @@
 
 
 
- int read_date_time();
+int read_date_time();
 
 void main(void)
 {
