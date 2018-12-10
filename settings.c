@@ -284,9 +284,9 @@ const char *HEADLINE_SETTINGS_STRING[] = {
 const char *THEME_SETTINGS_STRING[] = {
     "Classic Binary",
     "Midnight Office Hours",
-    "Royal Hacker Hex",
+    "Royal Hacker's Hex",
     "Sunset Soiree in C",
-    "Ponderous Pleasantree"
+    "Plantiful Pleasantree"
 };
 
 /*
@@ -297,10 +297,25 @@ const char *THEME_SETTINGS_STRING[] = {
 #define VIBRANT_BLUE 0xFF6FD2F9
 #define BAMBI_BROWN 0xFFD88D6A
 
+#define ROYAL_PURPLE 0xFF430272
+#define GOLD 0xFFFFD65E
+#define PALE_GREEN 0xFFD5EFB6
+#define LIGHT_MAGENTA 0xFFF0BCFF
+
+#define CRANBERRY 0xFF8C0237
+#define MUTED_LEMON 0xFFF9F089
+#define ORANGE_ZEST 0xFFFFD884
+#define RED_SALMON 0xFFFF8B60
+
+#define FOREST_GREEN 0xFF083004
+#define PEACH 0xFFFFE1C1
+#define LIME_GREEN 0xFFE3FCBD
+#define HICKORY_TAN 0xFFC49D79
+
 unsigned int COLOR_SCHEMES[5][4] = {
     { GL_BLACK, GL_WHITE, GL_GREEN, GL_RED },
     { MIDNIGHT_BLUE, SAND_YELLOW, VIBRANT_BLUE, BAMBI_BROWN },
-    { GL_BLACK, GL_WHITE, GL_GREEN, GL_RED },
-    { GL_BLACK, GL_WHITE, GL_GREEN, GL_RED },
-    { GL_BLACK, GL_WHITE, GL_GREEN, GL_RED },
+    { ROYAL_PURPLE, GOLD, PALE_GREEN, LIGHT_MAGENTA },
+    { CRANBERRY, MUTED_LEMON, ORANGE_ZEST, RED_SALMON },
+    { FOREST_GREEN, LIME_GREEN, PEACH, HICKORY_TAN },
 };

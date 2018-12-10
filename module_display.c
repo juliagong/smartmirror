@@ -22,7 +22,6 @@ static unsigned int screen_height;
 **/
 void blank_screen() {
     int current_theme_index = get_current_theme_index();
-    current_theme_index = 1;
     unsigned int bg_color = *(COLOR_SCHEMES[current_theme_index]);
     gl_clear(bg_color);
     //gl_clear(GL_BLACK);
@@ -36,7 +35,6 @@ static void draw_page_number() {
     // TODO - add base color in profile, use here 
     //gl_draw_string(screen_width / 2 - 50, screen_height - 30, buf, GL_WHITE);
     int current_theme_index = get_current_theme_index();
-    current_theme_index = 1;
     unsigned int text_color = *(COLOR_SCHEMES[current_theme_index + 1]);
     gl_draw_string(screen_width / 2 - 50, screen_height - 30, buf, text_color);
 }
@@ -49,7 +47,6 @@ static void draw_page_number() {
 void draw_page() {
     //gl_clear(GL_BLACK);
     int current_theme_index = get_current_theme_index();
-    current_theme_index = 1;
     unsigned int bg_color = *(COLOR_SCHEMES[current_theme_index]);
     gl_clear(bg_color);
 
