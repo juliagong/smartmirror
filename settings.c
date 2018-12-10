@@ -232,7 +232,8 @@ const char *MAIN_SETTINGS_STRING[] = {
     "Time",
     "Temperature",
     "Weather",
-    "Headline"
+    "Headline",
+    "Customize Theme"
 };
 
 const char *TIME_SETTINGS_STRING[] = {
@@ -265,9 +266,9 @@ const char *HEADLINE_SETTINGS_STRING[] = {
 };
 
 const char *THEME_SETTINGS_STRING[] = {
-    "TODO-Theme Option 1",
-    "TODO-Theme Option 2",
-    "TODO-Theme Option 3",
-    "TODO-Theme Option 4",
-    "TODO-Theme option 5"
+    "Classic Binary",
+    "Midnight Office Hours",
+    "Royal Hacker Hex",
+    "Sunset Soiree in C",
+    "Ponderous Pleasantree"
 };

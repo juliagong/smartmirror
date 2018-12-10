@@ -33,7 +33,7 @@ enum main_settings {
     SETTING_THEME = 5
 };
 
-#define MAIN_SETTINGS_COUNT 5
+#define MAIN_SETTINGS_COUNT 6
 extern const char *MAIN_SETTINGS_STRING[];
 
 enum time_settings {
