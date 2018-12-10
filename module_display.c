@@ -6,6 +6,7 @@
 #include "printf.h"
 #include "custom_font_draw.h"
 #include "settings.h"
+#include "setting_values.h"
 
 static profile_t* current_profile; // keeps track of profile of current page
 static unsigned int current_profile_id;
@@ -20,7 +21,11 @@ static unsigned int screen_height;
  * Draws a blank black screen for the "off" mode of the mirror.
 **/
 void blank_screen() {
-    gl_clear(GL_BLACK);
+    int current_theme_index = get_current_theme_index();
+    current_theme_index = 1;
+    unsigned int bg_color = *(COLOR_SCHEMES[current_theme_index]);
+    gl_clear(bg_color);
+    //gl_clear(GL_BLACK);
     gl_swap_buffer();
 }
 
@@ -29,7 +34,11 @@ static void draw_page_number() {
     snprintf(buf, 4, "-%d-", current_page);
 
     // TODO - add base color in profile, use here 
-    gl_draw_string(screen_width / 2 - 50, screen_height - 30, buf, GL_WHITE);
+    //gl_draw_string(screen_width / 2 - 50, screen_height - 30, buf, GL_WHITE);
+    int current_theme_index = get_current_theme_index();
+    current_theme_index = 1;
+    unsigned int text_color = *(COLOR_SCHEMES[current_theme_index + 1]);
+    gl_draw_string(screen_width / 2 - 50, screen_height - 30, buf, text_color);
 }
 
 /**
@@ -38,7 +47,11 @@ static void draw_page_number() {
  * Displays the current page on the monitor using draw_module.
 **/
 void draw_page() {
-    gl_clear(GL_BLACK);
+    //gl_clear(GL_BLACK);
+    int current_theme_index = get_current_theme_index();
+    current_theme_index = 1;
+    unsigned int bg_color = *(COLOR_SCHEMES[current_theme_index]);
+    gl_clear(bg_color);
 
     page_config_t currentPageConfig = current_profile->pageConfig[current_page];
     

@@ -292,10 +292,10 @@ const char *THEME_SETTINGS_STRING[] = {
 /*
  * Color themes format: { background color, text color, selection color, return color }
  */
-//#define MIDNIGHT_BLUE gl_color((unsigned char)0, (unsigned char)17, (unsigned char)168)
-//#define SAND_YELLOW gl_color((unsigned char)235, (unsigned char)232, (unsigned char)199)
-//#define VIBRANT_BLUE gl_color((unsigned char)111, (unsigned char)210, (unsigned char)249)
-//#define BAMBI_BROWN gl_color((unsigned char)208, (unsigned char)135, (unsigned char) 100)
+#define MIDNIGHT_BLUE 0xFF000B77
+#define SAND_YELLOW 0xFFEFECC4
+#define VIBRANT_BLUE 0xFF6FD2F9
+#define BAMBI_BROWN 0xFFD88D6A
 
 unsigned int COLOR_SCHEMES[5][4] = {
     { GL_BLACK, GL_WHITE, GL_GREEN, GL_RED },

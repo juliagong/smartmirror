@@ -1004,6 +1004,7 @@ static const font_t font_segoeui = {
 
 extern int selected_font;
 static const font_t *g_font = selected_font == 1 ? &font_default : &font_segoeui;
+//static const font_t *g_font = &font_segoeui;
 
 void font_set_font(font_t *f)
 {
