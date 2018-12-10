@@ -35,4 +35,6 @@ bool move_cursor(cursor_t* cursor, int direction);
  */
 bool select_option(cursor_t* cursor);
 
+int get_current_theme_index();
+
 #endif

@@ -14,6 +14,7 @@
 #define MARGIN 20
 #define TEXT_MARGIN 10
 
+#define NUM_THEME_COLORS 4
 
 static module_config_t* settings;
 
@@ -65,7 +66,13 @@ void get_settings_page(module_config_t* profileSettings) {
  * Determine which is the current option
  */
 void display_settings(cursor_t* cursor) {
-    gl_clear(GL_BLACK);
+    int current_theme_index = get_current_theme_index();
+    unsigned int bg_color = *(COLOR_SCHEMES[current_theme_index]);
+    unsigned int text_color = *(COLOR_SCHEMES[current_theme_index + 1]);
+    unsigned int select_color = *(COLOR_SCHEMES[current_theme_index + 2]);
+    unsigned int return_color = *(COLOR_SCHEMES[current_theme_index + 3]);
+    //gl_clear(GL_BLACK);
+    gl_clear(bg_color);
 
     int settingLevel = cursor->settingLevel;
     unsigned int selectedOption = cursor->selectedOption;
@@ -78,8 +85,10 @@ void display_settings(cursor_t* cursor) {
     const char* title = (settingLevel == SETTING_LEVEL_MAIN) ? "Settings" : MAIN_SETTINGS_STRING[settingLevel - 1];
 
     // draw title
-    gl_draw_string_with_size(200, 50, (char*)title, GL_WHITE, 3);
-    gl_draw_rect(180, 150, 500, 10, GL_WHITE);
+    //gl_draw_string_with_size(200, 50, (char*)title, GL_WHITE, 3);
+    gl_draw_string_with_size(200, 50, (char*)title, text_color, 3);
+    //gl_draw_rect(180, 150, 500, 10, GL_WHITE);
+    gl_draw_rect(180, 150, 500, 10, text_color);
     color_t c = GL_WHITE;
 
     // draw options
@@ -89,17 +98,20 @@ void display_settings(cursor_t* cursor) {
 
         if (i == curPos) {
             unsigned int rectWidth = (strlen(str) + 2) * CHAR_WIDTH;
-            gl_draw_empty_rect(200, y, rectWidth, RECT_HEIGHT, GL_WHITE, 3 /* linewidth */); 
+            //gl_draw_empty_rect(200, y, rectWidth, RECT_HEIGHT, GL_WHITE, 3 /* linewidth */); 
+            gl_draw_empty_rect(200, y, rectWidth, RECT_HEIGHT, text_color, 3 /* linewidth */); 
         }
 
         if (i < numOptions) {
             // unless we are in main menu, show the current selected option in green
-            c = (settingLevel != SETTING_LEVEL_MAIN && i == selectedOption) ? GL_GREEN : GL_WHITE;
+            //c = (settingLevel != SETTING_LEVEL_MAIN && i == selectedOption) ? GL_GREEN : GL_WHITE;
+            c = (settingLevel != SETTING_LEVEL_MAIN && i == selectedOption) ? select_color : text_color;
 
             gl_draw_string_with_size(200 + TEXT_MARGIN, y + TEXT_MARGIN, str, c, 2);
 
         } else { // return
-            gl_draw_string_with_size(200 + TEXT_MARGIN, y + TEXT_MARGIN, (char*)RETURN_STRING, GL_RED, 2);
+            //gl_draw_string_with_size(200 + TEXT_MARGIN, y + TEXT_MARGIN, (char*)RETURN_STRING, GL_RED, 2);
+            gl_draw_string_with_size(200 + TEXT_MARGIN, y + TEXT_MARGIN, (char*)RETURN_STRING, return_color, 2);
         }
     }
 
@@ -220,6 +232,10 @@ bool select_option(cursor_t* cursor) {
     return false;
 }
 
+int get_current_theme_index() {
+    return (&settings[SD_MODULE_THEME])->moduleSettingId;
+}
+
 
 
 /*
@@ -271,4 +287,20 @@ const char *THEME_SETTINGS_STRING[] = {
     "Royal Hacker Hex",
     "Sunset Soiree in C",
     "Ponderous Pleasantree"
+};
+
+/*
+ * Color themes format: { background color, text color, selection color, return color }
+ */
+//#define MIDNIGHT_BLUE gl_color((unsigned char)0, (unsigned char)17, (unsigned char)168)
+//#define SAND_YELLOW gl_color((unsigned char)235, (unsigned char)232, (unsigned char)199)
+//#define VIBRANT_BLUE gl_color((unsigned char)111, (unsigned char)210, (unsigned char)249)
+//#define BAMBI_BROWN gl_color((unsigned char)208, (unsigned char)135, (unsigned char) 100)
+
+unsigned int COLOR_SCHEMES[5][4] = {
+    { GL_BLACK, GL_WHITE, GL_GREEN, GL_RED },
+    { MIDNIGHT_BLUE, SAND_YELLOW, VIBRANT_BLUE, BAMBI_BROWN },
+    { GL_BLACK, GL_WHITE, GL_GREEN, GL_RED },
+    { GL_BLACK, GL_WHITE, GL_GREEN, GL_RED },
+    { GL_BLACK, GL_WHITE, GL_GREEN, GL_RED },
 };
