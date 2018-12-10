@@ -83,11 +83,6 @@ extern const char *HEADLINE_SETTINGS_STRING[];
 extern const char *THEME_SETTINGS_STRING[];
 extern unsigned int COLOR_SCHEMES[5][4];
 
-#define MIDNIGHT_BLUE gl_color((unsigned char)0, (unsigned char)17, (unsigned char)168)
-#define SAND_YELLOW gl_color((unsigned char)235, (unsigned char)232, (unsigned char)199)
-#define VIBRANT_BLUE gl_color((unsigned char)111, (unsigned char)210, (unsigned char)249)
-#define BAMBI_BROWN gl_color((unsigned char)208, (unsigned char)135, (unsigned char) 100)
-
 enum theme_settings {
     SETTING_THEME_1,
     SETTING_THEME_2,
