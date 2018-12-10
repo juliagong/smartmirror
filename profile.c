@@ -19,7 +19,7 @@ coordinate_t default_coordinates_reversed[] = {
 
 profile_t* profiles;
 
-profile_t* get_profile(unsigned int profileId){
+profile_t* get_profile(unsigned int profileId) {
     if (profileId >= NUM_PROFILES) {
         return (profile_t*)0;
     }
@@ -30,8 +30,8 @@ module_config_t* get_module_config(unsigned int profileId, unsigned int moduleId
     unsigned int numModules = 4;
     module_config_t* cur = profiles[profileId].moduleConfig;
 
-    for (int i = 0; i < numModules; i++){
-        if (cur[i].moduleId == moduleId){
+    for (int i = 0; i < numModules; i++) {
+        if (cur[i].moduleId == moduleId) {
             return &cur[i];
         }    
     }

@@ -130,7 +130,8 @@ bool read_temp_data(char* resultBuf, unsigned int bufLen) {
         fahrenheit = temp_data[2] * 9. / 5. + 32;
         int f_int = fahrenheit;                 // Holds the integer portion of the float.
         int f_frac = (fahrenheit - f_int) * 10; // Stores one decimal place
-        snprintf(resultBuf, bufLen, "Temperature = %d.%d C / %d.%d F  Humidity = %d.%d%% \n", temp_data[2], temp_data[3], f_int, f_frac, temp_data[0], temp_data[1] );
+        snprintf(resultBuf, bufLen, "Temperature = %d.%d C / %d.%d F  Humidity = %d.%d%% \n", 
+		temp_data[2], temp_data[3], f_int, f_frac, temp_data[0], temp_data[1] );
         return true;
     }
 
@@ -220,7 +221,7 @@ void sensors_init(void) {
  Returns the number of chars written to buf
 */
 static int uart_getline(char *buf, int bufsize) {
-    if (!uart_haschar()){
+    if (!uart_haschar()) {
         return 0;
     }
 
@@ -303,7 +304,7 @@ int read_date_time(char** resultBuf, unsigned int bufLen, unsigned int settingId
     char *date_time[7]; 
     int ntokens = tokenize(line, date_time, len); 
 
-    if (ntokens > 0){
+    if (ntokens > 0) {
         // Format date and time data according to our defined settings
         format_date_data(resultBuf[0], bufLen, date_time, settingId);
         format_time_data(resultBuf[1], bufLen, date_time, subsettingId);

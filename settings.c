@@ -112,7 +112,7 @@ void display_settings(cursor_t* cursor) {
  * Returns true if cursor has changed position, and false otherwise
  */
 bool move_cursor(cursor_t* cursor, int direction) {
-    if (direction == 0){
+    if (direction == 0) {
         return false;
     }
     
@@ -137,7 +137,7 @@ bool move_cursor(cursor_t* cursor, int direction) {
 static module_config_t* get_module_config_at_cursor(cursor_t* cursor) {
     module_config_t* moduleConfig = (module_config_t*)0;
 
-    switch(cursor->settingLevel){
+    switch(cursor->settingLevel) {
         case SETTING_LEVEL_DATE:
         case SETTING_LEVEL_TIME:
             moduleConfig = &settings[SD_MODULE_DATETIME];
@@ -165,11 +165,11 @@ static module_config_t* get_module_config_at_cursor(cursor_t* cursor) {
  * Get the current option for the module that corresponds to the 
  * setting page we are viewing
  */
-static int get_current_option(cursor_t* cursor){
+static int get_current_option(cursor_t* cursor) {
     module_config_t* moduleConfig = get_module_config_at_cursor(cursor);
 
     printf("[in get current option]Current setting Level : %d\n", cursor->settingLevel);
-    if (cursor->settingLevel == SETTING_LEVEL_TIME){
+    if (cursor->settingLevel == SETTING_LEVEL_TIME) {
         return moduleConfig->moduleSubsettingId;
     }
 
@@ -180,22 +180,22 @@ static int get_current_option(cursor_t* cursor){
  * Saves current cursor's selected value as setting for the module
  * that corresponds to the setting page we are viewing
  */
-static void save_current_option(cursor_t* cursor){
+static void save_current_option(cursor_t* cursor) {
     module_config_t* moduleConfig = get_module_config_at_cursor(cursor);
 
-    if (cursor->settingLevel == SETTING_LEVEL_TIME){
+    if (cursor->settingLevel == SETTING_LEVEL_TIME) {
         moduleConfig->moduleSubsettingId = cursor->selectedOption;
     } 
 
     moduleConfig->moduleSettingId = cursor->selectedOption;
 }
 
-bool select_option(cursor_t* cursor){
+bool select_option(cursor_t* cursor) {
     setting_options_t settingOption = setting_options[cursor->settingLevel];
 
     // returning to previous page
-    if (cursor->curPos == settingOption.numOptions){
-        if (cursor->settingLevel == SETTING_LEVEL_MAIN){
+    if (cursor->curPos == settingOption.numOptions) {
+        if (cursor->settingLevel == SETTING_LEVEL_MAIN) {
             return true; // exit out of setting page
         }
 
@@ -212,7 +212,7 @@ bool select_option(cursor_t* cursor){
         cursor->settingLevel = cursor->curPos + 1; // +1 for the offset from index to setting level
         cursor->selectedOption = get_current_option(cursor);
         cursor->curPos = 0;
-    } else{ // Otherwise, show the current option as selected
+    } else { // Otherwise, show the current option as selected
         cursor->selectedOption = cursor->curPos;
         save_current_option(cursor);  
     }

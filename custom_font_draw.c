@@ -36,7 +36,7 @@ void gl_draw_string_with_size(int x, int y, char* str, color_t c, int scale)
     }
 }
 
-void gl_draw_empty_rect(int x, int y, int w, int h, color_t c, unsigned int lineWidth){
+void gl_draw_empty_rect(int x, int y, int w, int h, color_t c, unsigned int lineWidth) {
     if (w < 0 || h < 0) {
         return;
     }
@@ -50,22 +50,22 @@ void gl_draw_empty_rect(int x, int y, int w, int h, color_t c, unsigned int line
     unsigned int baseVal;
     unsigned int index;
 
-    for (int j = y; j < maxY; j++){
+    for (int j = y; j < maxY; j++) {
         baseVal = j * pitch;
 
         // top and bottom boundary
-        if (j < y + lineWidth || j >= maxY - lineWidth){
-            for (int i = x; i < maxX; i++){
+        if (j < y + lineWidth || j >= maxY - lineWidth) {
+            for (int i = x; i < maxX; i++) {
                 index = baseVal + i * depth;
                 *(unsigned int*)(fb + index) = c;
             }
         } else {
-            for (int i = x; i < x + lineWidth; i++){
+            for (int i = x; i < x + lineWidth; i++) {
                 index = baseVal + i * depth;
                 *(unsigned int*)(fb + index) = c;
             }
 
-            for (int i = maxX - lineWidth; i < maxX; i++){
+            for (int i = maxX - lineWidth; i < maxX; i++) {
                 index = baseVal + i * depth;
                 *(unsigned int*)(fb + index) = c;
             }

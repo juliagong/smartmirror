@@ -48,28 +48,28 @@ void module_init() {
     time_module_init();
 }
 
-unsigned int get_num_modules(){
+unsigned int get_num_modules() {
     return NUM_SUPPORTED_MODULES;
 }
 
-bool check_module_update(unsigned int moduleId){
-    if (!is_valid_module(moduleId)){
+bool check_module_update(unsigned int moduleId) {
+    if (!is_valid_module(moduleId)) {
         return false;
     }
 
     return modules[moduleId].check_update();
 }
 
-bool update_module_info(unsigned int moduleId, unsigned int settingId, unsigned int subSettingId){
-    if (!is_valid_module(moduleId)){
+bool update_module_info(unsigned int moduleId, unsigned int settingId, unsigned int subSettingId) {
+    if (!is_valid_module(moduleId)) {
         return false;
     }
 
     return modules[moduleId].update_info(settingId, subSettingId);
 }
 
-module_content_t* get_module_content(unsigned int moduleId){
-    if (!is_valid_module(moduleId)){
+module_content_t* get_module_content(unsigned int moduleId) {
+    if (!is_valid_module(moduleId)) {
         return NULL;
     }
     
@@ -83,19 +83,19 @@ module_content_t* get_module_content(unsigned int moduleId){
 /*
  * Proximity
  */
-static bool check_update_proximity(){
+static bool check_update_proximity() {
 
     // TODO - use this for acutal code
     bool isMotionDetected = read_motion_data();
     return isMotionDetected;
 }
 
-static bool update_info_proximity(unsigned int settingId, unsigned int subSettingId){
+static bool update_info_proximity(unsigned int settingId, unsigned int subSettingId) {
     // TODO
     return false;
 }
 
-static void proximity_module_init(){
+static void proximity_module_init() {
     module_content_t* content = &module_contents[SD_MODULE_PROXIMITY];
     
     snprintf(content->components[0], COMPONENT_LEN, "Proximity Module");
@@ -107,12 +107,12 @@ static void proximity_module_init(){
 /*
  * Temperature
  */
-static bool check_update_temperature(){
+static bool check_update_temperature() {
     // TODO - DK - this should be true if we want to be using temperature sensor
     return true;
 }
 
-static bool update_info_temperature(unsigned int settingId, unsigned int subSettingId){
+static bool update_info_temperature(unsigned int settingId, unsigned int subSettingId) {
     module_content_t* content = &module_contents[SD_MODULE_TEMPERATURE];
     
     bool result = read_temp_data(content->components[0], COMPONENT_LEN);
@@ -120,7 +120,7 @@ static bool update_info_temperature(unsigned int settingId, unsigned int subSett
     return result;
 }
 
-static void temperature_module_init(){
+static void temperature_module_init() {
     module_content_t* content = &module_contents[SD_MODULE_TEMPERATURE];
     
     snprintf(content->components[0], COMPONENT_LEN, "Temperature Module");
@@ -133,11 +133,11 @@ static void temperature_module_init(){
  * Time
  */
 
-static bool check_update_datetime(){
+static bool check_update_datetime() {
     return true;
 }
 
-static bool update_info_datetime(unsigned int settingId, unsigned int subSettingId){
+static bool update_info_datetime(unsigned int settingId, unsigned int subSettingId) {
     module_content_t* content = &module_contents[SD_MODULE_DATETIME];
     
     int isRead = read_date_time(content->components, COMPONENT_LEN, settingId, subSettingId);
@@ -145,7 +145,7 @@ static bool update_info_datetime(unsigned int settingId, unsigned int subSetting
     return isRead > 0;
 }
 
-static void time_module_init(){
+static void time_module_init() {
     module_content_t* content = &module_contents[SD_MODULE_DATETIME];
     
     snprintf(content->components[0], COMPONENT_LEN, "Time Module(DATE)");
@@ -162,6 +162,6 @@ static void time_module_init(){
 /*
  * Helper functions
  */
-static bool is_valid_module(unsigned int moduleId){
+static bool is_valid_module(unsigned int moduleId) {
     return (moduleId < NUM_SUPPORTED_MODULES);
 }
