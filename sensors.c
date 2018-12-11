@@ -271,19 +271,25 @@ static int tokenize(const char *line, char *arr[], int max) {
         while (isspace(*line)) line++;  // skip past spaces
         if (*line == '\0') break; // no more non-white chars
         const char *start = line;
+        if (*(start + 1) == '*') {  // Double asterisk means it's a header. 
+            ntokens = 0; 
+        }
         while (*line != '\0' && !isspace(*line)) line++; // advance to next space/null
         if (*start == '*') {
             int nchars = line - start - 1;      
-            arr[ntokens] = strndup(start+1, nchars);   // make heap-copy, add to array 
+            arr[ntokens] = strndup(start + 1, nchars);   // make heap-copy, add to array 
             ntokens++; 
         }
     }
+
+
     return ntokens;
 }
 
 
 /*
-date_time[] array holds 7 pieces of information:
+date_time[] array holds 8 pieces of information:
+    *TIME
     Day of the Week
     Month Name
     Month
@@ -296,13 +302,24 @@ date_time[] array holds 7 pieces of information:
 
 int read_date_time(char** resultBuf, unsigned int bufLen, unsigned int settingId, unsigned int subsettingId) {
     char *line = (char *)malloc (TIME_BUF_LEN);
-  
-    int len = uart_getline(line, TIME_BUF_LEN);
-    if (len == 0) return 0;
+    
+    // Multiple attempts to get Time
+    int ntokens = 0; 
+    int attempts = 0;
+    char *date_time[9]; 
 
-    // Tokenize
-    char *date_time[7]; 
-    int ntokens = tokenize(line, date_time, len); 
+    // TODO: Finish implementation which checks if array holds *TIME data
+    while (ntokens == 0 && attempts < 10) {
+        int len = uart_getline(line, TIME_BUF_LEN);
+        if (len == 0) return 0;
+
+        // Tokenize    
+        ntokens = tokenize(line, date_time, len); 
+
+        //If Array contains time data, break.  
+        // if (strcmp(date_time[0], "*TIME") == 0) break; 
+        attempts++;
+    }
 
     if (ntokens > 0) {
         // Format date and time data according to our defined settings
