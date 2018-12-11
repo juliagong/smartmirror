@@ -1,7 +1,7 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 #include "profile.h"
-
+#include "setting_values.h"
 /*
  * Cursor that represents current navigation within settings page
  */
@@ -14,7 +14,7 @@ typedef struct{
 /*
  * Open settings page and allows user to change settings
  */
-void get_settings_page(module_config_t* profileSettings);
+void get_settings_page(profile_t* profile);
 
 /*
  * Provided the cursor, display the current setting menu
@@ -35,6 +35,9 @@ bool move_cursor(cursor_t* cursor, int direction);
  */
 bool select_option(cursor_t* cursor);
 
-int get_current_theme_index();
+/*
+ * Returns the current color scheme
+ */
+color_scheme_t* get_color_scheme(unsigned int themeSettingId);
 
 #endif

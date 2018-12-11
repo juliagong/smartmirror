@@ -15,7 +15,7 @@
  * Last modified: 3/17/16
  */
 
-static const font_t font_default = {
+const font_t font_default = {
     // first char is 0x21 ('!'), last char is 0x7f (del)
     // width 14, height 16
     0x21, 0x7F, 14, 16, {
@@ -354,7 +354,7 @@ static const font_t font_default = {
 	0x00, 0x00, 0x00, 0x00, }
 };
 
-static const font_t font_segoeui = {
+const font_t font_segoeui = {
     // first char is 0x21 ('!'), last char is 0x7f (del)
     // width 16, height 27
 	0x21, 0x7f, 16, 27, {
@@ -1003,8 +1003,8 @@ static const font_t font_segoeui = {
 };
 
 extern int selected_font;
-static const font_t *g_font = selected_font == 1 ? &font_default : &font_segoeui;
-//static const font_t *g_font = &font_segoeui;
+//static font_t *g_font = selected_font == 1 ? &font_default : &font_segoeui;
+static const font_t *g_font = &font_segoeui;
 
 void font_set_font(font_t *f)
 {

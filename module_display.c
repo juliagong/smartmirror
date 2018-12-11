@@ -21,22 +21,17 @@ static unsigned int screen_height;
  * Draws a blank black screen for the "off" mode of the mirror.
 **/
 void blank_screen() {
-    int current_theme_index = get_current_theme_index();
-    unsigned int bg_color = *(COLOR_SCHEMES[current_theme_index]);
-    gl_clear(bg_color);
-    //gl_clear(GL_BLACK);
+    color_scheme_t* color_scheme = get_color_scheme(current_profile->themeSettingId);
+    gl_clear(color_scheme->bg_color);
     gl_swap_buffer();
 }
 
-static void draw_page_number() {
+static void draw_page_number(color_t c) {
     char buf[4];
     snprintf(buf, 4, "-%d-", current_page);
 
     // TODO - add base color in profile, use here 
-    //gl_draw_string(screen_width / 2 - 50, screen_height - 30, buf, GL_WHITE);
-    int current_theme_index = get_current_theme_index();
-    unsigned int text_color = *(COLOR_SCHEMES[current_theme_index + 1]);
-    gl_draw_string(screen_width / 2 - 50, screen_height - 30, buf, text_color);
+    gl_draw_string(screen_width / 2 - 50, screen_height - 30, buf, c);
 }
 
 /**
@@ -45,10 +40,10 @@ static void draw_page_number() {
  * Displays the current page on the monitor using draw_module.
 **/
 void draw_page() {
-    //gl_clear(GL_BLACK);
-    int current_theme_index = get_current_theme_index();
-    unsigned int bg_color = *(COLOR_SCHEMES[current_theme_index]);
-    gl_clear(bg_color);
+    color_scheme_t* color_scheme = get_color_scheme(current_profile->themeSettingId);
+    gl_clear(color_scheme->bg_color);
+
+    color_t text_color = color_scheme->text_color;
 
     page_config_t currentPageConfig = current_profile->pageConfig[current_page];
     
@@ -57,10 +52,10 @@ void draw_page() {
     coordinate_t* coordinates = currentPageConfig.coordinates; 
 
     for (unsigned int moduleInd = 0; moduleInd < numModules; moduleInd++) {
-        draw_module(moduleIds[moduleInd], coordinates[moduleInd]);
+        draw_module(moduleIds[moduleInd], coordinates[moduleInd], text_color);
     } 
 
-    draw_page_number();
+    draw_page_number(text_color);
     
     gl_swap_buffer();
 }
@@ -70,10 +65,9 @@ void draw_page() {
  *
  * Gets module content and setting and draws module on screen.
 **/
-void draw_module(unsigned int moduleId, coordinate_t coordinate) {
+void draw_module(unsigned int moduleId, coordinate_t coordinate, color_t c) {
     // get module setting
     module_config_t* moduleConfig = get_module_config(current_profile_id, moduleId);
-    color_t moduleColor = moduleConfig->moduleColor;
     
     // get latest module information if needed
     // TODO - we might not need this
@@ -91,7 +85,7 @@ void draw_module(unsigned int moduleId, coordinate_t coordinate) {
         unsigned int compX = componentCoords[componentId].x + coordinate.x;
         unsigned int compY = componentCoords[componentId].y + coordinate.y;
 
-        gl_draw_string_with_size(compX, compY, components[componentId], moduleColor, 2);
+        gl_draw_string_with_size(compX, compY, components[componentId], c, 2);
     }
 }
 
@@ -115,7 +109,7 @@ void move_page(int change) {
 }
 
 void open_settings() {
-    get_settings_page(current_profile->moduleConfig);
+    get_settings_page(current_profile);
 }
 
 void switch_profile(unsigned int profileId) {

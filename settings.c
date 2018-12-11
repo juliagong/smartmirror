@@ -8,6 +8,7 @@
 #include "printf.h"
 #include "strings.h"
 #include "timer.h"
+#include "font.h"
 
 #define CHAR_WIDTH 28
 #define RECT_HEIGHT 50
@@ -17,6 +18,8 @@
 #define NUM_THEME_COLORS 4
 
 static module_config_t* settings;
+static unsigned int* p_themeSettingId;
+static unsigned int* p_fontSettingId;
 
 static const setting_options_t setting_options[] = {
     {SETTING_LEVEL_MAIN, MAIN_SETTINGS_STRING, MAIN_SETTINGS_COUNT},
@@ -25,14 +28,17 @@ static const setting_options_t setting_options[] = {
     {SETTING_LEVEL_TEMPERATURE, TEMPERATURE_SETTINGS_STRING, TEMPERATURE_SETTINGS_COUNT},
     {SETTING_LEVEL_WEATHER, WEATHER_SETTINGS_STRING, WEATHER_SETTINGS_COUNT},
     {SETTING_LEVEL_HEADLINE, HEADLINE_SETTINGS_STRING, HEADLINE_SETTINGS_COUNT},
-    {SETTING_LEVEL_THEME, THEME_SETTINGS_STRING, THEME_SETTINGS_COUNT}
+    {SETTING_LEVEL_THEME, THEME_SETTINGS_STRING, THEME_SETTINGS_COUNT},
+    {SETTING_LEVEL_FONT, FONT_SETTINGS_STRING, FONT_SETTINGS_COUNT}
 };
 
 /*
  * Display settings page
  */
-void get_settings_page(module_config_t* profileSettings) {
-    settings = profileSettings;
+void get_settings_page(profile_t* profile) {
+    settings = profile->moduleConfig;
+    p_themeSettingId = &(profile->themeSettingId);
+    p_fontSettingId = &(profile->fontSettingId);
 
     cursor_t* cursor = &(cursor_t){.settingLevel = SETTING_LEVEL_MAIN, .selectedOption = 0, .curPos = 0}; 
     bool drawScreen = true;
@@ -66,13 +72,10 @@ void get_settings_page(module_config_t* profileSettings) {
  * Determine which is the current option
  */
 void display_settings(cursor_t* cursor) {
-    int current_theme_index = get_current_theme_index();
-    unsigned int bg_color = *(COLOR_SCHEMES[current_theme_index]);
-    unsigned int text_color = *(COLOR_SCHEMES[current_theme_index + 1]);
-    unsigned int select_color = *(COLOR_SCHEMES[current_theme_index + 2]);
-    unsigned int return_color = *(COLOR_SCHEMES[current_theme_index + 3]);
-    //gl_clear(GL_BLACK);
-    gl_clear(bg_color);
+    color_scheme_t* color_scheme = get_color_scheme(*p_themeSettingId);
+    unsigned int text_color = color_scheme->text_color;
+
+    gl_clear(color_scheme->bg_color);
 
     int settingLevel = cursor->settingLevel;
     unsigned int selectedOption = cursor->selectedOption;
@@ -85,11 +88,11 @@ void display_settings(cursor_t* cursor) {
     const char* title = (settingLevel == SETTING_LEVEL_MAIN) ? "Settings" : MAIN_SETTINGS_STRING[settingLevel - 1];
 
     // draw title
-    //gl_draw_string_with_size(200, 50, (char*)title, GL_WHITE, 3);
-    gl_draw_string_with_size(200, 50, (char*)title, text_color, 3);
-    //gl_draw_rect(180, 150, 500, 10, GL_WHITE);
-    gl_draw_rect(180, 150, 500, 10, text_color);
-    color_t c = GL_WHITE;
+    unsigned int fontOffset = *p_fontSettingId == SETTING_FONT_1 ? -10 : 0;
+    gl_draw_string_with_size(200 + fontOffset, 50 + fontOffset, (char*)title, text_color, 3);
+    gl_draw_rect(180, 150, 550, 10, text_color);
+
+    unsigned int charWidth = font_get_width() * 2;
 
     // draw options
     for (int i = 0; i <= numOptions; i++) {
@@ -97,21 +100,18 @@ void display_settings(cursor_t* cursor) {
         char* str = (char*) (i < numOptions ? options[i] : RETURN_STRING);
 
         if (i == curPos) {
-            unsigned int rectWidth = (strlen(str) + 2) * CHAR_WIDTH;
-            //gl_draw_empty_rect(200, y, rectWidth, RECT_HEIGHT, GL_WHITE, 3 /* linewidth */); 
+            unsigned int rectWidth = (strlen(str) + 2) * charWidth;
             gl_draw_empty_rect(200, y, rectWidth, RECT_HEIGHT, text_color, 3 /* linewidth */); 
         }
 
         if (i < numOptions) {
             // unless we are in main menu, show the current selected option in green
-            //c = (settingLevel != SETTING_LEVEL_MAIN && i == selectedOption) ? GL_GREEN : GL_WHITE;
-            c = (settingLevel != SETTING_LEVEL_MAIN && i == selectedOption) ? select_color : text_color;
+            color_t c = (settingLevel != SETTING_LEVEL_MAIN && i == selectedOption) ? color_scheme->select_color : text_color;
 
-            gl_draw_string_with_size(200 + TEXT_MARGIN, y + TEXT_MARGIN, str, c, 2);
+            gl_draw_string_with_size(200 + TEXT_MARGIN + fontOffset, y + TEXT_MARGIN + fontOffset, str, c, 2);
 
         } else { // return
-            //gl_draw_string_with_size(200 + TEXT_MARGIN, y + TEXT_MARGIN, (char*)RETURN_STRING, GL_RED, 2);
-            gl_draw_string_with_size(200 + TEXT_MARGIN, y + TEXT_MARGIN, (char*)RETURN_STRING, return_color, 2);
+            gl_draw_string_with_size(200 + TEXT_MARGIN + fontOffset, y + TEXT_MARGIN + fontOffset, (char*)RETURN_STRING, color_scheme->return_color, 2);
         }
     }
 
@@ -163,9 +163,6 @@ static module_config_t* get_module_config_at_cursor(cursor_t* cursor) {
         case SETTING_LEVEL_HEADLINE:
             moduleConfig = &settings[SD_MODULE_HEADLINE];
             break;
-	case SETTING_LEVEL_THEME:
-	    moduleConfig = &settings[SD_MODULE_THEME];
-	    break;
         default:
             break;
     }
@@ -178,9 +175,14 @@ static module_config_t* get_module_config_at_cursor(cursor_t* cursor) {
  * setting page we are viewing
  */
 static int get_current_option(cursor_t* cursor) {
+    if (cursor->settingLevel == SETTING_LEVEL_THEME) {
+        return *p_themeSettingId;
+    } else if (cursor->settingLevel == SETTING_LEVEL_FONT) {
+        return *p_fontSettingId;
+    }
+
     module_config_t* moduleConfig = get_module_config_at_cursor(cursor);
 
-    printf("[in get current option]Current setting Level : %d\n", cursor->settingLevel);
     if (cursor->settingLevel == SETTING_LEVEL_TIME) {
         return moduleConfig->moduleSubsettingId;
     }
@@ -188,11 +190,26 @@ static int get_current_option(cursor_t* cursor) {
     return moduleConfig->moduleSettingId;
 }
 
+
+static void set_font_option(unsigned int fontSettingId){
+    if (fontSettingId == SETTING_FONT_1){
+        font_set_font((font_t*)&font_segoeui);
+    } else {
+        font_set_font((font_t*)&font_default);
+    }
+}
 /*
  * Saves current cursor's selected value as setting for the module
  * that corresponds to the setting page we are viewing
  */
 static void save_current_option(cursor_t* cursor) {
+    if (cursor->settingLevel == SETTING_LEVEL_THEME) {
+        *p_themeSettingId = cursor->selectedOption;
+    } else if (cursor->settingLevel == SETTING_LEVEL_FONT) {
+        *p_fontSettingId = cursor->selectedOption;
+        set_font_option(*p_fontSettingId);
+    }
+    
     module_config_t* moduleConfig = get_module_config_at_cursor(cursor);
 
     if (cursor->settingLevel == SETTING_LEVEL_TIME) {
@@ -220,7 +237,6 @@ bool select_option(cursor_t* cursor) {
 
     // If we are on main level, we have to descend into lower level
     if (cursor->settingLevel == SETTING_LEVEL_MAIN) {
-        printf("settingLevel: %d, curPos: %d\n", cursor->settingLevel, cursor->curPos);
         cursor->settingLevel = cursor->curPos + 1; // +1 for the offset from index to setting level
         cursor->selectedOption = get_current_option(cursor);
         cursor->curPos = 0;
@@ -232,11 +248,9 @@ bool select_option(cursor_t* cursor) {
     return false;
 }
 
-int get_current_theme_index() {
-    return (&settings[SD_MODULE_THEME])->moduleSettingId;
+color_scheme_t* get_color_scheme(unsigned int themeSettingId){
+    return (color_scheme_t*)COLOR_SCHEMES[themeSettingId];
 }
-
-
 
 /*
  * Definition for variables in setting_values.h
@@ -249,7 +263,8 @@ const char *MAIN_SETTINGS_STRING[] = {
     "Temperature",
     "Weather",
     "Headline",
-    "Customize Theme"
+    "Customize Theme",
+    "Change Font"
 };
 
 const char *TIME_SETTINGS_STRING[] = {
@@ -318,4 +333,9 @@ unsigned int COLOR_SCHEMES[5][4] = {
     { ROYAL_PURPLE, GOLD, PALE_GREEN, LIGHT_MAGENTA },
     { CRANBERRY, MUTED_LEMON, ORANGE_ZEST, RED_SALMON },
     { FOREST_GREEN, LIME_GREEN, PEACH, HICKORY_TAN },
+};
+
+const char *FONT_SETTINGS_STRING[] = {
+    "Default(Segoeui)",
+    "System Font"
 };

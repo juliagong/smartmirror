@@ -1,6 +1,8 @@
 #ifndef SETTINGVALUES_H
 #define SETTINGVALUES_H
 
+#include "font.h"
+
 /*
  * Enums and constants related to settings
  * All the extern variables are defined in bottom of settings.c
@@ -21,7 +23,8 @@ enum setting_levels {
     SETTING_LEVEL_TEMPERATURE = 3,
     SETTING_LEVEL_WEATHER = 4,
     SETTING_LEVEL_HEADLINE = 5,
-    SETTING_LEVEL_THEME = 6
+    SETTING_LEVEL_THEME = 6,
+    SETTING_LEVEL_FONT = 7
 };
 
 enum main_settings {
@@ -30,10 +33,11 @@ enum main_settings {
     SETTING_TEMPERATURE = 2,
     SETTING_WEATHER = 3,
     SETTING_HEADLINE = 4,
-    SETTING_THEME = 5
+    SETTING_THEME = 5,
+    SETTING_FONT = 6
 };
 
-#define MAIN_SETTINGS_COUNT 6
+#define MAIN_SETTINGS_COUNT 7
 extern const char *MAIN_SETTINGS_STRING[];
 
 enum time_settings {
@@ -90,4 +94,23 @@ enum theme_settings {
     SETTING_THEME_4,
     SETTING_THEME_5
 };
+
+typedef struct {
+    unsigned int bg_color;
+    unsigned int text_color;
+    unsigned int select_color;
+    unsigned int return_color;
+} color_scheme_t;
+
+#define FONT_SETTINGS_COUNT 2
+extern const char *FONT_SETTINGS_STRING[];
+
+enum font_settings {
+    SETTING_FONT_1,
+    SETTING_FONT_2,
+};
+
+extern const font_t font_default;
+extern const font_t font_segoeui;
+
 #endif

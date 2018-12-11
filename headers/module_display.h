@@ -2,6 +2,7 @@
 #define MODULE_DISPLAY_H
 
 #include "profile.h"
+#include "gl.h"
 /*
  * Defines a graphic library for a module-based display
  * Built on top of graphic library, but redefines
@@ -14,7 +15,7 @@ void blank_screen();
 
 void draw_page();
 
-void draw_module(unsigned int moduleId, coordinate_t coordinate);
+void draw_module(unsigned int moduleId, coordinate_t coordinate, color_t text_color);
 
 void move_page(int change);
 

@@ -20,7 +20,6 @@ typedef struct{
     unsigned int moduleId;
     unsigned int moduleSettingId;
     unsigned int moduleSubsettingId;
-    color_t moduleColor;
 } module_config_t;
 
 typedef struct{
@@ -37,6 +36,8 @@ typedef struct{
     page_config_t* pageConfig;
     unsigned int numScreens;
     unsigned int homeScreenId;
+    unsigned int themeSettingId;
+    unsigned int fontSettingId;
 } profile_t;
 
 /*

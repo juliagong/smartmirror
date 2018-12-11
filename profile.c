@@ -46,15 +46,15 @@ static void create_default_profile() {
     
     module_config_t* defaultModuleConfig = malloc(sizeof(module_config_t) * numAllModules);
     defaultModuleConfig[0] = (module_config_t){.moduleId = SD_MODULE_PROXIMITY, .moduleSettingId = 0, 
-        .moduleSubsettingId = 0, .moduleColor = GL_WHITE};
+        .moduleSubsettingId = 0};
     defaultModuleConfig[1] = (module_config_t){.moduleId = SD_MODULE_TEMPERATURE, .moduleSettingId = 0, 
-        .moduleSubsettingId = 0, .moduleColor = GL_WHITE};
+        .moduleSubsettingId = 0};
     defaultModuleConfig[2] = (module_config_t){.moduleId = SD_MODULE_DATETIME, .moduleSettingId = 0, 
-        .moduleSubsettingId = 0, .moduleColor = GL_WHITE};
+        .moduleSubsettingId = 0};
     defaultModuleConfig[3] = (module_config_t){.moduleId = SD_MODULE_WEATHER, .moduleSettingId = 0, 
-        .moduleSubsettingId = 0, .moduleColor = GL_WHITE};
+        .moduleSubsettingId = 0};
     defaultModuleConfig[4] = (module_config_t){.moduleId = SD_MODULE_HEADLINE, .moduleSettingId = 0, 
-        .moduleSubsettingId = 0, .moduleColor = GL_WHITE};
+        .moduleSubsettingId = 0};
 
     page_config_t* defaultPageConfig = malloc(sizeof(page_config_t) * 2);
     defaultPageConfig[0] = (page_config_t){.pageId = 0, .moduleIds = default_module_ids, 
@@ -64,7 +64,7 @@ static void create_default_profile() {
    
     profile_t* defaultProfile = malloc(sizeof(profile_t));
     defaultProfile[0] = (profile_t){.profileId = DEFAULT_PROFILE_ID, .moduleConfig = defaultModuleConfig, 
-        .pageConfig = defaultPageConfig, .numScreens = 2, .homeScreenId = 0};
+        .pageConfig = defaultPageConfig, .numScreens = 2, .homeScreenId = 0, .themeSettingId = 0, .fontSettingId = 0};
 
     profiles[DEFAULT_PROFILE_ID] = *defaultProfile; 
 }
