@@ -112,10 +112,10 @@ static bool check_update_temperature() {
     return true;
 }
 
-static bool update_info_temperature(unsigned int settingId, unsigned int subSettingId) {
+static bool update_info_temperature(unsigned int settingId, unsigned int subsettingId) {
     module_content_t* content = &module_contents[SD_MODULE_TEMPERATURE];
     
-    bool result = read_temp_data(content->components[0], COMPONENT_LEN);
+    bool result = read_temp_data(content->components, COMPONENT_LEN, settingId, subsettingId);
     
     return result;
 }
@@ -123,10 +123,14 @@ static bool update_info_temperature(unsigned int settingId, unsigned int subSett
 static void temperature_module_init() {
     module_content_t* content = &module_contents[SD_MODULE_TEMPERATURE];
     
-    snprintf(content->components[0], COMPONENT_LEN, "Temperature Module");
+    snprintf(content->components[0], COMPONENT_LEN, "Temperature Module(Temperature)");
     content->coordinates[0].x = 0;
     content->coordinates[0].y = 0;
-    content->numComponents = 1;
+
+    snprintf(content->components[1], COMPONENT_LEN, "Temperature Module(Humidity)");
+    content->coordinates[1].x = 0;
+    content->coordinates[1].y = 40;
+    content->numComponents = 2;
 }
 
 /*
