@@ -12,7 +12,15 @@ enum datetime_data {
     DATETIME_SECOND = 7
 };
 
-void format_temperature_data(char* buf, int bufsize, unsigned int settingId);
+
+enum temperature_data {
+    TEMPERATURE_HUMIDITY_INT = 0,
+    TEMPERATURE_HUMIDITY_DECIMAL = 1,
+    TEMPERATURE_CELSIUS_INT = 2,
+    TEMPERATURE_CELSIUS_DECIMAL = 3
+};
+
+void format_temperature_data(char** buf, int bufsize, int* temp_data, unsigned int settingId, unsigned int subsettingId);
 
 void format_time_data(char* buf, int bufsize, char** datetime, unsigned int settingId);
 
