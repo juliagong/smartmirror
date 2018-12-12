@@ -128,19 +128,25 @@ date_time[] array holds 7 pieces of information:
     SS
 */
 int read_date_time_simple() {
-    char *line = (char *)malloc (200);
-    int len = uart_getline(line, 200);
-    if (len == 0) return 0;
-    
-    // Tokenize
-    char *date_time[20]; 
-    int ntokens = tokenize(line, date_time, len);
+// Send request to esp-32
+    uart_putchar('t');
+    timer_delay_ms(100);
 
-    if(strcmp(date_time[0], "*TIME") == 0) {
-       gl_draw_string(0,0, "Time Data", GL_BLUE);
-    } else if (strcmp(date_time[0], "*WEATHER") == 0) {
-       gl_draw_string(0,0, "WeatherData", GL_BLUE);
-    }
+    char *line = (char *)malloc (100);
+  
+    int len = uart_getline(line, 100);
+    if (len == 0) return 0;
+
+    // Tokenize
+    char *date_time[8]; 
+    int ntokens = tokenize(line, date_time, len); 
+
+
+    // if(strcmp(date_time[0], "*TIME") == 0) {
+    //    gl_draw_string(0,0, "Time Data", GL_BLUE);
+    // } else if (strcmp(date_time[0], "*WEATHER") == 0) {
+    //    gl_draw_string(0,0, "WeatherData", GL_BLUE);
+    // }
 
     // Print to display for testing purposes
     int height = gl_get_char_height();  
@@ -156,6 +162,35 @@ int read_date_time_simple() {
     return ntokens; 
 }
 
+
+int read_weather_simple() {
+// Send request to esp-32
+    uart_putchar('w');
+    timer_delay_ms(100);
+
+    char *line = (char *)malloc (100);
+  
+    int len = uart_getline(line, 100);
+    if (len == 0) return 0;
+
+    // Tokenize
+    char *weather[8]; 
+    int ntokens = tokenize(line, weather, len); 
+
+    // Print to display for testing purposes
+    int height = gl_get_char_height();  
+    for (int i = 1; i < ntokens; i++) {
+        gl_draw_string(5, 15 + height * i, weather[i], GL_GREEN);
+    }
+
+    // Free array
+    for(int i = 0; i < ntokens; i++) {
+        free((char *)weather[i]);
+    }
+
+    return ntokens; 
+}
+
 void main(void)
 {
     uart_init();
@@ -163,11 +198,19 @@ void main(void)
     timer_init();
     gl_init(1024, 768, GL_DOUBLEBUFFER);
     printf("init complete. Switch to esp-32\n");
+    timer_delay(2); 
 
     while(1) {
        gl_clear(GL_BLACK);
        read_date_time_simple();
        gl_swap_buffer(); 
+       timer_delay(1);
+
+       gl_clear(GL_BLACK);
+       read_weather_simple();
+       gl_swap_buffer(); 
+       timer_delay(1);
+
     }    
 
 }
