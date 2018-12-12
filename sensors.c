@@ -29,7 +29,17 @@
 #define ROTARY_SW GPIO_PIN21
 
 // Time 
-#define TIME_BUF_LEN 71
+#define TIME_BUF_LEN 100
+#define TIME_DATE_ITEMS 8
+
+// Weather
+#define WEATHER_BUF_LEN 100
+#define WEATHER_ITEMS 6
+
+// Headlines
+#define HEADLINES_BUF_LEN 1024
+#define HEADLINE_ITEMS 10 
+
 
 static volatile unsigned int prev_clk_val;
 static volatile int rotation;
@@ -87,11 +97,10 @@ bool read_motion_data() {
  * Subsequent odd-numbered flips are when TEMP_PIN is set to 0 preceding each data bit. 
  * Even-numbered flips are when TEMP_PIN is set to 1 for each data bit. 
 **/
-bool read_temp_data(char* resultBuf, unsigned int bufLen) {
+bool read_temp_data(char** resultBuf, unsigned int bufLen, unsigned int settingId, unsigned int subsettingId) {
     unsigned int count = 0;
     unsigned int n_bits = 0; 
     int temp_data[5] = { 0 };
-    float fahrenheit = 0.0;
 
     // request data from sensor
     gpio_set_output(TEMP_PIN);
@@ -127,11 +136,7 @@ bool read_temp_data(char* resultBuf, unsigned int bufLen) {
     unsigned int checksum = (temp_data[0] + temp_data[1] + temp_data[2] + temp_data[3]) & 0xFF; 
     
     if ( (n_bits >= 40) && (temp_data[4] == checksum ) ) {
-        fahrenheit = temp_data[2] * 9. / 5. + 32;
-        int f_int = fahrenheit;                 // Holds the integer portion of the float.
-        int f_frac = (fahrenheit - f_int) * 10; // Stores one decimal place
-        snprintf(resultBuf, bufLen, "Temperature = %d.%d C / %d.%d F  Humidity = %d.%d%% \n", 
-		temp_data[2], temp_data[3], f_int, f_frac, temp_data[0], temp_data[1] );
+        format_temperature_data(resultBuf, bufLen, temp_data, settingId, subsettingId);
         return true;
     }
 
@@ -271,25 +276,19 @@ static int tokenize(const char *line, char *arr[], int max) {
         while (isspace(*line)) line++;  // skip past spaces
         if (*line == '\0') break; // no more non-white chars
         const char *start = line;
-        if (*(start + 1) == '*') {  // Double asterisk means it's a header. 
-            ntokens = 0; 
-        }
         while (*line != '\0' && !isspace(*line)) line++; // advance to next space/null
         if (*start == '*') {
             int nchars = line - start - 1;      
-            arr[ntokens] = strndup(start + 1, nchars);   // make heap-copy, add to array 
+            arr[ntokens] = strndup(start+1, nchars);   // make heap-copy, add to array 
             ntokens++; 
         }
     }
-
-
     return ntokens;
 }
 
 
 /*
-date_time[] array holds 8 pieces of information:
-    *TIME
+date_time[] array holds 7 pieces of information:
     Day of the Week
     Month Name
     Month
@@ -301,25 +300,18 @@ date_time[] array holds 8 pieces of information:
 */
 
 int read_date_time(char** resultBuf, unsigned int bufLen, unsigned int settingId, unsigned int subsettingId) {
+    // Send request to esp-32
+    uart_putchar('t');
+    timer_delay_ms(100);
+
     char *line = (char *)malloc (TIME_BUF_LEN);
-    
-    // Multiple attempts to get Time
-    int ntokens = 0; 
-    int attempts = 0;
-    char *date_time[9]; 
+  
+    int len = uart_getline(line, TIME_BUF_LEN);
+    if (len == 0) return 0;
 
-    // TODO: Finish implementation which checks if array holds *TIME data
-    while (ntokens == 0 && attempts < 10) {
-        int len = uart_getline(line, TIME_BUF_LEN);
-        if (len == 0) return 0;
-
-        // Tokenize    
-        ntokens = tokenize(line, date_time, len); 
-
-        //If Array contains time data, break.  
-        // if (strcmp(date_time[0], "*TIME") == 0) break; 
-        attempts++;
-    }
+    // Tokenize
+    char *date_time[TIME_DATE_ITEMS]; 
+    int ntokens = tokenize(line, date_time, len); 
 
     if (ntokens > 0) {
         // Format date and time data according to our defined settings
@@ -333,6 +325,70 @@ int read_date_time(char** resultBuf, unsigned int bufLen, unsigned int settingId
     // Free array
     for(int i = 0; i < ntokens; i++) {
         free((char *)date_time[i]);
+    }
+
+    return ntokens; 
+}
+
+int read_weather(char** resultBuf, unsigned int bufLen, unsigned int settingId, unsigned int subsettingId) {
+    // Send request to esp-32
+    uart_putchar('w');
+    timer_delay_ms(100);
+
+    char *line = (char *)malloc (WEATHER_BUF_LEN);
+  
+    int len = uart_getline(line, WEATHER_BUF_LEN);
+    if (len == 0) return 0;
+
+    // Tokenize
+    char *weather[WEATHER_ITEMS]; 
+    int ntokens = tokenize(line, weather, len); 
+
+    if (ntokens > 0) {
+        // Format date and time data according to our defined settings
+        format_date_data(resultBuf[0], bufLen, weather, settingId);
+        format_time_data(resultBuf[1], bufLen, weather, subsettingId);
+    } else {
+        snprintf(resultBuf[0], bufLen, "Connection failed");
+        snprintf(resultBuf[1], bufLen, "Connection failed");
+    }
+
+    // Free array
+    for(int i = 0; i < ntokens; i++) {
+        free((char *)weather[i]);
+    }
+
+    return ntokens; 
+}
+
+
+
+int read_headlines(char** resultBuf, unsigned int bufLen, unsigned int settingId, unsigned int subsettingId) {
+    // Send request to esp-32
+    uart_putchar('h');
+    timer_delay_ms(100);
+
+    char *line = (char *)malloc (HEADLINES_BUF_LEN);
+  
+    int len = uart_getline(line, HEADLINES_BUF_LEN);
+    if (len == 0) return 0;
+
+    // Tokenize
+    char *headlines[HEADLINE_ITEMS]; 
+    int ntokens = tokenize(line, headlines, len); 
+
+    if (ntokens > 0) {
+        // Format date and time data according to our defined settings
+        format_date_data(resultBuf[0], bufLen, headlines, settingId);
+        format_time_data(resultBuf[1], bufLen, headlines, subsettingId);
+    } else {
+        snprintf(resultBuf[0], bufLen, "Connection failed");
+        snprintf(resultBuf[1], bufLen, "Connection failed");
+    }
+
+    // Free array
+    for(int i = 0; i < ntokens; i++) {
+        free((char *)headlines[i]);
     }
 
     return ntokens; 
