@@ -22,14 +22,15 @@ static unsigned int* p_themeSettingId;
 static unsigned int* p_fontSettingId;
 
 static const setting_options_t setting_options[] = {
-    {SETTING_LEVEL_MAIN, MAIN_SETTINGS_STRING, MAIN_SETTINGS_COUNT},
-    {SETTING_LEVEL_DATE, DATE_SETTINGS_STRING, DATE_SETTINGS_COUNT},
-    {SETTING_LEVEL_TIME, TIME_SETTINGS_STRING, TIME_SETTINGS_COUNT},
-    {SETTING_LEVEL_TEMPERATURE, TEMPERATURE_SETTINGS_STRING, TEMPERATURE_SETTINGS_COUNT},
-    {SETTING_LEVEL_WEATHER, WEATHER_SETTINGS_STRING, WEATHER_SETTINGS_COUNT},
-    {SETTING_LEVEL_HEADLINE, HEADLINE_SETTINGS_STRING, HEADLINE_SETTINGS_COUNT},
-    {SETTING_LEVEL_THEME, THEME_SETTINGS_STRING, THEME_SETTINGS_COUNT},
-    {SETTING_LEVEL_FONT, FONT_SETTINGS_STRING, FONT_SETTINGS_COUNT}
+    {SETTING_LEVEL_MAIN, MAIN_SETTINGS_STRING, MAIN_SETTINGS_COUNT, "Settings"},
+    {SETTING_LEVEL_DATE, DATE_SETTINGS_STRING, DATE_SETTINGS_COUNT, "Date"},
+    {SETTING_LEVEL_TIME, TIME_SETTINGS_STRING, TIME_SETTINGS_COUNT, "Time"},
+    {SETTING_LEVEL_TEMPERATURE, TEMPERATURE_SETTINGS_STRING, TEMPERATURE_SETTINGS_COUNT, "Temperature"},
+    {SETTING_LEVEL_HUMIDITY, HUMIDITY_SETTINGS_STRING, HUMIDITY_SETTINGS_COUNT, "Humidity"},
+    {SETTING_LEVEL_WEATHER, WEATHER_SETTINGS_STRING, WEATHER_SETTINGS_COUNT, "Weather"},
+    {SETTING_LEVEL_HEADLINE, HEADLINE_SETTINGS_STRING, HEADLINE_SETTINGS_COUNT, "Headline"},
+    {SETTING_LEVEL_THEME, THEME_SETTINGS_STRING, THEME_SETTINGS_COUNT, "Theme"},
+    {SETTING_LEVEL_FONT, FONT_SETTINGS_STRING, FONT_SETTINGS_COUNT, "Font"}
 };
 
 /*
@@ -67,6 +68,16 @@ void get_settings_page(profile_t* profile) {
     }
 }
 
+static setting_options_t get_setting_option(unsigned int settingLevel){
+    for (int i = 0; i < SETTING_LEVELS_COUNT; i++){
+        if (setting_options[i].settingLevel == settingLevel){
+            return setting_options[i];
+        }
+    }
+
+    return setting_options[0];
+}
+
 /*
  * Show current options of setting level
  * Determine which is the current option
@@ -81,11 +92,11 @@ void display_settings(cursor_t* cursor) {
     unsigned int selectedOption = cursor->selectedOption;
     unsigned int curPos = cursor->curPos;
     
-    setting_options_t settingOption = setting_options[settingLevel];
+    setting_options_t settingOption = get_setting_option(settingLevel);
     
     const char** options = settingOption.options; 
     unsigned int numOptions = settingOption.numOptions;
-    const char* title = (settingLevel == SETTING_LEVEL_MAIN) ? "Settings" : MAIN_SETTINGS_STRING[settingLevel - 1];
+    const char* title = (settingLevel == SETTING_LEVEL_MAIN) ? "Settings" : settingOption.title;
 
     // draw title
     unsigned int fontOffset = *p_fontSettingId == SETTING_FONT_1 ? -10 : 0;
@@ -128,7 +139,7 @@ bool move_cursor(cursor_t* cursor, int direction) {
         return false;
     }
     
-    setting_options_t settingOption = setting_options[cursor->settingLevel];
+    setting_options_t settingOption = get_setting_option(cursor->settingLevel);
     unsigned int numOptions = settingOption.numOptions;
     unsigned int curPos = cursor->curPos;
 
@@ -155,6 +166,7 @@ static module_config_t* get_module_config_at_cursor(cursor_t* cursor) {
             moduleConfig = &settings[SD_MODULE_DATETIME];
             break;
         case SETTING_LEVEL_TEMPERATURE:
+        case SETTING_LEVEL_HUMIDITY:
             moduleConfig = &settings[SD_MODULE_TEMPERATURE];
             break;
         case SETTING_LEVEL_WEATHER:
@@ -183,7 +195,7 @@ static int get_current_option(cursor_t* cursor) {
 
     module_config_t* moduleConfig = get_module_config_at_cursor(cursor);
 
-    if (cursor->settingLevel == SETTING_LEVEL_TIME) {
+    if (cursor->settingLevel == SETTING_LEVEL_TIME || cursor->settingLevel == SETTING_LEVEL_HUMIDITY) {
         return moduleConfig->moduleSubsettingId;
     }
 
@@ -205,22 +217,24 @@ static void set_font_option(unsigned int fontSettingId){
 static void save_current_option(cursor_t* cursor) {
     if (cursor->settingLevel == SETTING_LEVEL_THEME) {
         *p_themeSettingId = cursor->selectedOption;
+        return;
     } else if (cursor->settingLevel == SETTING_LEVEL_FONT) {
         *p_fontSettingId = cursor->selectedOption;
         set_font_option(*p_fontSettingId);
+        return;
     }
     
     module_config_t* moduleConfig = get_module_config_at_cursor(cursor);
 
-    if (cursor->settingLevel == SETTING_LEVEL_TIME) {
+    if (cursor->settingLevel == SETTING_LEVEL_TIME || cursor->settingLevel == SETTING_LEVEL_HUMIDITY) {
         moduleConfig->moduleSubsettingId = cursor->selectedOption;
-    } 
-
-    moduleConfig->moduleSettingId = cursor->selectedOption;
+    } else {
+        moduleConfig->moduleSettingId = cursor->selectedOption;
+    }
 }
 
 bool select_option(cursor_t* cursor) {
-    setting_options_t settingOption = setting_options[cursor->settingLevel];
+    setting_options_t settingOption = get_setting_option(cursor->settingLevel);
 
     // returning to previous page
     if (cursor->curPos == settingOption.numOptions) {
@@ -228,10 +242,16 @@ bool select_option(cursor_t* cursor) {
             return true; // exit out of setting page
         }
 
-        // go back to main menu
-        cursor->settingLevel = SETTING_LEVEL_MAIN;
+        printf("From cursor Setting Level : %d\n", cursor->settingLevel);
+        
+        // go back to previous level
+        cursor->settingLevel /= 10;
         cursor->curPos = 0;
+        if (cursor->settingLevel != SETTING_LEVEL_MAIN) {
+            cursor->selectedOption = cursor->curPos;
+        }
 
+        printf("Returning to - cursor Setting Level : %d\n", cursor->settingLevel);
         return false;
     }
 
@@ -240,6 +260,11 @@ bool select_option(cursor_t* cursor) {
         cursor->settingLevel = cursor->curPos + 1; // +1 for the offset from index to setting level
         cursor->selectedOption = get_current_option(cursor);
         cursor->curPos = 0;
+    } else if(cursor->settingLevel == SETTING_LEVEL_TEMPERATURE && cursor->curPos == SETTING_TEMPERATURE_HUMIDITY) {
+        cursor->settingLevel = SETTING_LEVEL_HUMIDITY;
+        cursor->selectedOption = get_current_option(cursor);
+        cursor->curPos = 0;
+        printf("Going down to humidity now");
     } else { // Otherwise, show the current option as selected
         cursor->selectedOption = cursor->curPos;
         save_current_option(cursor);  
@@ -283,7 +308,13 @@ const char *TEMPERATURE_SETTINGS_STRING[] = {
     "Fahrenheit",
     "Celsius",
     "Fahrenheit / Celsius",
-    "Celsius / Fahrenheit"
+    "Celsius / Fahrenheit",
+    "Humidity"
+};
+
+const char *HUMIDITY_SETTINGS_STRING[] = {
+    "Show Humidity",
+    "Hide Humidity"
 };
 
 const char *WEATHER_SETTINGS_STRING[] = {

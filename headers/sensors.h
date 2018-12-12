@@ -14,7 +14,7 @@ static const int temp_remove = 1;
 
 void sensors_init(void);
 
-bool read_temp_data(char* resultBuf, unsigned int bufLen);
+bool read_temp_data(char** resultBuf, unsigned int bufLen, unsigned int settingId, unsigned int subsettingId);
 
 bool read_motion_data();
 
@@ -24,6 +24,6 @@ bool is_rotary_clicked();
 
 void reset_rotary_click();
 
-int read_date_time(char** resultBufs, unsigned int bufLen, unsigned int settingId, unsigned int subSettingId);
+int read_date_time(char** resultBufs, unsigned int bufLen, unsigned int settingId, unsigned int subsettingId);
 
 #endif 

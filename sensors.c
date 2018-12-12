@@ -87,11 +87,10 @@ bool read_motion_data() {
  * Subsequent odd-numbered flips are when TEMP_PIN is set to 0 preceding each data bit. 
  * Even-numbered flips are when TEMP_PIN is set to 1 for each data bit. 
 **/
-bool read_temp_data(char* resultBuf, unsigned int bufLen) {
+bool read_temp_data(char** resultBuf, unsigned int bufLen, unsigned int settingId, unsigned int subsettingId) {
     unsigned int count = 0;
     unsigned int n_bits = 0; 
     int temp_data[5] = { 0 };
-    float fahrenheit = 0.0;
 
     // request data from sensor
     gpio_set_output(TEMP_PIN);
@@ -127,11 +126,7 @@ bool read_temp_data(char* resultBuf, unsigned int bufLen) {
     unsigned int checksum = (temp_data[0] + temp_data[1] + temp_data[2] + temp_data[3]) & 0xFF; 
     
     if ( (n_bits >= 40) && (temp_data[4] == checksum ) ) {
-        fahrenheit = temp_data[2] * 9. / 5. + 32;
-        int f_int = fahrenheit;                 // Holds the integer portion of the float.
-        int f_frac = (fahrenheit - f_int) * 10; // Stores one decimal place
-        snprintf(resultBuf, bufLen, "Temperature = %d.%d C / %d.%d F  Humidity = %d.%d%% \n", 
-		temp_data[2], temp_data[3], f_int, f_frac, temp_data[0], temp_data[1] );
+        format_temperature_data(resultBuf, bufLen, temp_data, settingId, subsettingId);
         return true;
     }
 
