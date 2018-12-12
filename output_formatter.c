@@ -22,24 +22,24 @@ void format_temperature_data(char** buf, int bufsize, int* temp_data, unsigned i
             snprintf(buf[0], bufsize, "Temperature: %d.%dF / %d.%dC", f_int, f_frac, 
                     temp_data[TEMPERATURE_CELSIUS_INT], temp_data[TEMPERATURE_CELSIUS_DECIMAL]);
             break;
-        // case SETTING_TEMPERATURE_4:
-        //     snprintf(buf[0], bufsize, "Temperature: %d.%dC / %d.%dF",
-        //             temp_data[TEMPERATURE_CELSIUS_INT], temp_data[TEMPERATURE_CELSIUS_DECIMAL], f_int, f_frac);
-        //     break;
+        case SETTING_TEMPERATURE_4:
+            snprintf(buf[0], bufsize, "Temperature: %d.%dC / %d.%dF",
+                    temp_data[TEMPERATURE_CELSIUS_INT], temp_data[TEMPERATURE_CELSIUS_DECIMAL], f_int, f_frac);
+            break;
         default:
             break;
     }
 
-    // switch (subsettingId){
-    //     case SETTING_HUMIDITY_SHOW:
-    //         snprintf(buf[1], bufsize, "Humidity: %d.%d%%", temp_data[TEMPERATURE_HUMIDITY_INT], temp_data[TEMPERATURE_HUMIDITY_DECIMAL]);
-    //         break;
-    //     case SETTING_HUMIDITY_HIDE:
-    //         buf[1][0] = '\0';
-    //         break;
-    //     default:
-    //         break;
-    // }
+    switch (subsettingId){
+        case SETTING_HUMIDITY_SHOW:
+            snprintf(buf[1], bufsize, "Humidity: %d.%d%%", temp_data[TEMPERATURE_HUMIDITY_INT], temp_data[TEMPERATURE_HUMIDITY_DECIMAL]);
+            break;
+        case SETTING_HUMIDITY_HIDE:
+            buf[1][0] = '\0';
+            break;
+        default:
+            break;
+    }
 };
 
 void format_date_data(char* buf, int bufsize, char** datetime, unsigned int settingId) {
@@ -74,3 +74,14 @@ void format_time_data(char* buf, int bufsize, char** datetime, unsigned int sett
             break;
     }
 };
+
+
+void format_weather_data(char* buf, int bufsize, char** datetime, unsigned int settingId) {
+    
+    // TODO
+}
+
+void format_headlines_data(char* buf, int bufsize, char** datetime, unsigned int settingId) {
+
+    // TODO
+}

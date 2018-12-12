@@ -35,16 +35,7 @@ void format_time_data(char* buf, int bufsize, char** datetime, unsigned int sett
 
 void format_date_data(char* buf, int bufsize, char** datetime, unsigned int settingId);
 
-<<<<<<< Updated upstream
+
 void format_weather_data(char* buf, int bufsize, char** datetime, unsigned int settingId);
 
 void format_headlines_data(char* buf, int bufsize, char** datetime, unsigned int settingId);
-
-#endif
-=======
-// void format_weather_data(char* buf, int bufsize, char** datetime, unsigned int settingId);
-
-// void format_headlines_data(char* buf, int bufsize, char** datetime, unsigned int settingId);
-
-#endif
->>>>>>> Stashed changes
