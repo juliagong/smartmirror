@@ -46,11 +46,11 @@ void format_date_data(char* buf, int bufsize, char** datetime, unsigned int sett
     switch (settingId) {
         case SETTING_DATE_1: // 1/31/2019
             snprintf(buf, bufsize, "%s/%s/%s", 
-		datetime[DATETIME_MONTH], datetime[DATETIME_DAY], datetime[DATETIME_YEAR]); 
+        datetime[DATETIME_MONTH], datetime[DATETIME_DAY], datetime[DATETIME_YEAR]); 
             break;
         case SETTING_DATE_2: // Jan 31, 2019
             snprintf(buf, bufsize, "%s %s, %s", 
-		datetime[DATETIME_MONTH_NAME], datetime[DATETIME_DAY], datetime[DATETIME_YEAR]); 
+        datetime[DATETIME_MONTH_NAME], datetime[DATETIME_DAY], datetime[DATETIME_YEAR]); 
             break;
         default:
             break;
@@ -74,3 +74,14 @@ void format_time_data(char* buf, int bufsize, char** datetime, unsigned int sett
             break;
     }
 };
+
+
+void format_weather_data(char* buf, int bufsize, char** datetime, unsigned int settingId) {
+    
+    // TODO
+}
+
+void format_headlines_data(char* buf, int bufsize, char** datetime, unsigned int settingId) {
+
+    // TODO
+}

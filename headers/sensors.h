@@ -26,4 +26,8 @@ void reset_rotary_click();
 
 int read_date_time(char** resultBufs, unsigned int bufLen, unsigned int settingId, unsigned int subsettingId);
 
+int read_weather(char** resultBufs, unsigned int bufLen, unsigned int settingId, unsigned int subSettingId);
+
+int read_headlines(char** resultBufs, unsigned int bufLen, unsigned int settingId, unsigned int subSettingId);
+
 #endif 

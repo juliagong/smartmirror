@@ -29,7 +29,17 @@
 #define ROTARY_SW GPIO_PIN21
 
 // Time 
-#define TIME_BUF_LEN 71
+#define TIME_BUF_LEN 100
+#define TIME_DATE_ITEMS 8
+
+// Weather
+#define WEATHER_BUF_LEN 100
+#define WEATHER_ITEMS 6
+
+// Headlines
+#define HEADLINES_BUF_LEN 1024
+#define HEADLINE_ITEMS 10 
+
 
 static volatile unsigned int prev_clk_val;
 static volatile int rotation;
@@ -290,13 +300,17 @@ date_time[] array holds 7 pieces of information:
 */
 
 int read_date_time(char** resultBuf, unsigned int bufLen, unsigned int settingId, unsigned int subsettingId) {
+    // Send request to esp-32
+    uart_putchar('t');
+    timer_delay_ms(100);
+
     char *line = (char *)malloc (TIME_BUF_LEN);
   
     int len = uart_getline(line, TIME_BUF_LEN);
     if (len == 0) return 0;
 
     // Tokenize
-    char *date_time[7]; 
+    char *date_time[TIME_DATE_ITEMS]; 
     int ntokens = tokenize(line, date_time, len); 
 
     if (ntokens > 0) {
@@ -311,6 +325,70 @@ int read_date_time(char** resultBuf, unsigned int bufLen, unsigned int settingId
     // Free array
     for(int i = 0; i < ntokens; i++) {
         free((char *)date_time[i]);
+    }
+
+    return ntokens; 
+}
+
+int read_weather(char** resultBuf, unsigned int bufLen, unsigned int settingId, unsigned int subsettingId) {
+    // Send request to esp-32
+    uart_putchar('w');
+    timer_delay_ms(100);
+
+    char *line = (char *)malloc (WEATHER_BUF_LEN);
+  
+    int len = uart_getline(line, WEATHER_BUF_LEN);
+    if (len == 0) return 0;
+
+    // Tokenize
+    char *weather[WEATHER_ITEMS]; 
+    int ntokens = tokenize(line, weather, len); 
+
+    if (ntokens > 0) {
+        // Format date and time data according to our defined settings
+        format_date_data(resultBuf[0], bufLen, weather, settingId);
+        format_time_data(resultBuf[1], bufLen, weather, subsettingId);
+    } else {
+        snprintf(resultBuf[0], bufLen, "Connection failed");
+        snprintf(resultBuf[1], bufLen, "Connection failed");
+    }
+
+    // Free array
+    for(int i = 0; i < ntokens; i++) {
+        free((char *)weather[i]);
+    }
+
+    return ntokens; 
+}
+
+
+
+int read_headlines(char** resultBuf, unsigned int bufLen, unsigned int settingId, unsigned int subsettingId) {
+    // Send request to esp-32
+    uart_putchar('h');
+    timer_delay_ms(100);
+
+    char *line = (char *)malloc (HEADLINES_BUF_LEN);
+  
+    int len = uart_getline(line, HEADLINES_BUF_LEN);
+    if (len == 0) return 0;
+
+    // Tokenize
+    char *headlines[HEADLINE_ITEMS]; 
+    int ntokens = tokenize(line, headlines, len); 
+
+    if (ntokens > 0) {
+        // Format date and time data according to our defined settings
+        format_date_data(resultBuf[0], bufLen, headlines, settingId);
+        format_time_data(resultBuf[1], bufLen, headlines, subsettingId);
+    } else {
+        snprintf(resultBuf[0], bufLen, "Connection failed");
+        snprintf(resultBuf[1], bufLen, "Connection failed");
+    }
+
+    // Free array
+    for(int i = 0; i < ntokens; i++) {
+        free((char *)headlines[i]);
     }
 
     return ntokens; 
