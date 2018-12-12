@@ -336,6 +336,6 @@ unsigned int COLOR_SCHEMES[5][4] = {
 };
 
 const char *FONT_SETTINGS_STRING[] = {
-    "Default(Segoeui)",
+    "Default (Segoe UI)",
     "System Font"
 };
