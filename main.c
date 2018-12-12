@@ -103,9 +103,6 @@ static int tokenize(const char *line, char *arr[], int max) {
         while (isspace(*line)) line++;  // skip past spaces
         if (*line == '\0') break; // no more non-white chars
         const char *start = line;
-        if (*(start + 1) == '*') {  // Double asterisk means it's a header. 
-            ntokens = 0; 
-        }
         while (*line != '\0' && !isspace(*line)) line++; // advance to next space/null
         if (*start == '*') {
             int nchars = line - start - 1;      
@@ -130,27 +127,21 @@ date_time[] array holds 7 pieces of information:
 int read_date_time_simple() {
 // Send request to esp-32
     uart_putchar('t');
-    timer_delay_ms(100);
+    timer_delay_ms(200);
 
-    char *line = (char *)malloc (100);
+    char *line = (char *)malloc (200);
   
     int len = uart_getline(line, 100);
     if (len == 0) return 0;
+    // gl_draw_string(0,0, line, GL_BLUE);
 
     // Tokenize
     char *date_time[8]; 
     int ntokens = tokenize(line, date_time, len); 
 
-
-    // if(strcmp(date_time[0], "*TIME") == 0) {
-    //    gl_draw_string(0,0, "Time Data", GL_BLUE);
-    // } else if (strcmp(date_time[0], "*WEATHER") == 0) {
-    //    gl_draw_string(0,0, "WeatherData", GL_BLUE);
-    // }
-
     // Print to display for testing purposes
     int height = gl_get_char_height();  
-    for (int i = 1; i < ntokens; i++) {
+    for (int i = 0; i < ntokens; i++) {
         gl_draw_string(5, 15 + height * i, date_time[i], GL_GREEN);
     }
 
@@ -172,20 +163,73 @@ int read_weather_simple() {
   
     int len = uart_getline(line, 100);
     if (len == 0) return 0;
+    // gl_draw_string(0,0, line, GL_BLUE);
 
     // Tokenize
-    char *weather[8]; 
+    char *weather[6]; 
     int ntokens = tokenize(line, weather, len); 
 
     // Print to display for testing purposes
     int height = gl_get_char_height();  
-    for (int i = 1; i < ntokens; i++) {
+    for (int i = 0; i < ntokens; i++) {
         gl_draw_string(5, 15 + height * i, weather[i], GL_GREEN);
     }
 
     // Free array
     for(int i = 0; i < ntokens; i++) {
         free((char *)weather[i]);
+    }
+
+    return ntokens; 
+}
+
+int split_lines(const char *buf, char *arr[], int max) {
+    int ntokens = 0; 
+    while (*buf != '\0' && ntokens < max) {    
+        while (*buf != '\0' && *buf != '*') buf++; 
+
+        if (*buf == '\0') return;
+
+        char *start = buf; // Start points to * 
+
+        while (*buf !='\0' && *buf != '^') buf++;   // buf points to ^ or end
+
+        int nchars = buf - start - 1; 
+
+        arr[ntokens] = strndup(start + 1, nchars); 
+
+        ntokens++;
+    }
+
+
+    return ntokens;
+}      
+
+int read_headlines_simple() {
+// Send request to esp-32
+    uart_putchar('h');
+    timer_delay_ms(100);
+
+    char *buf = (char *)malloc (1024);
+  
+    int len = uart_getline(buf, 1024);
+    if (len == 0) return 0;
+    // gl_draw_string(0,0, buf+50, GL_BLUE);
+
+    // Tokenize
+    char *headlines[10]; 
+    int ntokens = split_lines(buf, headlines, len); 
+    // int ntokens = tokenize(buf, headlines, len); 
+
+    // Print to display for testing purposes
+    int height = gl_get_char_height();  
+    for (int i = 0; i < ntokens; i++) {
+        gl_draw_string(5, 15 + height * i, headlines[i], GL_GREEN);
+    }
+
+    // Free array
+    for(int i = 0; i < ntokens; i++) {
+        free((char *)headlines[i]);
     }
 
     return ntokens; 
@@ -211,6 +255,10 @@ void main(void)
        gl_swap_buffer(); 
        timer_delay(1);
 
+       gl_clear(GL_BLACK);
+       read_headlines_simple();
+       gl_swap_buffer(); 
+       timer_delay(1);
     }    
 
 }
