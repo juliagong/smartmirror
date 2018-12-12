@@ -7,7 +7,6 @@
  */
 typedef struct{
     int settingLevel;
-    unsigned int selectedOption;
     unsigned int curPos;
 } cursor_t;
 

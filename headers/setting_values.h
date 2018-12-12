@@ -12,6 +12,7 @@ typedef struct {
     int settingLevel;
     const char** options;
     unsigned int numOptions;
+    char* title;
 } setting_options_t;
 
 extern const char RETURN_STRING[];
@@ -24,8 +25,10 @@ enum setting_levels {
     SETTING_LEVEL_WEATHER = 4,
     SETTING_LEVEL_HEADLINE = 5,
     SETTING_LEVEL_THEME = 6,
-    SETTING_LEVEL_FONT = 7
+    SETTING_LEVEL_FONT = 7,
+    SETTING_LEVEL_HUMIDITY = 30
 };
+#define SETTING_LEVELS_COUNT 9
 
 enum main_settings {
     SETTING_DATE = 0,
@@ -59,13 +62,23 @@ enum date_settings {
 extern const char *DATE_SETTINGS_STRING[];
 
 enum temperature_settings {
-    SETTING_TEMPERATURE_1, /* F */
-    SETTING_TEMPERATURE_2, /* C */
-    SETTING_TEMPERATURE_3  /* F / C */
+    SETTING_TEMPERATURE_1,  /* F */
+    SETTING_TEMPERATURE_2,  /* C */
+    SETTING_TEMPERATURE_3,  /* F / C */
+    SETTING_TEMPERATURE_4,  /* C / F */
+    SETTING_TEMPERATURE_HUMIDITY,  /* Humidity control */
 };
 
-#define TEMPERATURE_SETTINGS_COUNT 4
+#define TEMPERATURE_SETTINGS_COUNT 5
 extern const char *TEMPERATURE_SETTINGS_STRING[];
+
+enum humidity_settings {
+    SETTING_HUMIDITY_SHOW,
+    SETTING_HUMIDITY_HIDE
+};
+
+#define HUMIDITY_SETTINGS_COUNT 2
+extern const char* HUMIDITY_SETTINGS_STRING[];
 
 enum weather_settings {
     SETTING_WEATHER_1,
