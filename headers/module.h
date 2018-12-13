@@ -3,26 +3,27 @@
 
 #include <stdbool.h>
 /*
- * TODO - description
  * Module defines and controls behaviors of a single module
  * This mostly includes sensors, but is generalized to support
  * other forms of modules as well
  *
- *
  */
 
-static const int MAX_COMPONENTS = 10;
 
+/*
+ * Defines a location for a component
+ */
 typedef struct{
     unsigned int x;
     unsigned int y;
 } coordinate_t;
 
-typedef struct{
-    unsigned int width;
-    unsigned int height;
-} dimension_t;
 
+/*
+ * Define a module, includes its name and id along with
+ * - A function to check if there is new information
+ * - A function to update the information
+ */
 typedef struct{
     unsigned int moduleId;
     char* name;
@@ -30,6 +31,13 @@ typedef struct{
     bool (*update_info)(unsigned int settingId, unsigned int subSettingId);
 } module_t;
 
+static const int MAX_COMPONENTS = 10;
+/*
+ * Defines the content of a module
+ * - There are at most #MAX_COMPONENTS components
+ * - Each component is a string
+ * - coordinates define the location of each component within the module
+ */
 typedef struct{
     char** components;
     coordinate_t* coordinates;
@@ -37,6 +45,9 @@ typedef struct{
 } module_content_t;
 
 
+/*
+ * Perform all the initialization needed for modules
+ */
 void module_init(void);
 
 /*

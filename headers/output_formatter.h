@@ -1,6 +1,16 @@
 #ifndef FORMATTER_H
 #define FORMATTER_H
 
+/*
+ * Output_formatter formats the data we retrieved into an output.
+ * We use the current settings to determine our output format.
+ */
+
+
+/*
+ * Enums to keep track of location of each piece of information
+ * in the given data array
+ */
 enum datetime_data {
     DATETIME_DOW = 0,
     DATETIME_MONTH_NAME = 1,
@@ -30,14 +40,13 @@ enum temperature_data {
     TEMPERATURE_CELSIUS_DECIMAL = 3
 };
 
+/*
+ * Format functions for different modules
+ */
 void format_temperature_data(char** buf, int bufsize, int* temp_data, unsigned int settingId, unsigned int subsettingId);
-
 void format_time_data(char* buf, int bufsize, char** datetime, unsigned int settingId);
-
 void format_date_data(char* buf, int bufsize, char** datetime, unsigned int settingId);
-
 void format_weather_data(char** buf, int bufsize, char** datetime, unsigned int settingId);
-
 void format_headlines_data(char** buf, int bufsize, unsigned int settingId);
 
 #endif

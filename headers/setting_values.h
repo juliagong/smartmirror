@@ -77,25 +77,6 @@ enum humidity_settings {
     SETTING_HUMIDITY_HIDE
 };
 
-#define HUMIDITY_SETTINGS_COUNT 2
-extern const char* HUMIDITY_SETTINGS_STRING[];
-
-enum weather_settings {
-    SETTING_WEATHER_1,
-    SETTING_WEATHER_2
-};
-
-#define WEATHER_SETTINGS_COUNT 2
-extern const char *WEATHER_SETTINGS_STRING[];
-
-enum headline_settings {
-    SETTING_HEADLINE_1,
-    SETTING_HEADLINE_2
-};
-
-#define HEADLINE_SETTINGS_COUNT 2
-extern const char *HEADLINE_SETTINGS_STRING[];
-
 #define THEME_SETTINGS_COUNT 5
 extern const char *THEME_SETTINGS_STRING[];
 extern unsigned int COLOR_SCHEMES[5][4];
@@ -125,5 +106,29 @@ enum font_settings {
 
 extern const font_t font_default;
 extern const font_t font_segoeui;
+
+
+
+/*
+ * Settings currently not supported
+ */
+#define HUMIDITY_SETTINGS_COUNT 2
+extern const char* HUMIDITY_SETTINGS_STRING[];
+
+enum weather_settings {
+    SETTING_WEATHER_1,
+    SETTING_WEATHER_2
+};
+
+#define WEATHER_SETTINGS_COUNT 2
+extern const char *WEATHER_SETTINGS_STRING[];
+
+enum headline_settings {
+    SETTING_HEADLINE_1,
+    SETTING_HEADLINE_2
+};
+
+#define HEADLINE_SETTINGS_COUNT 2
+extern const char *HEADLINE_SETTINGS_STRING[];
 
 #endif
