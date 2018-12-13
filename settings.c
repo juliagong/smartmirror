@@ -74,9 +74,9 @@ void get_settings_page(profile_t* profile) {
     }
 }
 
-static setting_options_t get_setting_option(unsigned int settingLevel){
-    for (int i = 0; i < SETTING_LEVELS_COUNT; i++){
-        if (setting_options[i].settingLevel == settingLevel){
+static setting_options_t get_setting_option(unsigned int settingLevel) {
+    for (int i = 0; i < SETTING_LEVELS_COUNT; i++) {
+        if (setting_options[i].settingLevel == settingLevel) {
             return setting_options[i];
         }
     }
@@ -209,8 +209,8 @@ static int get_current_option(cursor_t* cursor) {
 }
 
 
-static void set_font_option(unsigned int fontSettingId){
-    if (fontSettingId == SETTING_FONT_1){
+static void set_font_option(unsigned int fontSettingId) {
+    if (fontSettingId == SETTING_FONT_1) {
         font_set_font((font_t*)&font_segoeui);
     } else {
         font_set_font((font_t*)&font_default);
@@ -269,7 +269,7 @@ bool select_option(cursor_t* cursor) {
     return false;
 }
 
-color_scheme_t* get_color_scheme(unsigned int themeSettingId){
+color_scheme_t* get_color_scheme(unsigned int themeSettingId) {
     return (color_scheme_t*)COLOR_SCHEMES[themeSettingId];
 }
 

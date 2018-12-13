@@ -25,8 +25,6 @@ static void display() {
         } else {
             blank_screen();
         }
-
-        // timer_delay(1);
     }
 }
 
