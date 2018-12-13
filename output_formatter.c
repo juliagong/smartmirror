@@ -4,6 +4,8 @@
 #include "printf.h"
 #include "strings.h"
 
+#define MAX_HEADLINE_LENGTH 75
+
 void format_temperature_data(char** buf, int bufsize, int* temp_data, unsigned int settingId, unsigned int subsettingId) {
     float fahrenheit = temp_data[TEMPERATURE_CELSIUS_INT] * 9. / 5. + 32;
     int f_int = fahrenheit;                 // Holds the integer portion of the float
@@ -61,9 +63,9 @@ void format_time_data(char* buf, int bufsize, char** datetime, unsigned int sett
         case SETTING_TIME_1: // 12 hr format
             hour = strtonum(datetime[DATETIME_HOUR], (const char**)0);
             char* ampmString = (hour >= 12) ? "PM" : "AM";
-            hour %= 12; 
+            hour = (hour > 12) ? hour % 12 : hour; 
 
-            snprintf(buf, bufsize, "%d:%s %s", hour, datetime[DATETIME_MINUTE], ampmString);
+            snprintf(buf, bufsize, "%02d:%s %s", hour, datetime[DATETIME_MINUTE], ampmString);
             break;
         case SETTING_TIME_2: // 24 hr format
             snprintf(buf, bufsize, "%s:%s", datetime[DATETIME_HOUR], datetime[DATETIME_MINUTE]);
@@ -83,12 +85,11 @@ void format_weather_data(char** buf, int bufsize, char** weather_data, unsigned 
 }
 
 void format_headlines_data(char** buf, int bufsize, unsigned int settingId) {
-    // TODO
-    unsigned int maxLineLength = 60;
-
     // truncate lines 
     for (int i = 0; i < 10; i ++){
-        memcpy(buf[i] + maxLineLength - 3, "...", 3);
-        buf[i][maxLineLength] = '\0';
+        if (strlen(buf[i]) > MAX_HEADLINE_LENGTH - 3) {
+            memcpy(buf[i] + MAX_HEADLINE_LENGTH - 3, "...", 3);
+            buf[i][MAX_HEADLINE_LENGTH] = '\0';
+        }
     }
 }

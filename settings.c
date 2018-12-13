@@ -33,8 +33,8 @@ static const setting_options_t setting_options[] = {
     {SETTING_LEVEL_TIME, TIME_SETTINGS_STRING, TIME_SETTINGS_COUNT, "Time"},
     {SETTING_LEVEL_TEMPERATURE, TEMPERATURE_SETTINGS_STRING, TEMPERATURE_SETTINGS_COUNT, "Temperature"},
     {SETTING_LEVEL_HUMIDITY, HUMIDITY_SETTINGS_STRING, HUMIDITY_SETTINGS_COUNT, "Humidity"},
-    {SETTING_LEVEL_WEATHER, WEATHER_SETTINGS_STRING, WEATHER_SETTINGS_COUNT, "Weather"},
-    {SETTING_LEVEL_HEADLINE, HEADLINE_SETTINGS_STRING, HEADLINE_SETTINGS_COUNT, "Headline"},
+    // {SETTING_LEVEL_WEATHER, WEATHER_SETTINGS_STRING, WEATHER_SETTINGS_COUNT, "Weather"},
+    // {SETTING_LEVEL_HEADLINE, HEADLINE_SETTINGS_STRING, HEADLINE_SETTINGS_COUNT, "Headline"},
     {SETTING_LEVEL_THEME, THEME_SETTINGS_STRING, THEME_SETTINGS_COUNT, "Theme"},
     {SETTING_LEVEL_FONT, FONT_SETTINGS_STRING, FONT_SETTINGS_COUNT, "Font"}
 };
@@ -173,12 +173,14 @@ static module_config_t* get_module_config_at_cursor(cursor_t* cursor) {
         case SETTING_LEVEL_HUMIDITY:
             moduleConfig = &settings[SD_MODULE_TEMPERATURE];
             break;
+        /*
         case SETTING_LEVEL_WEATHER:
             moduleConfig = &settings[SD_MODULE_WEATHER];
             break;
         case SETTING_LEVEL_HEADLINE:
             moduleConfig = &settings[SD_MODULE_HEADLINE];
             break;
+        */
         default:
             break;
     }
@@ -281,10 +283,10 @@ const char *MAIN_SETTINGS_STRING[] = {
     "> Date",
     "> Time",
     "> Temperature",
-    "> Weather",
-    "> Headline",
     "> Customize Theme",
     "> Change Font"
+    //"> Weather",
+    //"> Headline",
 };
 
 const char *TIME_SETTINGS_STRING[] = {

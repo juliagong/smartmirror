@@ -41,7 +41,7 @@ static const module_t modules[] = {
 };
 
 void module_init() {
-    module_contents = malloc(sizeof(module_content_t*) * NUM_SUPPORTED_MODULES); 
+    module_contents = malloc(sizeof(module_content_t) * NUM_SUPPORTED_MODULES); 
 
     // initialize the module content array
     for (int moduleInd = 0; moduleInd < NUM_SUPPORTED_MODULES; moduleInd++) {

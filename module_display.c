@@ -50,11 +50,11 @@ void draw_page() {
     
     // draw title for each page
     if (current_page == 0) { // draw greeting on home page
-	    gl_draw_string_with_size(0, 0, "Howdy from CS 107e SmartMirror!", text_color, 2);
+	    gl_draw_string_with_size(20, 0, "Howdy from CS 107e SmartMirror!", text_color, 2);
     } else if (current_page == 1) { // title for weather data
-	    gl_draw_string_with_size(0, 0, "Weather", text_color, 2);
+	    gl_draw_string_with_size(20, 0, "Weather", text_color, 2);
     } else if (current_page == 2) { // title for headline data
-	    gl_draw_string_with_size(0, 0, "Today's Headlines", text_color, 2);
+	    gl_draw_string_with_size(20, 0, "Today's Headlines", text_color, 2);
     }
 
     // draw all modules that should appear on this page
