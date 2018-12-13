@@ -7,6 +7,9 @@
 #define NUM_SUPPORTED_MODULES 5
 #define COMPONENT_LEN 1024
 
+#define NUM_WEATHER_COMPONENTS 4
+#define NUM_HEADLINE_COMPONENTS 10
+
 static bool is_valid_module(unsigned int moduleId);
 static bool check_update_proximity();
 static bool update_info_proximity();
@@ -97,8 +100,6 @@ module_content_t* get_module_content(unsigned int moduleId) {
  * Proximity
  */
 static bool check_update_proximity() {
-
-    // TODO - use this for actual code
     bool isMotionDetected = read_motion_data();
     return isMotionDetected;
 }
@@ -182,20 +183,22 @@ static bool check_update_weather() {
 }
 
 static bool update_info_weather(unsigned int settingId, unsigned int subSettingId) {
-    return false;
+    module_content_t* content = &module_contents[SD_MODULE_WEATHER];
+    
+    int isRead = read_weather(content->components, COMPONENT_LEN, settingId);
+    return isRead > 0;
 }
 
 static void weather_module_init() {
-    module_content_t* content = &module_contents[SD_MODULE_TEMPERATURE];
+    module_content_t* content = &module_contents[SD_MODULE_WEATHER];
 
-    snprintf(content->components[0], COMPONENT_LEN, "Temperature Module(Temperature)");
-    content->coordinates[0].x = 0;
-    content->coordinates[0].y = 0;
+    for (int i = 0; i < NUM_WEATHER_COMPONENTS; i++){
+        snprintf(content->components[i], COMPONENT_LEN, "Weather %d", i);
+        content->coordinates[i].x = 0;
+        content->coordinates[i].y = 30 * i;
+    }
 
-    snprintf(content->components[1], COMPONENT_LEN, "Temperature Module(Humidity)");
-    content->coordinates[1].x = 0;
-    content->coordinates[1].y = 40;
-    content->numComponents = 2;
+    content->numComponents = NUM_WEATHER_COMPONENTS;
 }
 
 /*
@@ -206,20 +209,22 @@ static bool check_update_headline() {
 }
 
 static bool update_info_headline(unsigned int settingId, unsigned int subSettingId) {
-    return false;
+    module_content_t* content = &module_contents[SD_MODULE_HEADLINE];
+    
+    int isRead = read_headlines(content->components, COMPONENT_LEN, settingId);
+    return isRead > 0;
 }
 
 static void headline_module_init() {
-    module_content_t* content = &module_contents[SD_MODULE_TEMPERATURE];
+    module_content_t* content = &module_contents[SD_MODULE_HEADLINE];
+  
+    for (int i = 0; i < NUM_HEADLINE_COMPONENTS; i++){
+        snprintf(content->components[i], COMPONENT_LEN, "Headline %d", i);
+        content->coordinates[i].x = 0;
+        content->coordinates[i].y = 30 * i;
+    }
 
-    snprintf(content->components[0], COMPONENT_LEN, "Temperature Module(Temperature)");
-    content->coordinates[0].x = 0;
-    content->coordinates[0].y = 0;
-
-    snprintf(content->components[1], COMPONENT_LEN, "Temperature Module(Humidity)");
-    content->coordinates[1].x = 0;
-    content->coordinates[1].y = 40;
-    content->numComponents = 2;
+    content->numComponents = NUM_HEADLINE_COMPONENTS;
 }
 
 /*

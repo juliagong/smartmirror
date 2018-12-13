@@ -11,7 +11,7 @@
  *
  */
 
-static const int MAX_COMPONENTS = 6;
+static const int MAX_COMPONENTS = 10;
 
 typedef struct{
     unsigned int x;

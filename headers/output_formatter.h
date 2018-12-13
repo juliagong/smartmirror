@@ -18,11 +18,10 @@ enum weather_data {
     WEATHER_FAHRENHEIT_DEC = 2,
     WEATHER_CELSIUS_INT = 3,
     WEATHER_CELSIUS_DEC = 4,
-    WEATHER_WIND_SPEED_MPH = 3,
-    WEATHER_HUMIDITY_PERCENT = 4,
-    WEATHER_CONDITION_CODE = 5,
+    WEATHER_WIND_SPEED_MPH = 5,
+    WEATHER_HUMIDITY_PERCENT = 6,
+    WEATHER_CONDITION_CODE = 7,
 };
-
 
 enum temperature_data {
     TEMPERATURE_HUMIDITY_INT = 0,
@@ -37,7 +36,7 @@ void format_time_data(char* buf, int bufsize, char** datetime, unsigned int sett
 
 void format_date_data(char* buf, int bufsize, char** datetime, unsigned int settingId);
 
-void format_weather_data(char* buf, int bufsize, char** datetime, unsigned int settingId);
+void format_weather_data(char** buf, int bufsize, char** datetime, unsigned int settingId);
 
 void format_headlines_data(char** buf, int bufsize, unsigned int settingId);
 

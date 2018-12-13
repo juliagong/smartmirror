@@ -29,7 +29,7 @@
 #define ROTARY_SW GPIO_PIN21
 
 // Time 
-#define TIME_BUF_LEN 100
+#define TIME_BUF_LEN 500
 #define TIME_DATE_ITEMS 8
 
 // Weather
@@ -38,8 +38,7 @@
 
 // Headlines
 #define HEADLINES_BUF_LEN 1024
-#define HEADLINE_ITEMS 10
-#define MAX_HEADLINE_LEN 60
+#define HEADLINE_ITEMS 10 
 
 static volatile unsigned int prev_clk_val;
 static volatile int rotation;
@@ -213,6 +212,7 @@ static void init_interrupts() {
 // initialize everything necessary for sensors
 void sensors_init(void) {
     gpio_init();
+    uart_init();
 
     init_motion_sensor();
     init_rtc_sensor();
@@ -230,13 +230,24 @@ static int uart_getline(char *buf, int bufsize) {
         return 0;
     }
 
-    char c = uart_getchar(); 
     int index = 0; 
+    int retryIndex = 0;
     
-    while (c != '\0' && index < bufsize-1) {
-        buf[index] = c; 
-        index++;
-        c = uart_getchar(); 
+    while (index < bufsize - 1) {
+        if (uart_haschar()) {
+            char c = uart_getchar();
+            if (c == '\0') {
+                break;
+            }
+
+            buf[index] = c;
+            index++;
+        } else {
+            retryIndex++;
+            if (retryIndex == 5) {
+                break;
+            }
+        }
     }
     buf[index] = '\0';
  
@@ -300,19 +311,35 @@ static int tokenize(const char *line, char *arr[], int max) {
  */
 int read_date_time(char** resultBuf, unsigned int bufLen, unsigned int settingId, unsigned int subsettingId) {
     // Send request to esp-32
-    uart_putchar('t');
-    timer_delay_ms(100);
+    //uart_putchar('t');
+    //uart_flush();
+    //timer_delay_ms(100);
 
-    char line[TIME_BUF_LEN];
-  
+    char *line = (char *)malloc (TIME_BUF_LEN);
     int len = uart_getline(line, TIME_BUF_LEN);
-    if (len == 0) return 0;
-
+   
+    gl_draw_string(0,300, "uart_getline finished", GL_RED); 
+    if (len == 0) { 
+        free(line);
+        gl_draw_string(0, 350, "Length is 0", GL_RED);
+        return 0;
+    }
+    char lengthBuf[20];
+    snprintf(lengthBuf, 20, "Length: %d", len);
+    gl_draw_string(0,350, lengthBuf, GL_RED);
+    gl_draw_string(0,375, line, GL_RED);
+    for (int i = 0; i < len / 25; i ++){
+        gl_draw_string(0,400 + 25 * i, line + i * 50, GL_RED);
+    }
+    /*
     // Tokenize
     char *date_time[TIME_DATE_ITEMS]; 
     int ntokens = tokenize(line, date_time, len); 
 
     if (ntokens > 0) {
+        for (int i = 0; i < ntokens; i++){
+            gl_draw_string(0,500 + 30 * i, date_time[i], GL_BLUE);
+        }
         // Format date and time data according to our defined settings
         format_date_data(resultBuf[0], bufLen, date_time, settingId);
         format_time_data(resultBuf[1], bufLen, date_time, subsettingId);
@@ -320,21 +347,23 @@ int read_date_time(char** resultBuf, unsigned int bufLen, unsigned int settingId
         snprintf(resultBuf[0], bufLen, "Connection failed");
         snprintf(resultBuf[1], bufLen, "Connection failed");
     }
-
+    
     // Free array
     for(int i = 0; i < ntokens; i++) {
         free((char *)date_time[i]);
     }
-
+    */
+    free(line);
+    int ntokens = 3;
     return ntokens; 
 }
 
-int read_weather(char** resultBuf, unsigned int bufLen, unsigned int settingId) {
+int read_weather(char** resultBuf, unsigned int bufLen, unsigned int settingId, unsigned int subsettingId) {
     // Send request to esp-32
     uart_putchar('w');
     timer_delay_ms(100);
 
-    char line[WEATHER_BUF_LEN];
+    char *line = (char *)malloc (WEATHER_BUF_LEN);
   
     int len = uart_getline(line, WEATHER_BUF_LEN);
     if (len == 0) return 0;
@@ -344,8 +373,9 @@ int read_weather(char** resultBuf, unsigned int bufLen, unsigned int settingId) 
     int ntokens = tokenize(line, weather, len); 
 
     if (ntokens > 0) {
-        // Format weather data according to our defined settings
-        format_weather_data(resultBuf, bufLen, weather, settingId);
+        // Format date and time data according to our defined settings
+        format_date_data(resultBuf[0], bufLen, weather, settingId);
+        format_time_data(resultBuf[1], bufLen, weather, subsettingId);
     } else {
         snprintf(resultBuf[0], bufLen, "Connection failed");
         snprintf(resultBuf[1], bufLen, "Connection failed");
@@ -359,10 +389,10 @@ int read_weather(char** resultBuf, unsigned int bufLen, unsigned int settingId) 
     return ntokens; 
 }
 
-static int split_lines(const char* buf, char* arr[], unsigned int bufLen) {
+static int split_lines(const char* buf, char* arr[], unsigned int maxLines, unsigned int maxLineLength) {
     int nlines = 0;
 
-    while (*buf != '\0' && nlines < HEADLINE_ITEMS) {
+    while (*buf != '\0' && nlines < maxLines) {
         while (*buf != '\0' && *buf != '*') buf++;
 
         if (*buf == '\0') return nlines;
@@ -372,10 +402,13 @@ static int split_lines(const char* buf, char* arr[], unsigned int bufLen) {
         while (*buf != '\0' && *buf != '^') buf++; // buf points to ^ or end
 
         int nchars = buf - start - 1;
-        int ncharsToRead = nchars < bufLen ? nchars : bufLen;
+        int ncharsToRead = nchars < maxLineLength - 3 ? nchars : maxLineLength - 3;
 
         arr[nlines] = strndup(start + 1, ncharsToRead);
-        arr[nlines][ncharsToRead] = '\0';
+        if (nchars > maxLineLength - 3) {
+            memcpy(arr[nlines] + maxLineLength - 3, "...", 3);
+        }
+        arr[nlines][maxLineLength] = '\0';
 
         nlines++;
     }
@@ -388,21 +421,21 @@ int read_headlines(char** resultBuf, unsigned int bufLen, unsigned int settingId
     uart_putchar('h');
     timer_delay_ms(100);
 
-    char line[HEADLINES_BUF_LEN];
+    char *line = (char *)malloc (HEADLINES_BUF_LEN);
   
     int len = uart_getline(line, HEADLINES_BUF_LEN);
     if (len == 0) return 0;
 
+    unsigned int maxLineLength = 60; // TODO - set this value
+
     // Tokenize
-    int nlines = split_lines(line, resultBuf, bufLen); 
+    int nlines = split_lines(line, resultBuf, bufLen, maxLineLength); 
 
     if (nlines > 0) {
         format_headlines_data(resultBuf, bufLen, settingId);
     } else {
         snprintf(resultBuf[0], bufLen, "Failed to retrieve headlines");
     }
-
-    free(line);
 
     return nlines; 
 }
