@@ -79,12 +79,12 @@ void format_weather_data(char** buf, int bufsize, char** weather_data, unsigned 
             weather_data[WEATHER_FAHRENHEIT_INT], weather_data[WEATHER_FAHRENHEIT_DEC], 
             weather_data[WEATHER_CELSIUS_INT], weather_data[WEATHER_CELSIUS_DEC]);
     snprintf(buf[2], bufsize, "Wind: %smph", weather_data[WEATHER_WIND_SPEED_MPH]);
-    snprintf(buf[3], bufsize, "Humidity: %s%%", weather_data[WEATHER_HUMIDITY_PERCENT]);
+    snprintf(buf[3], bufsize, "Humidity: %s", weather_data[WEATHER_HUMIDITY_PERCENT]);
 }
 
 void format_headlines_data(char** buf, int bufsize, unsigned int settingId) {
     // TODO
-    unsigned int maxLineLength = 50;
+    unsigned int maxLineLength = 60;
 
     // truncate lines 
     for (int i = 0; i < 10; i ++){

@@ -29,7 +29,7 @@
 #define ROTARY_SW GPIO_PIN21
 
 // Time 
-#define TIME_BUF_LEN 100
+#define TIME_BUF_LEN 100 
 #define TIME_DATE_ITEMS 8
 
 // Weather
@@ -229,15 +229,20 @@ static int uart_getline(char *buf, int bufsize) {
     if (!uart_haschar()) {
         return 0;
     }
-
-    char c = uart_getchar(); 
-    int index = 0; 
     
-    while (c != '\0' && index < bufsize-1) {
-        buf[index] = c; 
-        index++;
-        c = uart_getchar(); 
+    int index = 0;
+    
+    while (index < bufsize-1) {
+        if (uart_haschar()) {
+            char c = uart_getchar();
+            if (c == '\0' || c == '#') {
+                break;
+            }
+            buf[index] = c;
+            index++;
+        } 
     }
+    
     buf[index] = '\0';
  
     return index; 
@@ -301,11 +306,12 @@ static int tokenize(const char *line, char *arr[], int max) {
 int read_date_time(char** resultBuf, unsigned int bufLen, unsigned int settingId, unsigned int subsettingId) {
     // Send request to esp-32
     uart_putchar('t');
-    timer_delay_ms(100);
-
+    uart_flush();
+    
     char line[TIME_BUF_LEN];
-  
+
     int len = uart_getline(line, TIME_BUF_LEN);
+    
     if (len == 0) return 0;
 
     // Tokenize
@@ -326,17 +332,19 @@ int read_date_time(char** resultBuf, unsigned int bufLen, unsigned int settingId
         free((char *)date_time[i]);
     }
 
+    
     return ntokens; 
 }
 
 int read_weather(char** resultBuf, unsigned int bufLen, unsigned int settingId) {
     // Send request to esp-32
     uart_putchar('w');
-    timer_delay_ms(100);
+    uart_flush();
 
     char line[WEATHER_BUF_LEN];
   
     int len = uart_getline(line, WEATHER_BUF_LEN);
+    
     if (len == 0) return 0;
 
     // Tokenize
@@ -386,7 +394,7 @@ static int split_lines(const char* buf, char* arr[], unsigned int bufLen) {
 int read_headlines(char** resultBuf, unsigned int bufLen, unsigned int settingId) {
     // Send request to esp-32
     uart_putchar('h');
-    timer_delay_ms(100);
+    uart_flush();
 
     char line[HEADLINES_BUF_LEN];
   

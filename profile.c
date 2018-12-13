@@ -18,13 +18,13 @@ unsigned int headline_module_ids[] = { SD_MODULE_DATETIME, SD_MODULE_HEADLINE };
 
 // coordinates for each module on each page
 coordinate_t home_coordinates[] = {
-       {.x = 0, .y = 90},
-       {.x = 0, .y = 190}
+       {.x = 0, .y = 700},
+       {.x = 0, .y = 90}
 };
 
 coordinate_t content_coordinates[] = {
-       {.x = 0, .y = 90},
-       {.x = 0, .y = 190}
+       {.x = 0, .y = 700},
+       {.x = 0, .y = 90}
 };
 
 profile_t* profiles;

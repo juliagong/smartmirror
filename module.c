@@ -105,13 +105,13 @@ static bool check_update_proximity() {
 }
 
 static bool update_info_proximity(unsigned int settingId, unsigned int subSettingId) {
-    // TODO
     return false;
 }
 
 static void proximity_module_init() {
     module_content_t* content = &module_contents[SD_MODULE_PROXIMITY];
-    
+   
+    // TODO - might not need 
     snprintf(content->components[0], COMPONENT_LEN, "Proximity Module");
     content->coordinates[0].x = 0;
     content->coordinates[0].y = 0;
@@ -122,7 +122,6 @@ static void proximity_module_init() {
  * Temperature
  */
 static bool check_update_temperature() {
-    // TODO - DK - this should be true if we want to be using temperature sensor
     return true;
 }
 
@@ -171,7 +170,7 @@ static void time_module_init() {
 
     snprintf(content->components[1], COMPONENT_LEN, "Time Module(TIME)");
     content->coordinates[1].x = 0;
-    content->coordinates[1].y = 40;
+    content->coordinates[1].y = 20;
     content->numComponents = 2;
 }
 
@@ -179,7 +178,7 @@ static void time_module_init() {
  * Weather
  */
 static bool check_update_weather() {
-    return false;
+    return true;
 }
 
 static bool update_info_weather(unsigned int settingId, unsigned int subSettingId) {
@@ -205,7 +204,7 @@ static void weather_module_init() {
  * Headline
  */
 static bool check_update_headline() {
-    return false;
+    return true;
 }
 
 static bool update_info_headline(unsigned int settingId, unsigned int subSettingId) {
