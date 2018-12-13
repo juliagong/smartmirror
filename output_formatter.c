@@ -16,7 +16,8 @@ void format_temperature_data(char** buf, int bufsize, int* temp_data, unsigned i
             snprintf(buf[0], bufsize, "Temperature: %d.%dF", f_int, f_frac);
             break;
         case SETTING_TEMPERATURE_2:
-            snprintf(buf[0], bufsize, "Temperature: %d.%dC", temp_data[TEMPERATURE_CELSIUS_INT], temp_data[TEMPERATURE_CELSIUS_DECIMAL]);
+            snprintf(buf[0], bufsize, "Temperature: %d.%dC", 
+                    temp_data[TEMPERATURE_CELSIUS_INT], temp_data[TEMPERATURE_CELSIUS_DECIMAL]);
             break;
         case SETTING_TEMPERATURE_3:
             snprintf(buf[0], bufsize, "Temperature: %d.%dF / %d.%dC", f_int, f_frac, 
@@ -32,7 +33,8 @@ void format_temperature_data(char** buf, int bufsize, int* temp_data, unsigned i
 
     switch (subsettingId){
         case SETTING_HUMIDITY_SHOW:
-            snprintf(buf[1], bufsize, "Humidity: %d.%d%%", temp_data[TEMPERATURE_HUMIDITY_INT], temp_data[TEMPERATURE_HUMIDITY_DECIMAL]);
+            snprintf(buf[1], bufsize, "Humidity: %d.%d%%", 
+                    temp_data[TEMPERATURE_HUMIDITY_INT], temp_data[TEMPERATURE_HUMIDITY_DECIMAL]);
             break;
         case SETTING_HUMIDITY_HIDE:
             buf[1][0] = '\0';

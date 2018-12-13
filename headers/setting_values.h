@@ -24,8 +24,6 @@ enum setting_levels {
     SETTING_LEVEL_TEMPERATURE = 3,
     SETTING_LEVEL_THEME = 4,
     SETTING_LEVEL_FONT = 5,
-    //SETTING_LEVEL_WEATHER = 4,
-    //SETTING_LEVEL_HEADLINE = 5,
     SETTING_LEVEL_HUMIDITY = 30
 };
 #define SETTING_LEVELS_COUNT 7
@@ -36,8 +34,6 @@ enum main_settings {
     SETTING_TEMPERATURE = 2,
     SETTING_THEME = 3,
     SETTING_FONT = 4
-    //SETTING_WEATHER = 3,
-    //SETTING_HEADLINE = 4,
 };
 
 #define MAIN_SETTINGS_COUNT 5
@@ -77,9 +73,9 @@ enum humidity_settings {
     SETTING_HUMIDITY_HIDE
 };
 
-#define THEME_SETTINGS_COUNT 5
-extern const char *THEME_SETTINGS_STRING[];
-extern unsigned int COLOR_SCHEMES[5][4];
+#define HUMIDITY_SETTINGS_COUNT 2
+extern const char* HUMIDITY_SETTINGS_STRING[];
+
 
 enum theme_settings {
     SETTING_THEME_1,
@@ -89,6 +85,10 @@ enum theme_settings {
     SETTING_THEME_5
 };
 
+#define THEME_SETTINGS_COUNT 5
+extern unsigned int COLOR_SCHEMES[5][4];
+extern const char *THEME_SETTINGS_STRING[];
+
 typedef struct {
     unsigned int bg_color;
     unsigned int text_color;
@@ -96,13 +96,13 @@ typedef struct {
     unsigned int return_color;
 } color_scheme_t;
 
-#define FONT_SETTINGS_COUNT 2
-extern const char *FONT_SETTINGS_STRING[];
-
 enum font_settings {
     SETTING_FONT_1,
     SETTING_FONT_2,
 };
+
+#define FONT_SETTINGS_COUNT 2
+extern const char *FONT_SETTINGS_STRING[];
 
 extern const font_t font_default;
 extern const font_t font_segoeui;
@@ -112,9 +112,9 @@ extern const font_t font_segoeui;
 /*
  * Settings currently not supported
  */
-#define HUMIDITY_SETTINGS_COUNT 2
-extern const char* HUMIDITY_SETTINGS_STRING[];
 
+
+/*
 enum weather_settings {
     SETTING_WEATHER_1,
     SETTING_WEATHER_2
@@ -130,5 +130,5 @@ enum headline_settings {
 
 #define HEADLINE_SETTINGS_COUNT 2
 extern const char *HEADLINE_SETTINGS_STRING[];
-
+*/
 #endif

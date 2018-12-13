@@ -13,7 +13,6 @@
 static bool is_valid_module(unsigned int moduleId);
 static bool check_update_proximity();
 static bool update_info_proximity();
-static void proximity_module_init();
 static bool check_update_temperature();
 static bool update_info_temperature();
 static void temperature_module_init();
@@ -51,20 +50,20 @@ void module_init() {
         }
         coordinate_t* coordinates = malloc(sizeof(coordinate_t) * MAX_COMPONENTS);
 
-        module_content_t content = {.components = components, .coordinates = coordinates, .numComponents = 0};
+        module_content_t content = {
+            .components = components, 
+            .coordinates = coordinates, 
+            .numComponents = 0
+        };
+
         module_contents[moduleInd] = content;
     }
 
     // initialize all necessary sensors
-    proximity_module_init();
     temperature_module_init();
     time_module_init();
     weather_module_init();
     headline_module_init();
-}
-
-unsigned int get_num_modules() {
-    return NUM_SUPPORTED_MODULES;
 }
 
 bool check_module_update(unsigned int moduleId) {
@@ -108,16 +107,6 @@ static bool update_info_proximity(unsigned int settingId, unsigned int subSettin
     return false;
 }
 
-static void proximity_module_init() {
-    module_content_t* content = &module_contents[SD_MODULE_PROXIMITY];
-   
-    // TODO - might not need 
-    snprintf(content->components[0], COMPONENT_LEN, "Proximity Module");
-    content->coordinates[0].x = 0;
-    content->coordinates[0].y = 0;
-    content->numComponents = 1;
-}
-
 /*
  * Temperature
  */
@@ -143,6 +132,7 @@ static void temperature_module_init() {
     snprintf(content->components[1], COMPONENT_LEN, "Temperature Module(Humidity)");
     content->coordinates[1].x = 0;
     content->coordinates[1].y = 40;
+
     content->numComponents = 2;
 }
 

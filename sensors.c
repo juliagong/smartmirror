@@ -11,10 +11,6 @@
 #include "uart.h"
 #include "output_formatter.h"
 
-// TODO - remove this
-#include "gl.h"
-
-
 // Motion Sensor
 #define MOTION_PIN GPIO_PIN19
 
@@ -45,13 +41,19 @@ static volatile unsigned int prev_clk_val;
 static volatile int rotation;
 static volatile bool rotary_clicked;
 
-// Sensor Initialization
+static void rotary_interrupt(unsigned int pc);
+static int uart_getline(char *buf, int bufsize);
+static char *strndup(const char *src, int n);
+static int isspace(char ch);
+static int tokenize(const char *line, char *arr[], int max);
+static int split_lines(const char* buf, char* arr[], unsigned int bufLen);
+
+
+/*
+ * Sensor initializations
+ */   
 static void init_motion_sensor() {
     gpio_set_input(MOTION_PIN);
-}
-
-static void init_rtc_sensor() {
-    // TODO
 }
         
 static void init_rotary_encoder() {
@@ -69,11 +71,35 @@ static void init_rotary_encoder() {
     rotary_clicked = false;
 }
 
+/*
+ * Initialize all the interrupts
+ */
+static void init_interrupts() {
+    gpio_enable_event_detection(ROTARY_CLK, GPIO_DETECT_FALLING_EDGE);
+    gpio_enable_event_detection(ROTARY_CLK, GPIO_DETECT_RISING_EDGE);
+    gpio_enable_event_detection(ROTARY_SW, GPIO_DETECT_FALLING_EDGE);
+
+    bool ok = interrupts_attach_handler(rotary_interrupt);
+    assert(ok);
+
+    interrupts_enable_source(INTERRUPTS_GPIO3);
+    interrupts_global_enable();
+}
+
+/* 
+ * Initialize everything necessary for sensors
+ */
+void sensors_init(void) {
+    gpio_init();
+
+    init_motion_sensor();
+    init_rotary_encoder();
+    init_interrupts();
+}
+
 
 bool read_motion_data() {
-    return true;
-    // TODO - uncomment this to do it actually
-    //return gpio_read(MOTION_PIN) > 0;
+    return gpio_read(MOTION_PIN) > 0;
 }
 
 /*
@@ -195,32 +221,119 @@ static void rotary_interrupt(unsigned int pc) {
     }
 }
 
+
 /*
- * Initialize all the interrupts
+ * The date_time[] array holds 7 pieces of information:
+ *    Day of the Week
+ *    Month Name
+ *    Month
+ *    Day Number
+ *    Year Number
+ *    HH (hour)
+ *    MM (minute)
+ *    SS (second)
  */
-static void init_interrupts() {
-    gpio_enable_event_detection(ROTARY_CLK, GPIO_DETECT_FALLING_EDGE);
-    gpio_enable_event_detection(ROTARY_CLK, GPIO_DETECT_RISING_EDGE);
-    gpio_enable_event_detection(ROTARY_SW, GPIO_DETECT_FALLING_EDGE);
+int read_date_time(char** resultBuf, unsigned int bufLen, unsigned int settingId, unsigned int subsettingId) {
+    // Send request to esp-32
+    uart_putchar('t');
+    uart_flush();
+    
+    char line[TIME_BUF_LEN];
 
-    bool ok = interrupts_attach_handler(rotary_interrupt);
-    assert(ok);
+    int len = uart_getline(line, TIME_BUF_LEN);
+    if (len == 0) return 0;
 
-    interrupts_enable_source(INTERRUPTS_GPIO3);
-    interrupts_global_enable();
+    // Tokenize
+    char *date_time[TIME_DATE_ITEMS]; 
+    int ntokens = tokenize(line, date_time, len); 
+
+    if (ntokens > 0) {
+        // Format date and time data according to our defined settings
+        format_date_data(resultBuf[0], bufLen, date_time, settingId);
+        format_time_data(resultBuf[1], bufLen, date_time, subsettingId);
+    } else {
+        snprintf(resultBuf[0], bufLen, "Connection failed");
+        snprintf(resultBuf[1], bufLen, "Connection failed");
+    }
+
+    // Free array
+    for(int i = 0; i < ntokens; i++) {
+        free((char *)date_time[i]);
+    }
+
+    
+    return ntokens; 
 }
 
-// initialize everything necessary for sensors
-void sensors_init(void) {
-    gpio_init();
+/*
+ * weather[] array holds 8 pieces of information:
+ *  Description
+ *  Fahrenheit (int)
+ *  Fahrenheit (decimal)
+ *  Celsius (int)
+ *  Celsius (decimal)
+ *  Wind Speed (mph)
+ *  Humidity (%)
+ *  Condition Code
+ */
+int read_weather(char** resultBuf, unsigned int bufLen, unsigned int settingId) {
+    // Send request to esp-32
+    uart_putchar('w');
+    uart_flush();
 
-    init_motion_sensor();
-    init_rtc_sensor();
-    init_rotary_encoder();
+    char line[WEATHER_BUF_LEN];
+  
+    int len = uart_getline(line, WEATHER_BUF_LEN);
+    if (len == 0) return 0;
 
-    init_interrupts();
+    // Tokenize
+    char *weather[WEATHER_ITEMS]; 
+    int ntokens = tokenize(line, weather, len); 
+
+    if (ntokens > 0) {
+        // Format weather data according to our defined settings
+        format_weather_data(resultBuf, bufLen, weather, settingId);
+    } else {
+        snprintf(resultBuf[0], bufLen, "Connection failed");
+        snprintf(resultBuf[1], bufLen, "Connection failed");
+    }
+
+    // Free array
+    for(int i = 0; i < ntokens; i++) {
+        free((char *)weather[i]);
+    }
+
+    return ntokens; 
 }
 
+
+
+int read_headlines(char** resultBuf, unsigned int bufLen, unsigned int settingId) {
+    // Send request to esp-32
+    uart_putchar('h');
+    uart_flush();
+
+    char line[HEADLINES_BUF_LEN];
+  
+    int len = uart_getline(line, HEADLINES_BUF_LEN);
+    if (len == 0) return 0;
+
+    // Tokenize
+    int nlines = split_lines(line, resultBuf, bufLen); 
+
+    if (nlines > 0) {
+        format_headlines_data(resultBuf, bufLen, settingId);
+    } else {
+        snprintf(resultBuf[0], bufLen, "Failed to retrieve headlines");
+    }
+
+    return nlines; 
+}
+
+
+/*
+ * Helper functions for uart
+ */
 
 /*
  * Returns the number of chars written to buf
@@ -291,87 +404,14 @@ static int tokenize(const char *line, char *arr[], int max) {
     return ntokens;
 }
 
-
 /*
- * The date_time[] array holds 7 pieces of information:
- *    Day of the Week
- *    Month Name
- *    Month
- *    Day Number
- *    Year Number
- *    HH (hour)
- *    MM (minute)
- *    SS (second)
+ * Splits the given buffer by lines
  */
-int read_date_time(char** resultBuf, unsigned int bufLen, unsigned int settingId, unsigned int subsettingId) {
-    // Send request to esp-32
-    uart_putchar('t');
-    uart_flush();
-    
-    char line[TIME_BUF_LEN];
-
-    int len = uart_getline(line, TIME_BUF_LEN);
-    
-    if (len == 0) return 0;
-
-    // Tokenize
-    char *date_time[TIME_DATE_ITEMS]; 
-    int ntokens = tokenize(line, date_time, len); 
-
-    if (ntokens > 0) {
-        // Format date and time data according to our defined settings
-        format_date_data(resultBuf[0], bufLen, date_time, settingId);
-        format_time_data(resultBuf[1], bufLen, date_time, subsettingId);
-    } else {
-        snprintf(resultBuf[0], bufLen, "Connection failed");
-        snprintf(resultBuf[1], bufLen, "Connection failed");
-    }
-
-    // Free array
-    for(int i = 0; i < ntokens; i++) {
-        free((char *)date_time[i]);
-    }
-
-    
-    return ntokens; 
-}
-
-int read_weather(char** resultBuf, unsigned int bufLen, unsigned int settingId) {
-    // Send request to esp-32
-    uart_putchar('w');
-    uart_flush();
-
-    char line[WEATHER_BUF_LEN];
-  
-    int len = uart_getline(line, WEATHER_BUF_LEN);
-    
-    if (len == 0) return 0;
-
-    // Tokenize
-    char *weather[WEATHER_ITEMS]; 
-    int ntokens = tokenize(line, weather, len); 
-
-    if (ntokens > 0) {
-        // Format weather data according to our defined settings
-        format_weather_data(resultBuf, bufLen, weather, settingId);
-    } else {
-        snprintf(resultBuf[0], bufLen, "Connection failed");
-        snprintf(resultBuf[1], bufLen, "Connection failed");
-    }
-
-    // Free array
-    for(int i = 0; i < ntokens; i++) {
-        free((char *)weather[i]);
-    }
-
-    return ntokens; 
-}
-
 static int split_lines(const char* buf, char* arr[], unsigned int bufLen) {
     int nlines = 0;
 
     while (*buf != '\0' && nlines < HEADLINE_ITEMS) {
-        while (*buf != '\0' && *buf != '*') buf++;
+        while (*buf != '\0' && *buf != '*') buf++; // Move to the first *
 
         if (*buf == '\0') return nlines;
 
@@ -389,28 +429,4 @@ static int split_lines(const char* buf, char* arr[], unsigned int bufLen) {
     }
 
     return nlines;
-}
-
-int read_headlines(char** resultBuf, unsigned int bufLen, unsigned int settingId) {
-    // Send request to esp-32
-    uart_putchar('h');
-    uart_flush();
-
-    char line[HEADLINES_BUF_LEN];
-  
-    int len = uart_getline(line, HEADLINES_BUF_LEN);
-    if (len == 0) return 0;
-
-    // Tokenize
-    int nlines = split_lines(line, resultBuf, bufLen); 
-
-    if (nlines > 0) {
-        format_headlines_data(resultBuf, bufLen, settingId);
-    } else {
-        snprintf(resultBuf[0], bufLen, "Failed to retrieve headlines");
-    }
-
-    free(line);
-
-    return nlines; 
 }

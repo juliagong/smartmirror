@@ -86,14 +86,15 @@ void draw_module(unsigned int moduleId, coordinate_t coordinate, color_t c) {
         // time, temperature: every time
         // weather, headlines: every 10 minutes
         if (module_count[moduleId] >= module_frequency[moduleId]) {
-            bool isUpdated = update_module_info(moduleId, moduleConfig->moduleSettingId, moduleConfig->moduleSubsettingId);
+            bool isUpdated = update_module_info(moduleId, 
+                    moduleConfig->moduleSettingId, moduleConfig->moduleSubsettingId);
             if (isUpdated) {
                 module_count[moduleId] = 0;
             }
         }
     } 
   
-    // get module content
+    // get module content and draw it
     module_content_t* content = get_module_content(moduleId);
     unsigned int numComponents = content->numComponents;
     char** components = content->components;
@@ -108,7 +109,7 @@ void draw_module(unsigned int moduleId, coordinate_t coordinate, color_t c) {
 }
 
 /*
- * Gets and displays the next page.
+ * Gets and displays the next / prev page.
  */
 void move_page(int change) {
     if (change == 0){
