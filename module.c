@@ -4,7 +4,7 @@
 #include "sensors.h"
 #include "output_formatter.h"
 
-#define NUM_SUPPORTED_MODULES 3
+#define NUM_SUPPORTED_MODULES 5
 #define COMPONENT_LEN 1024
 
 static bool is_valid_module(unsigned int moduleId);
@@ -17,6 +17,12 @@ static void temperature_module_init();
 static bool check_update_datetime();
 static bool update_info_datetime();
 static void time_module_init();
+static bool check_update_weather();
+static bool update_info_weather();
+static void weather_module_init();
+static bool check_update_headline();
+static bool update_info_headline();
+static void headline_module_init();
 
 static module_content_t* module_contents;
 
@@ -26,7 +32,9 @@ static module_content_t* module_contents;
 static const module_t modules[] = {
     {SD_MODULE_PROXIMITY, "Proximity", check_update_proximity, update_info_proximity},
     {SD_MODULE_TEMPERATURE, "Temperature", check_update_temperature, update_info_temperature},
-    {SD_MODULE_DATETIME, "DateTime", check_update_datetime, update_info_datetime}
+    {SD_MODULE_DATETIME, "DateTime", check_update_datetime, update_info_datetime},
+    {SD_MODULE_WEATHER, "Weather", check_update_weather, update_info_weather},
+    {SD_MODULE_HEADLINE, "Headline", check_update_headline, update_info_headline}
 };
 
 void module_init() {
@@ -46,6 +54,8 @@ void module_init() {
     proximity_module_init();
     temperature_module_init();
     time_module_init();
+    weather_module_init();
+    headline_module_init();
 }
 
 unsigned int get_num_modules() {
@@ -136,7 +146,6 @@ static void temperature_module_init() {
 /*
  * Time
  */
-
 static bool check_update_datetime() {
     return true;
 }
@@ -151,17 +160,64 @@ static bool update_info_datetime(unsigned int settingId, unsigned int subSetting
 
 static void time_module_init() {
     module_content_t* content = &module_contents[SD_MODULE_DATETIME];
-    
+
     snprintf(content->components[0], COMPONENT_LEN, "Time Module(DATE)");
     content->coordinates[0].x = 0;
     content->coordinates[0].y = 0;
-    
+
     snprintf(content->components[1], COMPONENT_LEN, "Time Module(TIME)");
     content->coordinates[1].x = 0;
     content->coordinates[1].y = 40;
     content->numComponents = 2;
 }
 
+/*
+ * Weather
+ */
+static bool check_update_weather() {
+    return false;
+}
+
+static bool update_info_weather(unsigned int settingId, unsigned int subSettingId) {
+    return false;
+}
+
+static void weather_module_init() {
+    module_content_t* content = &module_contents[SD_MODULE_TEMPERATURE];
+
+    snprintf(content->components[0], COMPONENT_LEN, "Temperature Module(Temperature)");
+    content->coordinates[0].x = 0;
+    content->coordinates[0].y = 0;
+
+    snprintf(content->components[1], COMPONENT_LEN, "Temperature Module(Humidity)");
+    content->coordinates[1].x = 0;
+    content->coordinates[1].y = 40;
+    content->numComponents = 2;
+}
+
+/*
+ * Headline
+ */
+static bool check_update_headline() {
+    return false;
+}
+
+static bool update_info_headline(unsigned int settingId, unsigned int subSettingId) {
+    return false;
+}
+
+static void headline_module_init() {
+    module_content_t* content = &module_contents[SD_MODULE_TEMPERATURE];
+
+    snprintf(content->components[0], COMPONENT_LEN, "Temperature Module(Temperature)");
+    content->coordinates[0].x = 0;
+    content->coordinates[0].y = 0;
+
+    snprintf(content->components[1], COMPONENT_LEN, "Temperature Module(Humidity)");
+    content->coordinates[1].x = 0;
+    content->coordinates[1].y = 40;
+    content->numComponents = 2;
+}
 
 /*
  * Helper functions

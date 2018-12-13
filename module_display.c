@@ -51,6 +51,14 @@ void draw_page() {
     unsigned int* moduleIds = currentPageConfig.moduleIds;
     coordinate_t* coordinates = currentPageConfig.coordinates; 
 
+    if (current_page == 0) { // draw greeting on home page
+	gl_draw_string_with_size(0, 0, "Howdy from the CS 107e SmartMirror!", text_color, 3);
+    } else if (current_page == 1) { // weather data
+	gl_draw_string_with_size(0, 0, "Weather", text_color, 3);
+    } else if (current_page == 2) { // headline data
+	gl_draw_string_with_size(0, 0, "Today's Headlines", text_color, 3);
+    }
+
     for (unsigned int moduleInd = 0; moduleInd < numModules; moduleInd++) {
         draw_module(moduleIds[moduleInd], coordinates[moduleInd], text_color);
     } 
