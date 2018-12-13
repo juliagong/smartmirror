@@ -28,6 +28,6 @@ int read_date_time(char** resultBufs, unsigned int bufLen, unsigned int settingI
 
 int read_weather(char** resultBufs, unsigned int bufLen, unsigned int settingId, unsigned int subSettingId);
 
-int read_headlines(char** resultBufs, unsigned int bufLen, unsigned int settingId, unsigned int subSettingId);
+int read_headlines(char** resultBufs, unsigned int bufLen, unsigned int settingId);
 
 #endif 
