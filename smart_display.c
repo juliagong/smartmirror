@@ -13,7 +13,7 @@
 
 static void display() {
     while(1) {
-        // show screen only if there is movement 
+        // show screen only if there has been movement 
         if (check_module_update(SD_MODULE_PROXIMITY)) {
             if (is_rotary_clicked()) {
                 open_settings(); // blocking action

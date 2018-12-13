@@ -15,11 +15,9 @@ static unsigned int current_page;
 static unsigned int screen_width;
 static unsigned int screen_height;
 
-/**
- * Function: blank_screen
- *
+/*
  * Draws a blank black screen for the "off" mode of the mirror.
-**/
+ */
 void blank_screen() {
     color_scheme_t* color_scheme = get_color_scheme(current_profile->themeSettingId);
     gl_clear(color_scheme->bg_color);
@@ -34,11 +32,9 @@ static void draw_page_number(color_t c) {
     gl_draw_string(screen_width / 2 - 50, screen_height - 30, buf, c);
 }
 
-/**
- * Function: draw_page
- *
+/*
  * Displays the current page on the monitor using draw_module.
-**/
+ */
 void draw_page() {
     color_scheme_t* color_scheme = get_color_scheme(current_profile->themeSettingId);
     gl_clear(color_scheme->bg_color);
@@ -53,12 +49,13 @@ void draw_page() {
 
     if (current_page == 0) { // draw greeting on home page
 	gl_draw_string_with_size(0, 0, "Howdy from the CS 107e SmartMirror!", text_color, 3);
-    } else if (current_page == 1) { // weather data
+    } else if (current_page == 1) { // title for weather data
 	gl_draw_string_with_size(0, 0, "Weather", text_color, 3);
-    } else if (current_page == 2) { // headline data
+    } else if (current_page == 2) { // title for headline data
 	gl_draw_string_with_size(0, 0, "Today's Headlines", text_color, 3);
     }
 
+    // draw all modules that should appear on this page
     for (unsigned int moduleInd = 0; moduleInd < numModules; moduleInd++) {
         draw_module(moduleIds[moduleInd], coordinates[moduleInd], text_color);
     } 
@@ -68,11 +65,9 @@ void draw_page() {
     gl_swap_buffer();
 }
 
-/**
- * Function: draw_module
- *
+/*
  * Gets module content and setting and draws module on screen.
-**/
+ */
 void draw_module(unsigned int moduleId, coordinate_t coordinate, color_t c) {
     // get module setting
     module_config_t* moduleConfig = get_module_config(current_profile_id, moduleId);
@@ -97,11 +92,9 @@ void draw_module(unsigned int moduleId, coordinate_t coordinate, color_t c) {
     }
 }
 
-/**
- * Function: get_next_page
- *
+/*
  * Gets and displays the next page.
-**/
+ */
 void move_page(int change) {
     if (change == 0){
         return;

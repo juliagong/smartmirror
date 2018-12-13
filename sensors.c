@@ -40,7 +40,6 @@
 #define HEADLINES_BUF_LEN 1024
 #define HEADLINE_ITEMS 10 
 
-
 static volatile unsigned int prev_clk_val;
 static volatile int rotation;
 static volatile bool rotary_clicked;
@@ -76,7 +75,7 @@ bool read_motion_data() {
     //return gpio_read(MOTION_PIN) > 0;
 }
 
-/**
+/*
  * Function: read_temp_data
  *
  * Requests temperature and humidity data from the DHT11 sensor. 
@@ -96,7 +95,7 @@ bool read_motion_data() {
  *
  * Subsequent odd-numbered flips are when TEMP_PIN is set to 0 preceding each data bit. 
  * Even-numbered flips are when TEMP_PIN is set to 1 for each data bit. 
-**/
+ */
 bool read_temp_data(char** resultBuf, unsigned int bufLen, unsigned int settingId, unsigned int subsettingId) {
     unsigned int count = 0;
     unsigned int n_bits = 0; 
@@ -223,8 +222,8 @@ void sensors_init(void) {
 
 
 /*
- Returns the number of chars written to buf
-*/
+ * Returns the number of chars written to buf
+ */
 static int uart_getline(char *buf, int bufsize) {
     if (!uart_haschar()) {
         return 0;
@@ -244,9 +243,9 @@ static int uart_getline(char *buf, int bufsize) {
 }
 
 
-/** From Lab 4
- * Allocate space on the heap for n chars plus null-terminator.
- * Copy n bytes fro
+/*
+ * From Lab 4: Allocate space on the heap for n chars plus null-terminator.
+ * Copy n bytes from `src`.
  */
 static char *strndup(const char *src, int n) {
     char *str = malloc(n+1);
@@ -257,18 +256,18 @@ static char *strndup(const char *src, int n) {
     return str; 
 }
 
-/** From Lab 4
-* Returns 1 if 'ch' is whitespace and 0 otherwise. 
-*/
+/*
+ * From Lab 4: Returns 1 if 'ch' is whitespace and 0 otherwise. 
+ */
 static int isspace(char ch)
 {
     return ch == ' ' || ch == '\t' || ch == '\n';
 }
 
-/** From Lab 4
-* Parses 'line' into tokens separated by spaces and stores them into array of char*
-* pointing to strings on the heap. 
-*/
+/*
+ * From Lab 4: Parses 'line' into tokens separated by spaces and stores them into array of char*
+ * pointing to strings on the heap. 
+ */
 static int tokenize(const char *line, char *arr[], int max) {
     int ntokens = 0; 
 
@@ -288,17 +287,16 @@ static int tokenize(const char *line, char *arr[], int max) {
 
 
 /*
-date_time[] array holds 7 pieces of information:
-    Day of the Week
-    Month Name
-    Month
-    Day Number
-    Year Number
-    HH
-    MM
-    SS
-*/
-
+ * The date_time[] array holds 7 pieces of information:
+ *    Day of the Week
+ *    Month Name
+ *    Month
+ *    Day Number
+ *    Year Number
+ *    HH (hour)
+ *    MM (minute)
+ *    SS (second)
+ */
 int read_date_time(char** resultBuf, unsigned int bufLen, unsigned int settingId, unsigned int subsettingId) {
     // Send request to esp-32
     uart_putchar('t');

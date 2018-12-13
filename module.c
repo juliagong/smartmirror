@@ -27,7 +27,7 @@ static void headline_module_init();
 static module_content_t* module_contents;
 
 /*
- * Mapping from modules to corresponding functions
+ * Stores the mapping from modules to their corresponding functions.
  */
 static const module_t modules[] = {
     {SD_MODULE_PROXIMITY, "Proximity", check_update_proximity, update_info_proximity},
@@ -39,6 +39,7 @@ static const module_t modules[] = {
 
 void module_init() {
     module_contents = malloc(sizeof(module_content_t*) * NUM_SUPPORTED_MODULES); 
+
     // initialize the module content array
     for (int moduleInd = 0; moduleInd < NUM_SUPPORTED_MODULES; moduleInd++) {
         char** components = malloc(sizeof(char*) * MAX_COMPONENTS);
@@ -47,10 +48,11 @@ void module_init() {
         }
         coordinate_t* coordinates = malloc(sizeof(coordinate_t) * MAX_COMPONENTS);
 
-        module_content_t content = { .components = components, .coordinates = coordinates, .numComponents = 0};
+        module_content_t content = {.components = components, .coordinates = coordinates, .numComponents = 0};
         module_contents[moduleInd] = content;
     }
 
+    // initialize all necessary sensors
     proximity_module_init();
     temperature_module_init();
     time_module_init();
@@ -87,7 +89,8 @@ module_content_t* get_module_content(unsigned int moduleId) {
 }
 
 /*
- * Module specific functions
+ * Module-specific functions for checking for updates, checking whether to
+ * update information, and module initialization.
  */
 
 /*
@@ -95,7 +98,7 @@ module_content_t* get_module_content(unsigned int moduleId) {
  */
 static bool check_update_proximity() {
 
-    // TODO - use this for acutal code
+    // TODO - use this for actual code
     bool isMotionDetected = read_motion_data();
     return isMotionDetected;
 }

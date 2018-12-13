@@ -11,10 +11,12 @@
 #define NUM_HOME_MODULES 2
 #define NUM_CONTENT_MODULES 2
 
+// contains the respective modules ids for the modules that appear on each page
 unsigned int home_module_ids[] = { SD_MODULE_DATETIME, SD_MODULE_TEMPERATURE };
 unsigned int weather_module_ids[] = { SD_MODULE_DATETIME, SD_MODULE_WEATHER };
 unsigned int headline_module_ids[] = { SD_MODULE_DATETIME, SD_MODULE_HEADLINE };
 
+// coordinates for each module on each page
 coordinate_t home_coordinates[] = {
        {.x = 0, .y = 90},
        {.x = 0, .y = 190}
@@ -27,6 +29,9 @@ coordinate_t content_coordinates[] = {
 
 profile_t* profiles;
 
+/*
+ * Returns the address of the profile requested, if valid.
+ */
 profile_t* get_profile(unsigned int profileId) {
     if (profileId >= NUM_PROFILES) {
         return (profile_t*)0;
@@ -34,6 +39,9 @@ profile_t* get_profile(unsigned int profileId) {
     return &profiles[profileId];
 }
 
+/*
+ * Returns the corresponding module_config_t for the requested module.
+ */
 module_config_t* get_module_config(unsigned int profileId, unsigned int moduleId) {
     unsigned int numModules = 4;
     module_config_t* cur = profiles[profileId].moduleConfig;
@@ -48,6 +56,9 @@ module_config_t* get_module_config(unsigned int profileId, unsigned int moduleId
     return (module_config_t*)0;
 }
 
+/*
+ * Creates default profile that will be displayed on the screen.
+ */
 static void create_default_profile() {
     module_config_t* defaultModuleConfig = malloc(sizeof(module_config_t) * NUM_ALL_MODULES);
     defaultModuleConfig[0] = (module_config_t){.moduleId = SD_MODULE_PROXIMITY, .moduleSettingId = 0, 

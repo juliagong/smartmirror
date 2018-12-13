@@ -5,8 +5,14 @@
 
 #define FOREGROUND_PIXEL 0xff
 
+/*
+ * Modifies the original gl_draw_char function in the gl module, but adds
+ * font size as a configuration option, with 1 being the smallest.
+ */
 void gl_draw_char_with_size(int x, int y, int ch, color_t c, int scale)
 {
+    if (scale <= 0) return;
+
     int font_size = font_get_size();
     int char_height = gl_get_char_height();
     int char_width = gl_get_char_width();
@@ -27,6 +33,10 @@ void gl_draw_char_with_size(int x, int y, int ch, color_t c, int scale)
     }
 }
 
+/*
+ * Modifies the original gl_draw_string function in the gl module, but adds
+ * font size as a configuration option, with 1 being the smallest.
+ */
 void gl_draw_string_with_size(int x, int y, char* str, color_t c, int scale)
 {
     int len = strlen(str);
@@ -36,6 +46,10 @@ void gl_draw_string_with_size(int x, int y, char* str, color_t c, int scale)
     }
 }
 
+/*
+ * Draws an empty rectangle at the given coordinates `x` and `y` with width `w` and
+ * height `h`, using color `c` and with thickness `lineWidth`.
+ */
 void gl_draw_empty_rect(int x, int y, int w, int h, color_t c, unsigned int lineWidth) {
     if (w < 0 || h < 0) {
         return;

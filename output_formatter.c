@@ -4,8 +4,6 @@
 #include "printf.h"
 #include "strings.h"
 
-
-
 void format_temperature_data(char** buf, int bufsize, int* temp_data, unsigned int settingId, unsigned int subsettingId) {
     float fahrenheit = temp_data[TEMPERATURE_CELSIUS_INT] * 9. / 5. + 32;
     int f_int = fahrenheit;                 // Holds the integer portion of the float

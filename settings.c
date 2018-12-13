@@ -85,8 +85,7 @@ static setting_options_t get_setting_option(unsigned int settingLevel) {
 }
 
 /*
- * Show current options of setting level
- * Determine which is the current option
+ * Show current options of setting level and determine which is the current option
  */
 void display_settings(cursor_t* cursor) {
     color_scheme_t* color_scheme = get_color_scheme(*p_themeSettingId);
@@ -134,7 +133,6 @@ void display_settings(cursor_t* cursor) {
 
     gl_swap_buffer();
 }
-
 
 /*
  * Moves current cursor to the specified direction
@@ -216,6 +214,7 @@ static void set_font_option(unsigned int fontSettingId) {
         font_set_font((font_t*)&font_default);
     }
 }
+
 /*
  * Saves current cursor's selected value as setting for the module
  * that corresponds to the setting page we are viewing
