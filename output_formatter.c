@@ -81,7 +81,6 @@ void format_weather_data(char* buf, int bufsize, char** datetime, unsigned int s
     // TODO
 }
 
-void format_headlines_data(char* buf, int bufsize, char** datetime, unsigned int settingId) {
-
+void format_headlines_data(char** buf, int bufsize, unsigned int settingId) {
     // TODO
 }

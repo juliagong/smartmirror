@@ -361,9 +361,34 @@ int read_weather(char** resultBuf, unsigned int bufLen, unsigned int settingId, 
     return ntokens; 
 }
 
+static int split_lines(const char* buf, char* arr[], unsigned int maxLines, unsigned int maxLineLength) {
+    int nlines = 0;
 
+    while (*buf != '\0' && nlines < maxLines) {
+        while (*buf != '\0' && *buf != '*') buf++;
 
-int read_headlines(char** resultBuf, unsigned int bufLen, unsigned int settingId, unsigned int subsettingId) {
+        if (*buf == '\0') return nlines;
+
+        char *start = (char*) buf; // start points to *
+        
+        while (*buf != '\0' && *buf != '^') buf++; // buf points to ^ or end
+
+        int nchars = buf - start - 1;
+        int ncharsToRead = nchars < maxLineLength - 3 ? nchars : maxLineLength - 3;
+
+        arr[nlines] = strndup(start + 1, ncharsToRead);
+        if (nchars > maxLineLength - 3) {
+            memcpy(arr[nlines] + maxLineLength - 3, "...", 3);
+        }
+        arr[nlines][maxLineLength] = '\0';
+
+        nlines++;
+    }
+
+    return nlines;
+}
+
+int read_headlines(char** resultBuf, unsigned int bufLen, unsigned int settingId) {
     // Send request to esp-32
     uart_putchar('h');
     timer_delay_ms(100);
@@ -373,23 +398,16 @@ int read_headlines(char** resultBuf, unsigned int bufLen, unsigned int settingId
     int len = uart_getline(line, HEADLINES_BUF_LEN);
     if (len == 0) return 0;
 
+    unsigned int maxLineLength = 60; // TODO - set this value
+
     // Tokenize
-    char *headlines[HEADLINE_ITEMS]; 
-    int ntokens = tokenize(line, headlines, len); 
+    int nlines = split_lines(line, resultBuf, bufLen, maxLineLength); 
 
-    if (ntokens > 0) {
-        // Format date and time data according to our defined settings
-        format_date_data(resultBuf[0], bufLen, headlines, settingId);
-        format_time_data(resultBuf[1], bufLen, headlines, subsettingId);
+    if (nlines > 0) {
+        format_headlines_data(resultBuf, bufLen, settingId);
     } else {
-        snprintf(resultBuf[0], bufLen, "Connection failed");
-        snprintf(resultBuf[1], bufLen, "Connection failed");
+        snprintf(resultBuf[0], bufLen, "Failed to retrieve headlines");
     }
 
-    // Free array
-    for(int i = 0; i < ntokens; i++) {
-        free((char *)headlines[i]);
-    }
-
-    return ntokens; 
+    return nlines; 
 }

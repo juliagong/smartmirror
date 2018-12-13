@@ -183,20 +183,27 @@ int read_weather_simple() {
     return ntokens; 
 }
 
-int split_lines(const char *buf, char *arr[], int max) {
+int split_lines(const char *buf, char *arr[], int max, int maxLineLength) {
     int ntokens = 0; 
     while (*buf != '\0' && ntokens < max) {    
         while (*buf != '\0' && *buf != '*') buf++; 
 
-        if (*buf == '\0') return;
+        if (*buf == '\0') return 0;
 
-        char *start = buf; // Start points to * 
+        char *start = (char*)buf; // Start points to * 
 
         while (*buf !='\0' && *buf != '^') buf++;   // buf points to ^ or end
 
         int nchars = buf - start - 1; 
+        int nCharsToRead = nchars < maxLineLength - 3 ? nchars : maxLineLength - 3;
 
-        arr[ntokens] = strndup(start + 1, nchars); 
+        arr[ntokens] = strndup(start + 1, nCharsToRead);
+        if (nchars > maxLineLength - 3) {
+            memcpy(arr[ntokens] + maxLineLength - 3, "...",3);
+        }
+        arr[ntokens][maxLineLength] = '\0';
+       
+        gl_draw_string(50, 15 + 30 * ntokens, arr[ntokens], GL_RED);
 
         ntokens++;
     }
@@ -218,7 +225,7 @@ int read_headlines_simple() {
 
     // Tokenize
     char *headlines[10]; 
-    int ntokens = split_lines(buf, headlines, len); 
+    int ntokens = split_lines(buf, headlines, len, 30); 
     // int ntokens = tokenize(buf, headlines, len); 
 
     // Print to display for testing purposes
