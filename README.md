@@ -28,20 +28,23 @@ The SmartMirror displays the information you need to start your day right. It co
 
 ## Hardware Setup
 ### Display
-The monitor must be plugged into an outlet and connected to the Pi with an HDMI cable. The acrylic 2-way mirror was mounted on the front with ????
+The monitor must be plugged into an outlet and connected to the Pi with an HDMI cable. The acrylic 2-way mirror was cut to size by scoring the mirror then snapping off the excess. It was mounted to the monitor using velcro strips.
 
 ### Power Supply 
-(Evan TODO) Describe how it's wired, how it communicates to the pi, and anything notable about troubleshooting it.
-The power supply is mounted on a breadboard. With the power supply at the "top", the 3.3V rail is on the right, and the 5v rail is on the left. The Pi is powered using the 5v and ground pins in the middle of the power supply while all other components are powered using the rails. 
+The MB-V2 power supply is mounted on a breadboard. With the power supply at the "top", the 3.3V rail is on the right, and the 5v rail is on the left. The jumpers on the power supply determine what voltage goes to the rails. 
+The Pi is powered using the 5v and ground pins in the middle of the power supply while all other components are powered using the rails. 
 
 ### Motion Sensor
-(Julia TODO) Describe how it's wired, how it communicates to the pi, and anything notable about troubleshooting it.
+The HC-SR501 motion sensor has 3 pins. It is powered with 5v and is connected to GPIO_PIN19. The jumper is set to react to multiple triggers, meaning the amount of time the sensor is high after being triggered is restarted every time the sensor picks up motion. 
 
 ### Temperature/Humidity
-(Evan TODO) Describe how it's wired, how it communicates to the pi, and anything notable about troubleshooting it.
+The DHT-11 has 3 pins. It is powered with 3.3v and is connected to GPIO_PIN26. 
 
 ### Rotary Dial
-(Dan TODO) Describe how it's wired, how it communicates to the pi, and anything notable about troubleshooting it.
+The KY-040 Rotary Encoder has 5 pins. It is powered using 3.3 V. 
+The CLK pin is connected to GPIO_PIN16
+The DT pin is connected to GPIO_PIN20
+The SW pin is connected to GPIO_PIN21
 
 ### ESP-WROOM-32
 (Evan TODO) The ESP-32 is used to connect the Raspberry Pi to the internet in order to fetch current date, time, weather, and headlines. 
@@ -52,17 +55,35 @@ It is powered using the 3.3v rail on the breadboard. It is connected to the Pi's
 ## Code
 Currently code is listed in alphabetical order, but order can be changed to give the best overall understanding of how it works 
 High-level description of what each file does
-### module.c
-### output_formatter.c
-### profile.c
-### sensors.c
-### settings.c
+
 ### smart_display.c
+Contains void main() which initializes the modules, profiles, and sensors. It then calls display() which is the main loop that draws the page if motion is detected. 
+
+### sensors.c
+Contains the code for communicating directly with the various sensors. It initializes and reads in data from the sensors. 
+Sensors.c also implements interrupts for the rotary dial. Data is initially stored in an array of strings, which is formatted into a resultBuf for printing to the display. 
+
+### output_formatter.c
+Formats the data array of strings from sensor.c into a buf that can be printed to the display. 
+
+### module.c
+Each sensor is abstracted into a module: Proximity, Temperature, DateTime, Weather, and Headline. 
+*** Fill in info about the structs and how the sensors are abstracted into modules and integrated into the display *** 
+
+### profile.c
+Abastracts the modules into profiles to be displayed on the screen. 
+*** Fill in info about how profiles work ***
+
+
+### settings.c
+Implements the setting menu which allows the user to customize the display format of the Date, Time, Temperature, Humidity, Weather, and Headlines. The user can also choose between 4 theme colors and 2 fonts. 
+
+
 ### website
 Three python scripts are hosted at Evander's Stanford directory. The 
-+ gettime.py: Utilizes python's datetime object to print out the current date and time
-+ getweather.py: Utilizes OpenWeatherMap to print current weather conditions in Palo Alto. Current temperature is provided in Fahrenheit and Celsius, with the integer and decimal parts printed separately to ease use with snprintf.
-+ getheadlines.py: Displays the top 10 headlines from this [Google News rss feed](https://news.google.com/_/rss/search?q=reuters+news+-schedule&hl=en-US&gl=US&ceid=US:en). Each headline is terminated with a '^' to ease processing by the pi. 
++ [gettime.py](http://web.stanford.edu/~evandeo/cgi-bin/gettime.py): Utilizes python's datetime object to print out the current date and time
++ [getweather.py](http://web.stanford.edu/~evandeo/cgi-bin/getweather.py): Utilizes OpenWeatherMap to print current weather conditions in Palo Alto. Current temperature is provided in Fahrenheit and Celsius, with the integer and decimal parts printed separately to ease use with snprintf.
++[getheadlines.py](http://web.stanford.edu/~evandeo/cgi-bin/getheadlines.py): Displays the top 10 headlines from this [Google News rss feed](https://news.google.com/_/rss/search?q=reuters+news+-schedule&hl=en-US&gl=US&ceid=US:en). Each headline is terminated with a '^' to ease processing by the pi. 
 
 
 
