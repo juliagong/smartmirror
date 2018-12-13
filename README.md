@@ -68,11 +68,11 @@ Formats the data array of strings from sensor.c into a buf that can be printed t
 
 ### module.c
 Each sensor is abstracted into a module: Proximity, Temperature, DateTime, Weather, and Headline. 
-*** Fill in info about the structs and how the sensors are abstracted into modules and integrated into the display *** 
+** Fill in info about the structs and how the sensors are abstracted into modules and integrated into the display **
 
 ### profile.c
 Abastracts the modules into profiles to be displayed on the screen. 
-*** Fill in info about how profiles work ***
+** Fill in info about how profiles work **
 
 
 ### settings.c
