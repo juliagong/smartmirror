@@ -111,4 +111,19 @@ Three python scripts are hosted at Evander's Stanford directory. The
     - Rotary encoder
     - Platform design / implementation
     - Support setting changes
-
+    
+    
+     
+    
+ ## References
+   * Initial inspiration from [Hacker House](https://hackaday.io/project/13466-raspberry-pi-smart-mirror)
+   * ESP-32 webToUART code from Chris Gregg
+   * Date/Time python script help from [Stack Overflow](https://stackoverflow.com/questions/415511/how-to-get-the-current-time-in-python)
+   * Current weather from [Open Weather Map](https://openweathermap.org/) using [PyOWM](https://github.com/csparpa/pyowm/blob/master/README.md)
+   * Headlines python script help from [Geeks for Geeks](https://www.geeksforgeeks.org/xml-parsing-python/)
+   * [Sensor Documentation](https://docs.google.com/document/d/1Hm_y9nt_mcTnyMiRlPy4V0Iq8_okEj08ch4n8UUkzM0/edit?usp=sharing) with links to data sheets we used
+   * Segoe UI font?
+   * GIMP open source?
+   * Other citations? 
+   * **Add references to font related code**
+    
