@@ -21,6 +21,7 @@ static void display() {
             draw_page();
         } else {
             blank_screen();
+            reset_rotary_click();
         }
     }
 }

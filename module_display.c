@@ -52,7 +52,7 @@ void draw_page() {
     if (current_page == 0) { // draw greeting on home page
 	    gl_draw_string_with_size(20, 20, "Howdy from CS 107e SmartMirror!", text_color, 2);
     } else if (current_page == 1) { // title for weather data
-	    gl_draw_string_with_size(20, 20, "Weather", text_color, 2);
+	    gl_draw_string_with_size(20, 20, "Weather of Palo Alto", text_color, 2);
     } else if (current_page == 2) { // title for headline data
 	    gl_draw_string_with_size(20, 20, "Today's Headlines", text_color, 2);
     }

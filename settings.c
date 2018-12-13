@@ -72,7 +72,7 @@ void get_settings_page(profile_t* profile) {
             display_settings(cursor);
             drawScreen = false;
         }
-        timer_delay_ms(10);
+        timer_delay_ms(100);
     }
 }
 
