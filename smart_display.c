@@ -4,6 +4,7 @@
 #include "profile.h"
 #include "timer.h"
 #include "settings.h"
+#include "gl.h"
 
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 800
@@ -17,7 +18,13 @@ static void display() {
                 reset_rotary_click();
             }
             
-            move_page(read_rotary_data());
+            int movement = read_rotary_data();
+
+            if (movement != 0) {
+                gl_draw_string(1150, 0, "loading", GL_RED);
+                gl_swap_buffer();
+                move_page(movement);
+            }
             draw_page();
         } else {
             blank_screen();

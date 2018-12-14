@@ -69,6 +69,8 @@ void get_settings_page(profile_t* profile) {
         }
 
         if (drawScreen) {
+            gl_draw_string(1150, 0, "loading", GL_RED);
+            gl_swap_buffer();           
             display_settings(cursor);
             drawScreen = false;
         }
