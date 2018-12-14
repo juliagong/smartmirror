@@ -1,23 +1,23 @@
 # Ƨ|SmartMirror
 ## The CS 107e project that belongs in every tech-savvy bedroom!
 
-The SmartMirror displays the information you need to start your day right. It connects to your WiFi to display the current time, weather, and headlines. The SmartMirror is customizable to show the information you want in the style you want.
+The SmartMirror displays the information you need to start your day right. It is motion-activated and connects to your WiFi to display the current time, weather, and headlines. The SmartMirror is customizable to show the information you want in the style you want.
 
 ## Features
++ Motion-activated display
 + Connects to your WiFi to display the most current information
 + Home Page: Displays the Date & Time and Ambient Temperature/Humidity
 + Weather Page: Displays current weather conditions in Palo Alto
 + Headlines Page: Displays top 10 headlines in World and US news
-+ Navigate between pages using the rotary dial.
++ Navigate between pages using the rotary dial
 + Choose between the classic Apple II font, or the sleek Segoe UI font
-+ Choose between 5 color Themes
++ Choose between 5 display color themes:
   - "Classic Binary",
   - "Midnight Office Hours",
   - "Royal Hacker's Hex",
   - "Sunset Soiree in C",
   - "Plantiful Pleasantree"
   
-
 ## Specs
 + Raspberry Pi Model A+ (Running the bare-metal code library written over the course of CS107e, in addition to project code)
 + Power Supply: MB-V2 Breadboard Power Supply with 9v power adapter 
@@ -32,7 +32,7 @@ The SmartMirror displays the information you need to start your day right. It co
 The monitor must be plugged into an outlet and connected to the Pi with an HDMI cable. The acrylic 2-way mirror was cut to size by scoring the mirror then snapping off the excess. It was mounted to the monitor using velcro strips.
 
 ### Power Supply 
-The MB-V2 power supply is mounted on a breadboard. With the power supply at the "top", the 3.3V rail is on the right, and the 5v rail is on the left. The jumpers on the power supply determine what voltage goes to the rails. 
+The MB-V2 power supply is mounted on a breadboard. With the power supply at the "top", the 3.3V rail is on the right, and the 5v rail is on the left. The jumpers on the power supply determine what voltage goes to the rails.
 The Pi is powered using the 5v and ground pins in the middle of the power supply while all other components are powered using the rails. 
 
 ### Motion Sensor
@@ -48,8 +48,8 @@ The DT pin is connected to GPIO_PIN20
 The SW pin is connected to GPIO_PIN21
 
 ### ESP-WROOM-32
-(Evan TODO) The ESP-32 is used to connect the Raspberry Pi to the internet in order to fetch current date, time, weather, and headlines. 
-It is powered using the 3.3v rail on the breadboard. It is connected to the Pi's TX/RX pins via its own TX/RX pins, and communicates using UART. The ESP-32 was programmed using Arduino IDE based on code provided by Chris Gregg. When uploading to the ESP-32, make sure the 3.3v wire is disconnected and the Pi is off. When it Arduino IDE says it is "Connecting..." press and hold the button labeled "DOI" until upload begins. 
+The ESP-32 is used to connect the Raspberry Pi to the internet in order to fetch current date, time, weather, and headlines. 
+It is powered using the 3.3v rail on the breadboard. It is connected to the Pi's TX/RX pins via its own TX/RX pins, and communicates using UART. The ESP-32 was programmed using Arduino IDE based on code provided by Chris Gregg. When uploading to the ESP-32, make sure the 3.3v wire is disconnected and the Pi is off. When the Arduino IDE says it is "Connecting...", press and hold the button labeled "DOI" until upload begins. 
 
 
 ## Code
@@ -62,7 +62,7 @@ Takes current page configuration and displayis all the modules within the page. 
 ### module.c
 A module encapsulates/represents a stand-alone entity with one defined function. We have 5 defined modules: Proximity, Temperature, DateTime, Weather, and Headline. 
 Each module should have the following characteristics:
-- It should be able to report if we have new information: this is most relevant with proximity sensor
+- It should be able to report if we have new information: this is most relevant for the proximity sensor
 - It should have a defined function to update its content: in most of our cases, we call corresponding function in sensors, which then populates our content with formatted, newest information.
 - It should have contents, which are sets of string buffers. Each buffer is then displayed using our module_disply.c. 
 
@@ -85,11 +85,10 @@ The code is written so that we can have multiple profiles to switch and back bet
 Implements the setting menu which allows the user to customize the display format of the Date, Time, Temperature, and Humidity. The user can also choose between 5 theme colors and 2 fonts. 
 
 ### font.c
-Contains definition for our two different fonts and allow switching between them.
+Contains the definition for our two different fonts and allows for switching between them.
 
 ### custom_font_draw.c
-Allows drawing strings of different integer scales.
-
+Allows drawing strings of different integer scales with supported fonts.
 
 ### website
 Three python scripts are hosted at Evander's Stanford directory. The 
@@ -97,25 +96,25 @@ Three python scripts are hosted at Evander's Stanford directory. The
 + [getweather.py](http://web.stanford.edu/~evandeo/cgi-bin/getweather.py): Utilizes OpenWeatherMap to print current weather conditions in Palo Alto. Current temperature is provided in Fahrenheit and Celsius, with the integer and decimal parts printed separately to ease use with snprintf.
 + [getheadlines.py](http://web.stanford.edu/~evandeo/cgi-bin/getheadlines.py): Displays the top 10 headlines from this [Google News rss feed](https://news.google.com/_/rss/search?q=reuters+news+-schedule&hl=en-US&gl=US&ceid=US:en). Each headline is terminated with a '^' to ease processing by the pi. 
 
-## Contributions 
+## Individual Contributions 
+We collaborated collectively on the brainstorming process for ideation, designing the user experience, and designign the system features. Individually, we split up the work for the project as follows:
+
 + Evander Deocariza:
-    - Temperature/humidity sensor
+    - Temperature / humidity sensor
     - ESP-32 setup
     - Python scripts to retrieve information from web
     - Wiring / hardware 
 + Julia Gong:
-    - Implementing a new font 
-    - Support for different themes
-    - Support for different font size
     - Proximity sensor
+    - Implementing a new font
+    - Support for different font sizes
+    - Support for different color themes
 + Minhyung (Dan) Kang:
     - Rotary encoder
     - Platform design / implementation
-    - Support setting changes
-    
+    - Support setting configuration changes
     
      
-    
  ## References
    * Initial inspiration from [Hacker House](https://hackaday.io/project/13466-raspberry-pi-smart-mirror)
    * ESP-32 webToUART code from Chris Gregg
@@ -123,8 +122,7 @@ Three python scripts are hosted at Evander's Stanford directory. The
    * Current weather from [Open Weather Map](https://openweathermap.org/) using [PyOWM](https://github.com/csparpa/pyowm/blob/master/README.md)
    * Headlines python script help from [Geeks for Geeks](https://www.geeksforgeeks.org/xml-parsing-python/)
    * [Sensor Documentation](https://docs.google.com/document/d/1Hm_y9nt_mcTnyMiRlPy4V0Iq8_okEj08ch4n8UUkzM0/edit?usp=sharing) with links to data sheets we used
-   * Segoe UI font?
-   * GIMP open source?
-   * Other citations? 
-   * **Add references to font related code**
+   * Microsoft [Segoe UI](https://docs.microsoft.com/en-us/typography/font-list/segoe-ui) font
+   * Modified script for generating font .bmp image from [Bitmap Font Generation Script](http://github.com/sole/snippets/blob/master/gimp/generate_bitmap_font/sole_generate_bitmap_font.py)
+   * Modified script from Chris Gregg for generating C data structure for font from .bmp image (see font_gen/)
     
