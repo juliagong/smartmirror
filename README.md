@@ -128,4 +128,4 @@ We collaborated collectively on the brainstorming process for ideation, designin
    * [Sensor Documentation](https://docs.google.com/document/d/1Hm_y9nt_mcTnyMiRlPy4V0Iq8_okEj08ch4n8UUkzM0/edit?usp=sharing) with links to data sheets we used
    * Microsoft [Segoe UI](https://docs.microsoft.com/en-us/typography/font-list/segoe-ui) font
    * Modified script for generating font .bmp image from [Bitmap Font Generation Script](http://github.com/sole/snippets/blob/master/gimp/generate_bitmap_font/sole_generate_bitmap_font.py)
-   * Modified script from Chris Gregg for generating C data structure for font from .bmp image (see font_gen/)
+   * Modified script from Chris Gregg for generating C data structure for font from .bmp image (see `font_gen`)
