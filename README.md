@@ -8,6 +8,7 @@ The SmartMirror displays the information you need to start your day right. It co
 + Home Page: Displays the Date & Time and Ambient Temperature/Humidity
 + Weather Page: Displays current weather conditions in Palo Alto
 + Headlines Page: Displays top 10 headlines in World and US news
++ Navigate between pages using the rotary dial.
 + Choose between the classic Apple II font, or the sleek Segoe UI font
 + Choose between 5 color Themes
   - "Classic Binary",
