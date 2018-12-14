@@ -1,8 +1,11 @@
+/* Original webToUART.ino code from Chris Gregg
 
+   Modified for cs107e SmartMirror Project
+ * */
 #define DEBUG
 
-#include <WiFi.h>
 #include <WebSocketServer.h>
+#include <WiFi.h>
 #include <stdio.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -24,6 +27,7 @@ QueueList<String> send_q;
 
 const char* ssid = "Stanford Visitor"; // Change this
 const char* password =  "Visitor"; // Change this
+int counter = 0;
 
 // The server will be at 192.168.4.1
 // and this device will have the IP address 192.168.4.30
@@ -34,147 +38,186 @@ const char* password =  "Visitor"; // Change this
 // start a thread to handle uart send/recv
 void app_main()
 {
-    xTaskCreate(echo_task, "uart_echo_task", BUF_SIZE, NULL, 10, NULL);
+  xTaskCreate(echo_task, "uart_echo_task", BUF_SIZE, NULL, 10, NULL);
 }
 
 void setup() {
-    // the UART baud is 115,200 bps
-    Serial.begin(115200);
+  // the UART baud is 115,200 bps
+  Serial.begin(115200);
 
-    // The blue LED is used to indicate that there is a websocket connection
-    pinMode(LED_BUILTIN, OUTPUT);
+  // The blue LED is used to indicate that there is a websocket connection
+  pinMode(LED_BUILTIN, OUTPUT);
 
-    // attempt to connect to Wifi and set up a websocket connection
-    connect_client();
+  // attempt to connect to Wifi and set up a websocket connection
+  connect_client();
 
-    // start the UART listening routine*/
-    app_main();
+  // start the UART listening routine*/
+  app_main();
 }
 
 // this is the UART handling routine
 static void echo_task(void *pvParameters)
 {
-    /*  Configure parameters of an UART driver,
-        communication pins and install the driver */
-    uart_config_t uart_config = {
-        .baud_rate = 115200,
-        .data_bits = UART_DATA_8_BITS,
-        .parity    = UART_PARITY_DISABLE,
-        .stop_bits = UART_STOP_BITS_1,
-        .flow_ctrl = UART_HW_FLOWCTRL_DISABLE
-    };
-    uart_param_config(UART_NUM_1, &uart_config);
-    uart_set_pin(UART_NUM_1, ECHO_TEST_TXD, ECHO_TEST_RXD, ECHO_TEST_RTS, ECHO_TEST_CTS);
-    uart_driver_install(UART_NUM_1, BUF_SIZE * 2, 0, 0, NULL, 0);
+  /*  Configure parameters of an UART driver,
+      communication pins and install the driver */
+  uart_config_t uart_config = {
+    .baud_rate = 115200,
+    .data_bits = UART_DATA_8_BITS,
+    .parity    = UART_PARITY_DISABLE,
+    .stop_bits = UART_STOP_BITS_1,
+    .flow_ctrl = UART_HW_FLOWCTRL_DISABLE
+  };
+  uart_param_config(UART_NUM_1, &uart_config);
+  uart_set_pin(UART_NUM_1, ECHO_TEST_TXD, ECHO_TEST_RXD, ECHO_TEST_RTS, ECHO_TEST_CTS);
+  uart_driver_install(UART_NUM_1, BUF_SIZE * 2, 0, 0, NULL, 0);
 
-    // Configure a temporary buffer for the incoming data
-    // Also set up a buffer for the base64 data, so we can send all
-    // 0-255 byte values
-    char *data = (char *) malloc(BUF_SIZE);
-    char *base64data = (char *) malloc(BUF_SIZE);
+  // Configure a temporary buffer for the incoming data
+  // Also set up a buffer for the base64 data, so we can send all
+  // 0-255 byte values
+  char *data = (char *) malloc(BUF_SIZE);
+  char *base64data = (char *) malloc(BUF_SIZE);
 
-    while (1) {
-        // If there is anything in the receive queue (from WiFi), send it on UART
-        if (!recv_q.isEmpty()) {
-            // need to make this thread safe!
-            // Get the data out of the queue
-            String base64data = recv_q.pop();
+  while (1) {
+    // If there is anything in the receive queue (from WiFi), send it on UART
+    if (!recv_q.isEmpty()) {
+      // need to make this thread safe!
+      // Get the data out of the queue
+      String base64data = recv_q.pop();
 
-            // Convert from base64 back to bytes to send on UART
-            int len = base64_decode(data, (char *)base64data.c_str(), base64data.length());
+      // Convert from base64 back to bytes to send on UART
+      int len = base64_decode(data, (char *)base64data.c_str(), base64data.length());
 
 #ifdef DEBUG
-            Serial.print("sending on uart: ");
-            Serial.println(data);
+      Serial.print("sending on uart: ");
+      Serial.println(data);
 #endif
 
-            uart_write_bytes(UART_NUM_1, data, len);
-        }
-        // If there is anything waiting on UART, send it to the other device
-        int len = uart_read_bytes(UART_NUM_1, (uint8_t *)data, BUF_SIZE, 20 / portTICK_RATE_MS);
-        if (len > 0) {
-            int len_encoded = base64_encode(base64data, (char *)data, len);
-            send_q.push(base64data);
+      uart_write_bytes(UART_NUM_1, data, len);
+    }
+    // If there is anything waiting on UART, send it to the other device
+    int len = uart_read_bytes(UART_NUM_1, (uint8_t *)data, BUF_SIZE, 20 / portTICK_RATE_MS);
+    if (len > 0) {
+      int len_encoded = base64_encode(base64data, (char *)data, len);
+      send_q.push(base64data);
 #ifdef DEBUG
-            Serial.print("Received from UART: '");
-            Serial.print(base64data);
-            Serial.println("'");
+      Serial.print("Received from UART: '");
+      Serial.print(base64data);
+      Serial.println("'");
 
-            /*  if (len == 1 && data[0] == 0x15) {
-                Serial.println("nak");
-                //continue;
-                }*/
+      /*  if (len == 1 && data[0] == 0x15) {
+          Serial.println("nak");
+          //continue;
+          }*/
 #endif
 
-        }
-
-        // If there is anything in the receive queue, send it on UART
-
-        delay(10);
     }
-    free(data);
-    free(base64data);
-}
 
-void loop() {
+    // If there is anything in the receive queue, send it on UART
 
-    String data;
-    WiFiClient client;
-    if (WiFi.status() == WL_CONNECTED) {
-//        Serial.println("connected");
-        if (client.connect("stanford.edu", 80)) {
-            client.println("GET /~evandeo/cgi-bin/gettime.py");
-            client.println();
-            Serial.println("connecting to gettime.py");
-            while (!client.available()) {};
-            while (client.available()) {
-                char c = client.read();
-                Serial.write(c);
-            }
-            if (!client.connected()) {
-//                Serial.println();
-//                Serial.println("disconnecting from server.");
-                client.stop();
-            }
-            delay(1000);
-        }
-    } else {
-        Serial.println("Client disconnected.");
-        digitalWrite(LED_BUILTIN, LOW);
-        connect_client();
-    }
+    delay(10);
+  }
+  free(data);
+  free(base64data);
 }
 
 void connect_client() {
-    digitalWrite(LED_BUILTIN, LOW);
-    /*  if (!WiFi.config(local_IP, gateway, subnet)) {
+  digitalWrite(LED_BUILTIN, LOW);
+  /*  if (!WiFi.config(local_IP, gateway, subnet)) {
 
-        Serial.println("STA Failed to configure");
-        }*/
+      Serial.println("STA Failed to configure");
+      }*/
 
-    Serial.print("Connecting to ");
-    Serial.println(ssid);
+  //Serial.print("Connecting to ");
+  //Serial.println(ssid);
 
-//      WiFi.begin(ssid);
-    WiFi.begin(ssid, password);
+  //WiFi.begin(ssid);
+  WiFi.begin(ssid, password);
 
-    while (WiFi.status() != WL_CONNECTED) {
-        delay(500);
-        Serial.print(".");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  // Silenced this to decrease info sent to raspberry pi
+  //    Serial.println("");
+  //    Serial.println("WiFi connected!");
+  //    Serial.print("IP address: ");
+  //    Serial.println(WiFi.localIP());
+  //    Serial.print("ESP Mac Address: ");
+  //    Serial.println(WiFi.macAddress());
+  //    Serial.print("Subnet Mask: ");
+  //    Serial.println(WiFi.subnetMask());
+  //    Serial.print("Gateway IP: ");
+  //    Serial.println(WiFi.gatewayIP());
+  //    Serial.print("DNS: ");
+  //    Serial.println(WiFi.dnsIP());
+  
+  digitalWrite(LED_BUILTIN, HIGH);
+  delay(100);
+}
+
+void loop() {
+  String data;
+
+  while (Serial.available() > 0) {
+    // Read in char from serial
+    int data_requested = Serial.read();
+
+   
+    WiFiClient client;
+    if (WiFi.status() == WL_CONNECTED) {
+      // Serial.println("connected");
+
+      // Get date/time
+      if ((data_requested == 't') && client.connect("stanford.edu", 80)) {
+        client.println("GET /~evandeo/cgi-bin/gettime.py");
+        client.println();
+        //Serial.println("connecting to gettime.py"); // Silence to decrease data sent to pi
+        while (!client.available()) {};
+        while (client.available()) {
+          char c = client.read();
+          Serial.write(c);
+        }
+
+        // Get weather
+      } else if ((data_requested == 'w') && client.connect("stanford.edu", 80) ) {
+        client.println("GET /~evandeo/cgi-bin/getweather.py");
+        client.println();
+        //Serial.println("connecting to getweather.py");
+        while (!client.available()) {};
+        while (client.available()) {
+          char c = client.read();
+          Serial.write(c);
+        }
+
+        // Get headlines
+      } else if ((data_requested == 'h') && client.connect("stanford.edu", 80) ) {
+        client.println("GET /~evandeo/cgi-bin/getheadlines.py");
+        client.println();
+        //Serial.println("connecting to getheadlines.py");
+        while (!client.available()) {};
+        while (client.available()) {
+          char c = client.read();
+          Serial.write(c);
+        }
+
+        // Invalid code or client not conected
+      } else {
+        if (!client.connected()) {
+          //Serial.println();
+          //Serial.println("disconnecting from server.");
+          client.stop();
+        }
+      }
+
+    } else {
+      Serial.println("Client disconnected.");
+      digitalWrite(LED_BUILTIN, LOW);
+      connect_client();
     }
 
-    Serial.println("");
-    Serial.println("WiFi connected!");
-    Serial.print("IP address: ");
-    Serial.println(WiFi.localIP());
-    Serial.print("ESP Mac Address: ");
-    Serial.println(WiFi.macAddress());
-    Serial.print("Subnet Mask: ");
-    Serial.println(WiFi.subnetMask());
-    Serial.print("Gateway IP: ");
-    Serial.println(WiFi.gatewayIP());
-    Serial.print("DNS: ");
-    Serial.println(WiFi.dnsIP());
-    digitalWrite(LED_BUILTIN, HIGH);
-    delay(100);
+  }
+
+  // If no requests from the pi, pause then check again
+  delay(500);
 }
