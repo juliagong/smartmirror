@@ -36,7 +36,7 @@ The MB-V2 power supply is mounted on a breadboard. With the power supply at the 
 The Pi is powered using the 5v and ground pins in the middle of the power supply while all other components are powered using the rails. 
 
 ### Motion Sensor
-The HC-SR501 motion sensor has 3 pins. It is powered with 5v and is connected to GPIO_PIN19. The jumper is set to react to multiple triggers, meaning the amount of time the sensor is high after being triggered is restarted every time the sensor picks up motion. 
+The HC-SR501 motion sensor has 3 pins. It is powered with 5v and is connected to GPIO_PIN19. The jumper is set to react to multiple triggers, meaning the amount of time the sensor is high after being triggered is reset every time the sensor picks up motion. 
 
 ### Temperature/Humidity
 The DHT-11 has 3 pins. It is powered with 3.3v and is connected to GPIO_PIN26. 
@@ -51,53 +51,55 @@ The SW pin is connected to GPIO_PIN21
 The ESP-32 is used to connect the Raspberry Pi to the internet in order to fetch current date, time, weather, and headlines. 
 It is powered using the 3.3v rail on the breadboard. It is connected to the Pi's TX/RX pins via its own TX/RX pins, and communicates using UART. The ESP-32 was programmed using Arduino IDE based on code provided by Chris Gregg. When uploading to the ESP-32, make sure the 3.3v wire is disconnected and the Pi is off. When the Arduino IDE says it is "Connecting...", press and hold the button labeled "DOI" until upload begins. 
 
-
 ## Code
-### smart_display.c
-Contains void main() which initializes the modules, profiles, and sensors. It then calls display() which is the main loop that draws the page if motion is detected. It also allows user to click into settings page. 
+### `smart_display.c`
+Contains `main()`, which initializes the modules, profiles, and sensors. It then calls `display()`, which is the main loop that draws the page if motion is detected. It also allows user to click into settings page. 
 
-### module_display.c
-Takes current page configuration and displayis all the modules within the page. We check if we need to update information for each module (e.g. new time), fetch the data if so. We then display each module's content. 
+### `module_display.c`
+Takes current page configuration and displayis all the modules within the page. We check if we need to update information for each module (e.g. new time), and fetch the data if so. We then display each module's content.
 
-### module.c
-A module encapsulates/represents a stand-alone entity with one defined function. We have 5 defined modules: Proximity, Temperature, DateTime, Weather, and Headline. 
+### `module.c`
+A module encapsulates and represents a stand-alone entity with one defined function. We have 5 defined modules: Proximity, Temperature, DateTime, Weather, and Headline.
 Each module should have the following characteristics:
-- It should be able to report if we have new information: this is most relevant for the proximity sensor
+- It should be able to report if we have new information: this is most relevant for the proximity sensor.
 - It should have a defined function to update its content: in most of our cases, we call corresponding function in sensors, which then populates our content with formatted, newest information.
-- It should have contents, which are sets of string buffers. Each buffer is then displayed using our module_disply.c. 
+- It should have contents, which are sets of string buffers. Each buffer is then displayed using our `module_display.c`. 
 
-### sensors.c
+### `sensors.c`
 Contains the code for communicating directly with the various sensors. It initializes and reads in data from the sensors. 
-Sensors.c also implements interrupts for the rotary dial. Data is initially stored in an array of strings, which is formatted into a resultBuf for printing to the display. 
+`sensors.c` also implements interrupts for the rotary dial. Data is initially stored in an array of strings, which is formatted into a resultBuf for printing to the display. 
 
-### output_formatter.c
-Formats the data array of strings from sensor.c into buf arrays that can be printed to the display. 
+### `output_formatter.c`
+Formats the data array of strings from `sensors.c` into buf arrays that can be printed to the display. 
 
-### profile.c
-Each *profile* represents a set of settings which include the following:
+### `profile.c`
+Each *profile* represents a set of settings, which include the following:
 - Configuration for each module
 - Configuration for each page: information about which module to display at which location
-- Font/theme setting
+- Font/theme settings
 
-The code is written so that we can have multiple profiles to switch and back between, yet we do not support it in user interface.
+The code is written so that we can have multiple user profiles to switch back and forth between, though we do not yet support it in the user interface.
 
-### settings.c
-Implements the setting menu which allows the user to customize the display format of the Date, Time, Temperature, and Humidity. The user can also choose between 5 theme colors and 2 fonts. 
+### `settings.c`
+Implements the settings menu, which allows the user to customize the display format of the Date, Time, Temperature, and Humidity modules. The user can also choose between 5 theme colors and 2 fonts. 
 
-### font.c
+### `font.c`
 Contains the definition for our two different fonts and allows for switching between them.
 
-### custom_font_draw.c
-Allows drawing strings of different integer scales with supported fonts.
+### `custom_font_draw.c`
+Supports drawing strings of different integer scales with supported fonts.
 
-### website
+### `font_gen`
+Contains the scripts used for generation of `.bmp` image for fonts and generation of the necessary C data structure from the `.bmp` image (see *References* for source attribution).
+
+### `website`
 Three python scripts are hosted at Evander's Stanford directory. The 
-+ [gettime.py](http://web.stanford.edu/~evandeo/cgi-bin/gettime.py): Utilizes python's datetime object to print out the current date and time
-+ [getweather.py](http://web.stanford.edu/~evandeo/cgi-bin/getweather.py): Utilizes OpenWeatherMap to print current weather conditions in Palo Alto. Current temperature is provided in Fahrenheit and Celsius, with the integer and decimal parts printed separately to ease use with snprintf.
-+ [getheadlines.py](http://web.stanford.edu/~evandeo/cgi-bin/getheadlines.py): Displays the top 10 headlines from this [Google News rss feed](https://news.google.com/_/rss/search?q=reuters+news+-schedule&hl=en-US&gl=US&ceid=US:en). Each headline is terminated with a '^' to ease processing by the pi. 
++ [`gettime.py`](http://web.stanford.edu/~evandeo/cgi-bin/gettime.py): Utilizes python's datetime object to print out the current date and time
++ [`getweather.py`](http://web.stanford.edu/~evandeo/cgi-bin/getweather.py): Utilizes OpenWeatherMap to print current weather conditions in Palo Alto. Current temperature is provided in Fahrenheit and Celsius, with the integer and decimal parts printed separately to ease use with snprintf.
++ [`getheadlines.py`](http://web.stanford.edu/~evandeo/cgi-bin/getheadlines.py): Displays the top 10 headlines from this [Google News rss feed](https://news.google.com/_/rss/search?q=reuters+news+-schedule&hl=en-US&gl=US&ceid=US:en). Each headline is terminated with a '^' to ease processing by the pi. 
 
 ## Individual Contributions 
-We collaborated collectively on the brainstorming process for ideation, designing the user experience, and designign the system features. Individually, we split up the work for the project as follows:
+We collaborated collectively on the brainstorming process for ideation, designing the user experience, and designing the system features. Individually, we split up the work for the project as follows:
 
 + Evander Deocariza:
     - Temperature / humidity sensor
@@ -113,7 +115,6 @@ We collaborated collectively on the brainstorming process for ideation, designin
     - Rotary encoder
     - Platform design / implementation
     - Support setting configuration changes
-    
      
  ## References
    * Initial inspiration from [Hacker House](https://hackaday.io/project/13466-raspberry-pi-smart-mirror)
@@ -125,4 +126,3 @@ We collaborated collectively on the brainstorming process for ideation, designin
    * Microsoft [Segoe UI](https://docs.microsoft.com/en-us/typography/font-list/segoe-ui) font
    * Modified script for generating font .bmp image from [Bitmap Font Generation Script](http://github.com/sole/snippets/blob/master/gimp/generate_bitmap_font/sole_generate_bitmap_font.py)
    * Modified script from Chris Gregg for generating C data structure for font from .bmp image (see font_gen/)
-    
