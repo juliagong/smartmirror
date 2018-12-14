@@ -4,6 +4,7 @@
 #include "printf.h"
 #include "strings.h"
 
+#define NUM_HEADLINES 10
 #define MAX_HEADLINE_LENGTH 75
 
 void format_temperature_data(char** buf, int bufsize, int* temp_data, unsigned int settingId, unsigned int subsettingId) {
@@ -11,6 +12,7 @@ void format_temperature_data(char** buf, int bufsize, int* temp_data, unsigned i
     int f_int = fahrenheit;                 // Holds the integer portion of the float
     int f_frac = (fahrenheit - f_int) * 10; // Stores one decimal place
 
+    // Print out the correct format for temperature based on current setting
     switch (settingId) {
         case SETTING_TEMPERATURE_1:
             snprintf(buf[0], bufsize, "Temperature: %d.%dF", f_int, f_frac);
@@ -31,7 +33,8 @@ void format_temperature_data(char** buf, int bufsize, int* temp_data, unsigned i
             break;
     }
 
-    switch (subsettingId){
+    // If needed, print out information for humidity
+    switch (subsettingId) {
         case SETTING_HUMIDITY_SHOW:
             snprintf(buf[1], bufsize, "Humidity: %d.%d%%", 
                     temp_data[TEMPERATURE_HUMIDITY_INT], temp_data[TEMPERATURE_HUMIDITY_DECIMAL]);
@@ -44,6 +47,9 @@ void format_temperature_data(char** buf, int bufsize, int* temp_data, unsigned i
     }
 };
 
+/*
+ * Formats the date data based on the current chosen setting for date and time.
+ */
 void format_date_data(char* buf, int bufsize, char** datetime, unsigned int settingId) {
     switch (settingId) {
         case SETTING_DATE_1: // 1/31/2019
@@ -59,6 +65,9 @@ void format_date_data(char* buf, int bufsize, char** datetime, unsigned int sett
     }
 };
 
+/*
+ * Formats the time data based on the current chosen setting for date and time.
+ */
 void format_time_data(char* buf, int bufsize, char** datetime, unsigned int settingId) {
     unsigned int hour;
     switch (settingId) {
@@ -77,6 +86,9 @@ void format_time_data(char* buf, int bufsize, char** datetime, unsigned int sett
     }
 };
 
+/*
+ * Formats the weather data that is pulled from the web.
+ */
 void format_weather_data(char** buf, int bufsize, char** weather_data, unsigned int settingId) {
     snprintf(buf[0], bufsize, "%s", weather_data[WEATHER_DESCRIPTION]);
     snprintf(buf[1], bufsize, "%s.%sF / %s.%sC", 
@@ -86,9 +98,12 @@ void format_weather_data(char** buf, int bufsize, char** weather_data, unsigned 
     snprintf(buf[3], bufsize, "Humidity: %s", weather_data[WEATHER_HUMIDITY_PERCENT]);
 }
 
+/*
+ * Formats the appropriate number of headlines to show on the headline page.
+ */
 void format_headlines_data(char** buf, int bufsize, unsigned int settingId) {
-    // truncate lines 
-    for (int i = 0; i < 10; i ++){
+    // truncate long lines that exceed maximum character limit with '...'    
+    for (int i = 0; i < NUM_HEADLINES; i++){
         if (strlen(buf[i]) > MAX_HEADLINE_LENGTH - 3) {
             memcpy(buf[i] + MAX_HEADLINE_LENGTH - 3, "...", 3);
             buf[i][MAX_HEADLINE_LENGTH] = '\0';

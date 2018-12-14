@@ -1,18 +1,18 @@
 #include "font.h"
 
 /*
- * Apple II font stored as a bitmap.
- * Each character is 14 bits wide and 16 bits tall (long story
- * about some C conversion), which is then transformed to a 14x16
- * 32-bit image. Black pixels in the image are 0x00000000, white
- * pixels are 0xFFFFFFFF.
+ * Apple II and Segoe UI fonts stored as bitmaps.
+ * Each character is 14 bits wide and 16 bits tall for Apple II font
+ * and 16 bits wide and 27 bits tall for Segoe UI. These are then
+ * transformed to 32-bit images. Black pixels in the image are
+ * 0x00000000, white pixels are 0xFFFFFFFF.
  *
  * Generated from a screenshot of the original font, turned into
  * a 32-bit color C structure with GIMP, then turned into a bitmap
  * C structure with a simple C program.
  *
- * Author: Philip Levis <pal@cs.stanford.edu>
- * Last modified: 3/17/16
+ * Original author: Philip Levis <pal@cs.stanford.edu>
+ * Modified for SmartMirror project to include Segoe UI fonts.
  */
 
 const font_t font_default = {

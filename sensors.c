@@ -41,6 +41,7 @@ static volatile unsigned int prev_clk_val;
 static volatile int rotation;
 static volatile bool rotary_clicked;
 
+// Function prototypes
 static void rotary_interrupt(unsigned int pc);
 static int uart_getline(char *buf, int bufsize);
 static char *strndup(const char *src, int n);
@@ -97,14 +98,14 @@ void sensors_init(void) {
     init_interrupts();
 }
 
-
+/*
+ * Motion is detected if the motion pin output is greater than 0.
+ */
 bool read_motion_data() {
     return gpio_read(MOTION_PIN) > 0;
 }
 
 /*
- * Function: read_temp_data
- *
  * Requests temperature and humidity data from the DHT11 sensor. 
  * There is no other init function for this sensor.
  *
@@ -138,7 +139,7 @@ bool read_temp_data(char** resultBuf, unsigned int bufLen, unsigned int settingI
 
     int last_state = 1; // rpi sets pin 1 then waits for DHT to set it 0
  
-    for (int flips = 0; flips < MAX_PIN_FLIPS; flips++ ) {
+    for (int flips = 0; flips < MAX_PIN_FLIPS; flips++) {
         count = 0;
         while (gpio_read(TEMP_PIN) == last_state ) { // spin while waiting for pin to flip 
             count++;
@@ -221,8 +222,9 @@ static void rotary_interrupt(unsigned int pc) {
     }
 }
 
-
 /*
+ * Reads and stores date and time data in `resultBuf`.
+ *
  * The date_time[] array holds 7 pieces of information:
  *    Day of the Week
  *    Month Name
@@ -261,11 +263,12 @@ int read_date_time(char** resultBuf, unsigned int bufLen, unsigned int settingId
         free((char *)date_time[i]);
     }
 
-    
     return ntokens; 
 }
 
 /*
+ * Reads and stores weather data in `resultBuf`.
+ *
  * weather[] array holds 8 pieces of information:
  *  Description
  *  Fahrenheit (int)
@@ -306,8 +309,9 @@ int read_weather(char** resultBuf, unsigned int bufLen, unsigned int settingId) 
     return ntokens; 
 }
 
-
-
+/*
+ * Reads headlines and places headlines in `resultBuf`, line by line.
+ */
 int read_headlines(char** resultBuf, unsigned int bufLen, unsigned int settingId) {
     // Send request to esp-32
     uart_putchar('h');

@@ -17,6 +17,7 @@
 
 #define NUM_THEME_COLORS 4
 
+// Function prototypes
 static setting_options_t get_setting_option(unsigned int settingLevel);
 static module_config_t* get_module_config_at_cursor(cursor_t* cursor);
 static int get_current_option(cursor_t* cursor);
@@ -27,6 +28,11 @@ static module_config_t* settings;
 static unsigned int* p_themeSettingId;
 static unsigned int* p_fontSettingId;
 
+/*
+ * Stores setting options for all setting levels and includes the enumerated
+ * setting level, array of strings of option titles for that level, the
+ * number of options for that level, and the name of that setting type.
+ */
 static const setting_options_t setting_options[] = {
     {SETTING_LEVEL_MAIN, MAIN_SETTINGS_STRING, MAIN_SETTINGS_COUNT, "Settings"},
     {SETTING_LEVEL_DATE, DATE_SETTINGS_STRING, DATE_SETTINGS_COUNT, "Date"},
@@ -78,6 +84,9 @@ void get_settings_page(profile_t* profile) {
     }
 }
 
+/*
+ * Returns the appropriate setting option for the given `settingLevel`.
+ */
 static setting_options_t get_setting_option(unsigned int settingLevel) {
     for (int i = 0; i < SETTING_LEVELS_COUNT; i++) {
         if (setting_options[i].settingLevel == settingLevel) {
@@ -167,7 +176,8 @@ bool move_cursor(cursor_t* cursor, int direction) {
 }
 
 /*
- * Return the configuration for the module that corresponds to the setting page of cursor
+ * Return the configuration for the module that corresponds to the setting page
+ * that is currently being displayed, or the current setting level of `cursor`
  */
 static module_config_t* get_module_config_at_cursor(cursor_t* cursor) {
     module_config_t* moduleConfig = (module_config_t*)0;
@@ -209,7 +219,9 @@ static int get_current_option(cursor_t* cursor) {
     return moduleConfig->moduleSettingId;
 }
 
-
+/*
+ * Sets the font given the `fontSettingId` that is chosen by the user.
+ */
 static void set_font_option(unsigned int fontSettingId) {
     if (fontSettingId == SETTING_FONT_1) {
         font_set_font((font_t*)&font_segoeui);
@@ -245,6 +257,9 @@ static void save_current_option(cursor_t* cursor) {
     }
 }
 
+/*
+ * Makes the appropriate changes after the user selects a setting option.
+ */
 bool select_option(cursor_t* cursor) {
     setting_options_t settingOption = get_setting_option(cursor->settingLevel);
 
@@ -276,12 +291,16 @@ bool select_option(cursor_t* cursor) {
     return false;
 }
 
+/*
+ * Retrieves the color scheme for the given `themeSettingID`.
+ */
 color_scheme_t* get_color_scheme(unsigned int themeSettingId) {
     return (color_scheme_t*)COLOR_SCHEMES[themeSettingId];
 }
 
 /*
- * Definition for variables in setting_values.h
+ * Definition for variables in setting_values.h that configure each
+ * type of setting option.
  */
 const char RETURN_STRING[] = "Return";
 

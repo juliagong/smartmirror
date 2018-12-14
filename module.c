@@ -10,6 +10,7 @@
 #define NUM_WEATHER_COMPONENTS 4
 #define NUM_HEADLINE_COMPONENTS 10
 
+// Function prototypes
 static bool is_valid_module(unsigned int moduleId);
 static bool check_update_proximity();
 static bool update_info_proximity();
@@ -66,6 +67,9 @@ void module_init() {
     headline_module_init();
 }
 
+/*
+ * Checks whether `moduleId` should be updated.
+ */
 bool check_module_update(unsigned int moduleId) {
     if (!is_valid_module(moduleId)) {
         return false;
@@ -74,6 +78,10 @@ bool check_module_update(unsigned int moduleId) {
     return modules[moduleId].check_update();
 }
 
+/*
+ * Updates the module information for module `moduleId` at the given
+ * setting parameters.
+ */
 bool update_module_info(unsigned int moduleId, unsigned int settingId, unsigned int subSettingId) {
     if (!is_valid_module(moduleId)) {
         return false;
@@ -82,6 +90,9 @@ bool update_module_info(unsigned int moduleId, unsigned int settingId, unsigned 
     return modules[moduleId].update_info(settingId, subSettingId);
 }
 
+/*
+ * Retrieves the module content for module `moduleId`.
+ */
 module_content_t* get_module_content(unsigned int moduleId) {
     if (!is_valid_module(moduleId)) {
         return NULL;

@@ -56,7 +56,7 @@ module_config_t* get_module_config(unsigned int profileId, unsigned int moduleId
 }
 
 /*
- * Creates default profile that will be displayed on the screen.
+ * Creates default profile with appropriate modules that will be displayed on the screen.
  */
 static void create_default_profile() {
     module_config_t* defaultModuleConfig = malloc(sizeof(module_config_t) * NUM_ALL_MODULES);
@@ -120,6 +120,9 @@ static void create_default_profile() {
     profiles[DEFAULT_PROFILE_ID] = *defaultProfile; 
 }
 
+/*
+ * Initializes profile by allocating needed amount of space in memory.
+ */
 void profile_init() {
     profiles = malloc(sizeof(profile_t) * NUM_PROFILES);
     create_default_profile();
