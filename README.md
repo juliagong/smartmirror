@@ -113,6 +113,7 @@ We collaborated collectively on the brainstorming process for ideation, designin
     - Implementing a new font
     - Support for different font sizes
     - Support for different color themes
+    - Style editing
 + Minhyung (Dan) Kang:
     - Rotary encoder
     - Platform design / implementation
