@@ -1,4 +1,4 @@
-# Slightly adapted code from that provided by Chris Gregg.
+# Slightly modified code from that provided by Chris Gregg.
 # Used to generate the font configuration array from an
 # inverted bitmap (.bmp) image for use in font.c (see font.c
 # for details).
