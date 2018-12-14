@@ -52,27 +52,27 @@ The ESP-32 is used to connect the Raspberry Pi to the internet in order to fetch
 It is powered using the 3.3v rail on the breadboard. It is connected to the Pi's TX/RX pins via its own TX/RX pins, and communicates using UART. The ESP-32 was programmed using Arduino IDE based on code provided by Chris Gregg. When uploading to the ESP-32, make sure the 3.3v wire is disconnected and the Pi is off. When the Arduino IDE says it is "Connecting...", press and hold the button labeled "DOI" until upload begins. 
 
 ## Code
-### `smart_display.c`
+### [`smart_display.c`](https://github.com/cs107e/juliagong-danielkang92-evandeo-project/blob/master/smart_display.c)
 Contains `main()`, which initializes the modules, profiles, and sensors. It then calls `display()`, which is the main loop that draws the page if motion is detected. It also allows user to click into settings page. 
 
-### `module_display.c`
+### [`module_display.c`](https://github.com/cs107e/juliagong-danielkang92-evandeo-project/blob/master/module_display.c)
 Takes current page configuration and displayis all the modules within the page. We check if we need to update information for each module (e.g. new time), and fetch the data if so. We then display each module's content.
 
-### `module.c`
+### [`module.c`](https://github.com/cs107e/juliagong-danielkang92-evandeo-project/blob/master/module.c)
 A module encapsulates and represents a stand-alone entity with one defined function. We have 5 defined modules: Proximity, Temperature, DateTime, Weather, and Headline.
 Each module should have the following characteristics:
 - It should be able to report if we have new information: this is most relevant for the proximity sensor.
 - It should have a defined function to update its content: in most of our cases, we call corresponding function in sensors, which then populates our content with formatted, newest information.
 - It should have contents, which are sets of string buffers. Each buffer is then displayed using our `module_display.c`. 
 
-### `sensors.c`
+### [`sensors.c`](https://github.com/cs107e/juliagong-danielkang92-evandeo-project/blob/master/sensors.c)
 Contains the code for communicating directly with the various sensors. It initializes and reads in data from the sensors. 
-`sensors.c` also implements interrupts for the rotary dial. Data is initially stored in an array of strings, which is formatted into a resultBuf for printing to the display. 
+`sensors.c` also implements interrupts for the rotary dial. Data is initially stored in an array of strings, which is formatted into a `resultBuf` for printing to the display. 
 
-### `output_formatter.c`
-Formats the data array of strings from `sensors.c` into buf arrays that can be printed to the display. 
+### [`output_formatter.c`](https://github.com/cs107e/juliagong-danielkang92-evandeo-project/blob/master/output_formatter.c)
+Formats the data array of strings from `sensors.c` into `buf` arrays that can be printed to the display. 
 
-### `profile.c`
+### [`profile.c`](https://github.com/cs107e/juliagong-danielkang92-evandeo-project/blob/master/profile.c)
 Each *profile* represents a set of settings, which include the following:
 - Configuration for each module
 - Configuration for each page: information about which module to display at which location
@@ -80,21 +80,21 @@ Each *profile* represents a set of settings, which include the following:
 
 The code is written so that we can have multiple user profiles to switch back and forth between, though we do not yet support it in the user interface.
 
-### `settings.c`
+### [`settings.c`](https://github.com/cs107e/juliagong-danielkang92-evandeo-project/blob/master/settings.c)
 Implements the settings menu, which allows the user to customize the display format of the Date, Time, Temperature, and Humidity modules. The user can also choose between 5 theme colors and 2 fonts. 
 
-### `font.c`
+### [`font.c`](https://github.com/cs107e/juliagong-danielkang92-evandeo-project/blob/master/font.c)
 Contains the definition for our two different fonts and allows for switching between them.
 
-### `custom_font_draw.c`
+### [`custom_font_draw.c`](https://github.com/cs107e/juliagong-danielkang92-evandeo-project/blob/master/custom_font_draw.c)
 Supports drawing strings of different integer scales with supported fonts.
 
-### `font_gen`
+### [`font_gen`](https://github.com/cs107e/juliagong-danielkang92-evandeo-project/tree/master/font_gen)
 Contains the two python scripts used for generation of `.bmp` image for fonts and generation of the necessary C data structure from the `.bmp` image (see *References* for source attribution).
 + [`generate_font_bitmap.py`](https://github.com/cs107e/juliagong-danielkang92-evandeo-project/blob/master/font_gen/generate_font_bitmap.py): Modified from open-source [Bitmap Font Generation Script](http://github.com/sole/snippets/blob/master/gimp/generate_bitmap_font/sole_generate_bitmap_font.py) for Gimp software. Allows for generation of a `.bmp` image with monospaced characters for font creation that is then parsed by `convert_bmp.py`.
 + [`convert_bmp.py`](https://github.com/cs107e/juliagong-danielkang92-evandeo-project/blob/master/font_gen/convert_bmp.py): Modified from code provided by Chris Gregg. Allows for generation of a C data structure from a provided `.bmp` image that is compatible with the `gl.c` module.
 
-### `website`
+### [`website`](https://github.com/cs107e/juliagong-danielkang92-evandeo-project/tree/master/website)
 Three python scripts are hosted at Evander's Stanford directory.
 + [`gettime.py`](http://web.stanford.edu/~evandeo/cgi-bin/gettime.py): Utilizes python's datetime object to print out the current date and time
 + [`getweather.py`](http://web.stanford.edu/~evandeo/cgi-bin/getweather.py): Utilizes OpenWeatherMap to print current weather conditions in Palo Alto. Current temperature is provided in Fahrenheit and Celsius, with the integer and decimal parts printed separately to ease use with snprintf.
