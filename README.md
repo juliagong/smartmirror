@@ -36,16 +36,16 @@ The MB-V2 power supply is mounted on a breadboard. With the power supply at the 
 The Pi is powered using the 5v and ground pins in the middle of the power supply while all other components are powered using the rails. 
 
 ### Motion Sensor
-The HC-SR501 motion sensor has 3 pins. It is powered with 5v and is connected to GPIO_PIN19. The jumper is set to react to multiple triggers, meaning the amount of time the sensor is high after being triggered is reset every time the sensor picks up motion. 
+The HC-SR501 motion sensor has 3 pins. It is powered with 5v and is connected to `GPIO_PIN19`. The jumper is set to react to multiple triggers, meaning the amount of time the sensor is high after being triggered is reset every time the sensor picks up motion. 
 
 ### Temperature/Humidity
-The DHT-11 has 3 pins. It is powered with 3.3v and is connected to GPIO_PIN26. 
+The DHT-11 has 3 pins. It is powered with 3.3v and is connected to `GPIO_PIN26`. 
 
 ### Rotary Dial
 The KY-040 Rotary Encoder has 5 pins. It is powered using 3.3 V. 
-The CLK pin is connected to GPIO_PIN16
-The DT pin is connected to GPIO_PIN20
-The SW pin is connected to GPIO_PIN21
+The CLK pin is connected to `GPIO_PIN16`
+The DT pin is connected to `GPIO_PIN20`
+The SW pin is connected to `GPIO_PIN21`
 
 ### ESP-WROOM-32
 The ESP-32 is used to connect the Raspberry Pi to the internet in order to fetch current date, time, weather, and headlines. 
@@ -90,10 +90,12 @@ Contains the definition for our two different fonts and allows for switching bet
 Supports drawing strings of different integer scales with supported fonts.
 
 ### `font_gen`
-Contains the scripts used for generation of `.bmp` image for fonts and generation of the necessary C data structure from the `.bmp` image (see *References* for source attribution).
+Contains the two python scripts used for generation of `.bmp` image for fonts and generation of the necessary C data structure from the `.bmp` image (see *References* for source attribution).
++ [`generate_font_bitmap.py`](https://github.com/cs107e/juliagong-danielkang92-evandeo-project/blob/master/font_gen/generate_font_bitmap.py): Modified from open-source [Bitmap Font Generation Script](http://github.com/sole/snippets/blob/master/gimp/generate_bitmap_font/sole_generate_bitmap_font.py) for Gimp software. Allows for generation of a `.bmp` image with monospaced characters for font creation that is then parsed by `convert_bmp.py`.
++ [`convert_bmp.py`](https://github.com/cs107e/juliagong-danielkang92-evandeo-project/blob/master/font_gen/convert_bmp.py): Modified from code provided by Chris Gregg. Allows for generation of a C data structure from a provided `.bmp` image that is compatible with the `gl.c` module.
 
 ### `website`
-Three python scripts are hosted at Evander's Stanford directory. The 
+Three python scripts are hosted at Evander's Stanford directory.
 + [`gettime.py`](http://web.stanford.edu/~evandeo/cgi-bin/gettime.py): Utilizes python's datetime object to print out the current date and time
 + [`getweather.py`](http://web.stanford.edu/~evandeo/cgi-bin/getweather.py): Utilizes OpenWeatherMap to print current weather conditions in Palo Alto. Current temperature is provided in Fahrenheit and Celsius, with the integer and decimal parts printed separately to ease use with snprintf.
 + [`getheadlines.py`](http://web.stanford.edu/~evandeo/cgi-bin/getheadlines.py): Displays the top 10 headlines from this [Google News rss feed](https://news.google.com/_/rss/search?q=reuters+news+-schedule&hl=en-US&gl=US&ceid=US:en). Each headline is terminated with a '^' to ease processing by the pi. 
@@ -118,6 +120,7 @@ We collaborated collectively on the brainstorming process for ideation, designin
      
  ## References
    * Initial inspiration from [Hacker House](https://hackaday.io/project/13466-raspberry-pi-smart-mirror)
+   * [Raspberry Pi Pinout Page](https://pinout.xyz/) for wiring GPIO pins
    * ESP-32 webToUART code from Chris Gregg
    * Date/Time python script help from [Stack Overflow](https://stackoverflow.com/questions/415511/how-to-get-the-current-time-in-python)
    * Current weather from [Open Weather Map](https://openweathermap.org/) using [PyOWM](https://github.com/csparpa/pyowm/blob/master/README.md)
