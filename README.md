@@ -1,6 +1,6 @@
 # Ƨ|SmartMirror
 ## The CS 107e project that belongs in every tech-savvy bedroom!
-
+### Evander Deocariza, Julia Gong, and Dan (Minhyung) Kang
 The SmartMirror displays the information you need to start your day right. It is motion-activated and connects to your WiFi to display the current time, weather, and headlines. The SmartMirror is customizable to show the information you want in the style you want.
 
 ## Features
